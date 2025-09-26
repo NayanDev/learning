@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('signature')->nullable();
             
-            $table->foreignId('employee_id');
+            $table->string('nik');
             $table->timestamps();
         });
     }
