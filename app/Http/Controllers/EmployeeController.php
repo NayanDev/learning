@@ -23,7 +23,7 @@ class EmployeeController extends DefaultController
         $this->title = 'Employee';
         $this->generalUri = 'employee';
         // $this->arrPermissions = [];
-        $this->actionButtons = [''];
+        $this->actionButtons = ['btn_delete'];
 
         $this->tableHeaders = [
                     ['name' => 'No', 'column' => '#', 'order' => true],

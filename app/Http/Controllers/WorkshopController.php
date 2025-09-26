@@ -22,11 +22,11 @@ class WorkshopController extends DefaultController
         $this->generalUri = 'workshop';
         // $this->arrPermissions = [];
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
-
+        
         $this->tableHeaders = [
-                    ['name' => 'No', 'column' => '#', 'order' => true],
-                    ['name' => 'Name', 'column' => 'name', 'order' => true],
-                    ['name' => 'Department', 'column' => 'department_id', 'order' => true], 
+                    ['name' => 'No', 'column' => '#', 'order' => true], 
+                    ['name' => 'Name', 'column' => 'name', 'order' => true], 
+                    ['name' => 'Department', 'column' => 'department', 'order' => true], 
                     ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
                     ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
@@ -79,10 +79,36 @@ class WorkshopController extends DefaultController
     {
         $rules = [
                     'name' => 'required|string',
-                    'department_id' => 'required|string',
+                    'department_id' => 'required',
         ];
 
         return $rules;
+    }
+
+    protected function defaultDataQuery()
+    {
+        $filters = [];
+        $orThose = null;
+        $orderBy = 'id';
+        $orderState = 'DESC';
+        if (request('search')) {
+            $orThose = request('search');
+        }
+        if (request('order')) {
+            $orderBy = request('order');
+            $orderState = request('order_state');
+        }
+
+        $dataQueries = Workshop::join('departments', 'departments.id', '=', 'workshops.department_id')
+        ->where($filters)
+        ->where(function ($query) use ($orThose) {
+            $query->where('workshops.name', 'LIKE', '%' . $orThose . '%')
+                ->orWhere('departments.name', 'LIKE', '%' . $orThose . '%');
+        })
+        ->orderBy($orderBy, $orderState)
+        ->select('workshops.*', 'departments.name as department');
+
+        return $dataQueries;
     }
 
 }
