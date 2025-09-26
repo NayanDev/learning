@@ -189,10 +189,10 @@ class EmployeeController extends DefaultController
                     [
                         'type' => 'select2',
                         'label' => 'Employee', // Label bisa diubah agar lebih deskriptif
-                        'name' => 'employee_id',
+                        'name' => 'nik',
                         'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('employee_id', $id),
-                        'value' => (isset($edit)) ? $edit->employee_id : '',
+                        'required' => $this->flagRules('nik', $id),
+                        'value' => (isset($edit)) ? $edit->nik : '',
                         
                         // Tambahkan key 'options' dengan data yang sudah diformat
                         'options' => $employeeOptions,
@@ -208,8 +208,7 @@ class EmployeeController extends DefaultController
     protected function rules($id = null)
     {
         $rules = [
-                    'signature' => 'required|string',
-                    'employee_id' => 'required|string',
+                    'nik' => 'required|string',
         ];
 
         return $rules;

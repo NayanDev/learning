@@ -1,6 +1,6 @@
 <?php
 
-namespace database\Seeders;
+namespace Database\Seeders;
 
 use Idev\EasyAdmin\app\Models\Role;
 // use App\Models\SampleData;
@@ -17,6 +17,11 @@ class DatabaseSeeder extends Seeder
         $this->role();
         $this->user();
        // $this->sampleData();
+
+        $this->call([
+            DepartmentSeeder::class,
+            WorkshopSeeder::class,
+        ]);
     }
 
     public function role()
