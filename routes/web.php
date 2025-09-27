@@ -4,7 +4,11 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\WorkshopController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+
+Route::post('login', [AuthController::class, 'authenticate'])->middleware('web');
+Route::get('/', [AuthController::class, 'login'])->name('login')->middleware('web');
 
 Route::group(['middleware' => ['web', 'auth']], function () {
     // Route Department
