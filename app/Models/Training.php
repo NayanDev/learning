@@ -12,27 +12,21 @@ class Training extends Model
     protected $table = 'trainings';
     protected $primaryKey = 'id';
     protected $fillable = [];
-    protected $appends = ['btn_delete', 'btn_edit', 'btn_print', 'btn_multilink'];
+    protected $appends = ['btn_delete', 'btn_edit', 'btn_multilink'];
 
     public function getBtnMultilinkAttribute()
     {
         $arrLink = [
-            ['label' => 'Detail', 'url' => '#', 'icon' => 'ti ti-eye'],
-            ['label' => 'Participant', 'url' => url('training-participant')."?training_id=".$this->id, 'icon' => 'ti ti-users'],
-            ['label' => 'Recap Data', 'url' => url('training-recap')."?training_id=".$this->id, 'icon' => 'ti ti-archive'],
-            ['label' => 'Training Unplanned', 'url' => url('training-unplanned')."?training_id=".$this->id, 'icon' => 'ti ti-help'],
+            ['label' => 'Training Detail', 'url' => url('training-detail') . "?training_id=" . $this->id, 'icon' => 'ti ti-eye'],
+            ['label' => 'Training Analyst', 'url' => url('training-analyst') . "?training_id=" . $this->id, 'icon' => 'ti ti-users'],
+            ['label' => 'Training Needs', 'url' => url('training-need') . "?training_id=" . $this->id, 'icon' => 'ti ti-archive'],
+            ['label' => 'Training Schedule', 'url' => url('training-schedule') . "?training_id=" . $this->id, 'icon' => 'ti ti-calendar'],
+            ['label' => 'Training Unplanned', 'url' => url('training-unplanned') . "?training_id=" . $this->id, 'icon' => 'ti ti-help'],
         ];
 
-        $html = "<button type='button' data-links='".json_encode($arrLink)."' onclick='setMM(this)' title='Navigation' class='btn btn-outline-warning btn-sm radius-6' style='margin:1px;' data-bs-toggle='modal' data-bs-target='#modalMultiLink'>
+        $html = "<button type='button' data-links='" . json_encode($arrLink) . "' onclick='setMM(this)' title='Navigation' class='btn btn-outline-warning btn-sm radius-6' style='margin:1px;' data-bs-toggle='modal' data-bs-target='#modalMultiLink'>
                     <i class='ti ti-list'></i>
                 </button>";
-
-        return $html;
-    }
-
-    public function getBtnPrintAttribute()
-    {
-        $html = "<a id='export-pdf' data-base-url='' class='btn btn-sm btn-outline-primary radius-6' target='_blank' href='".url('training-export-jadwal')."?training_id=".$this->id."' title='Export PDF'><i class='ti ti-file'></i></a>";
 
         return $html;
     }
@@ -45,7 +39,7 @@ class Training extends Model
 
         return $html;
     }
-    
+
 
     public function getBtnEditAttribute()
     {
@@ -64,7 +58,7 @@ class Training extends Model
                 </button>";
         return $html;
     }
-    
+
 
     public function getUpdatedAtAttribute($value)
     {
