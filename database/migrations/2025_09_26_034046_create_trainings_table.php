@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('year');
             $table->dateTime('end_date');
             $table->enum('status', ['open', 'submit', 'approve', 'closed'])->default('open');
-            $table->text('description')->nullable();
+            $table->text('description')->default('-');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
