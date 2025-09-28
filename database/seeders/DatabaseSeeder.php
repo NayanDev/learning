@@ -1,6 +1,6 @@
 <?php
 
-namespace database\Seeders;
+namespace Database\Seeders;
 
 use Idev\EasyAdmin\app\Models\Role;
 // use App\Models\SampleData;
@@ -16,7 +16,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->role();
         $this->user();
-       // $this->sampleData();
+        // $this->sampleData();
+
+        $this->call([
+            DepartmentSeeder::class,
+            WorkshopSeeder::class,
+        ]);
     }
 
     public function role()
@@ -33,17 +38,47 @@ class DatabaseSeeder extends Seeder
 
         Role::updateOrCreate(
             [
-                'name' => 'customer'
+                'name' => 'Manager'
             ],
             [
-                'name' => 'customer',
+                'name' => 'manager',
+                'access' => '[{"route":"dashboard","access":["list"]}]',
+            ]
+        );
+
+        Role::updateOrCreate(
+            [
+                'name' => 'Staff'
+            ],
+            [
+                'name' => 'staff',
+                'access' => '[{"route":"dashboard","access":["list"]}]',
+            ]
+        );
+
+        Role::updateOrCreate(
+            [
+                'name' => 'Participant'
+            ],
+            [
+                'name' => 'participant',
+                'access' => '[{"route":"dashboard","access":["list"]}]',
+            ]
+        );
+
+        Role::updateOrCreate(
+            [
+                'name' => 'Mentor'
+            ],
+            [
+                'name' => 'mentor',
                 'access' => '[{"route":"dashboard","access":["list"]}]',
             ]
         );
     }
 
 
-    
+
 
     public function user()
     {
@@ -52,7 +87,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'admin@idev.com',
             ],
             [
-                'name' => 'Admin',
+                'name' => 'Nayan',
                 'email' => 'admin@idev.com',
                 'password' => bcrypt('qwerty'),
                 'role_id' => Role::where('name', 'admin')->first()->id,
@@ -67,7 +102,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Johny Nur Ahmad',
                 'email' => 'johny@idev.com',
                 'password' => bcrypt('qwerty'),
-                'role_id' => Role::where('name', 'customer')->first()->id,
+                'role_id' => Role::where('name', 'manager')->first()->id,
             ]
         );
     }
