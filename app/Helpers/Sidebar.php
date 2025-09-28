@@ -10,7 +10,7 @@ class Sidebar
 {
 
   public function generate()
-  {    
+  {
     $menus = $this->menus();
     $constant = new Constant();
     $permission = $constant->permissions();
@@ -22,9 +22,9 @@ class Sidebar
         $visibilityMenu = $menu['override_visibility'];
       }
       $menu['visibility'] = $visibilityMenu;
-      $menu['url'] = (Route::has($menu['key'].".index")) ? route($menu['key'].".index") : "#";
+      $menu['url'] = (Route::has($menu['key'] . ".index")) ? route($menu['key'] . ".index") : "#";
       $menu['base_key'] = $menu['key'];
-      $menu['key'] = $menu['key'].".index";
+      $menu['key'] = $menu['key'] . ".index";
 
       $arrMenu[] = $menu;
     }
@@ -32,9 +32,10 @@ class Sidebar
   }
 
 
-  public function menus(){
+  public function menus()
+  {
     $role = "admin";
-    if(config('idev.enable_role',true)){
+    if (config('idev.enable_role', true)) {
       $role = Auth::user()->role->name;
     }
     return
@@ -85,6 +86,51 @@ class Sidebar
           'childrens' => []
         ],
         [
+          'name' => 'Training Detail',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-detail',
+          'base_key' => 'training-detail',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Training Analyst',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-analyst',
+          'base_key' => 'training-analyst',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Training Need',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-need',
+          'base_key' => 'training-need',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Training Schedule',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-schedule',
+          'base_key' => 'training-schedule',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Training Unplanned',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-unplanned',
+          'base_key' => 'training-unplanned',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
           'name' => 'Role',
           'icon' => 'ti ti-key',
           'key' => 'role',
@@ -106,8 +152,9 @@ class Sidebar
   }
 
 
-  public function defaultAllAccess($exclude = []) {
-    return ['list', 'create','show', 'edit', 'delete','import-excel-default', 'export-excel-default','export-pdf-default'];
+  public function defaultAllAccess($exclude = [])
+  {
+    return ['list', 'create', 'show', 'edit', 'delete', 'import-excel-default', 'export-excel-default', 'export-pdf-default'];
   }
 
 
@@ -119,5 +166,4 @@ class Sidebar
 
     return $arrMenu[$menuKey] ?? $this->defaultAllAccess();
   }
-
 }

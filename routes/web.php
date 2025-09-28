@@ -5,6 +5,11 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TrainingAnalystController;
+use App\Http\Controllers\TrainingDetailController;
+use App\Http\Controllers\TrainingNeedController;
+use App\Http\Controllers\TrainingScheduleController;
+use App\Http\Controllers\TrainingUnplannedController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'authenticate'])->middleware('web');
@@ -38,6 +43,39 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-export-pdf-default', [TrainingController::class, 'exportPdf'])->name('training.export-pdf-default');
     Route::get('training-export-excel-default', [TrainingController::class, 'exportExcel'])->name('training.export-excel-default');
     Route::post('training-import-excel-default', [TrainingController::class, 'importExcel'])->name('training.import-excel-default');
-    // Route Export Jadwal Training
-    Route::get('training-export-jadwal', [TrainingController::class, 'exporJadwalPdf'])->name('training.export-jadwal-pdf');
+
+    // Route Training Details
+    Route::resource('training-detail', TrainingDetailController::class);
+    Route::get('training-detail-api', [TrainingDetailController::class, 'indexApi'])->name('training-detail.listapi');
+    Route::get('training-detail-export-pdf-default', [TrainingDetailController::class, 'exportPdf'])->name('training-detail.export-pdf-default');
+    Route::get('training-detail-export-excel-default', [TrainingDetailController::class, 'exportExcel'])->name('training-detail.export-excel-default');
+    Route::post('training-detail-import-excel-default', [TrainingDetailController::class, 'importExcel'])->name('training-detail.import-excel-default');
+
+    // Route Training Analyst
+    Route::resource('training-analyst', TrainingAnalystController::class);
+    Route::get('training-analyst-api', [TrainingAnalystController::class, 'indexApi'])->name('training-analyst.listapi');
+    Route::get('training-analyst-export-pdf-default', [TrainingAnalystController::class, 'exportPdf'])->name('training-analyst.export-pdf-default');
+    Route::get('training-analyst-export-excel-default', [TrainingAnalystController::class, 'exportExcel'])->name('training-analyst.export-excel-default');
+    Route::post('training-analyst-import-excel-default', [TrainingAnalystController::class, 'importExcel'])->name('training-analyst.import-excel-default');
+
+    // Route Training Needs
+    Route::resource('training-need', TrainingNeedController::class);
+    Route::get('training-need-api', [TrainingNeedController::class, 'indexApi'])->name('training-need.listapi');
+    Route::get('training-need-export-pdf-default', [TrainingNeedController::class, 'exportPdf'])->name('training-need.export-pdf-default');
+    Route::get('training-need-export-excel-default', [TrainingNeedController::class, 'exportExcel'])->name('training-need.export-excel-default');
+    Route::post('training-need-import-excel-default', [TrainingNeedController::class, 'importExcel'])->name('training-need.import-excel-default');
+
+    // Route Training Schedule
+    Route::resource('training-schedule', TrainingScheduleController::class);
+    Route::get('training-schedule-api', [TrainingScheduleController::class, 'indexApi'])->name('training-schedule.listapi');
+    Route::get('training-schedule-export-pdf-default', [TrainingScheduleController::class, 'exportPdf'])->name('training-schedule.export-pdf-default');
+    Route::get('training-schedule-export-excel-default', [TrainingScheduleController::class, 'exportExcel'])->name('training-schedule.export-excel-default');
+    Route::post('training-schedule-import-excel-default', [TrainingScheduleController::class, 'importExcel'])->name('training-schedule.import-excel-default');
+
+    // Route Training Unplanned
+    Route::resource('training-unplanned', TrainingUnplannedController::class);
+    Route::get('training-unplanned-api', [TrainingUnplannedController::class, 'indexApi'])->name('training-unplanned.listapi');
+    Route::get('training-unplanned-export-pdf-default', [TrainingUnplannedController::class, 'exportPdf'])->name('training-unplanned.export-pdf-default');
+    Route::get('training-unplanned-export-excel-default', [TrainingUnplannedController::class, 'exportExcel'])->name('training-unplanned.export-excel-default');
+    Route::post('training-unplanned-import-excel-default', [TrainingUnplannedController::class, 'importExcel'])->name('training-unplanned.import-excel-default');
 });
