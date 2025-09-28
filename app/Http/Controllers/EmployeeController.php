@@ -3,14 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
-<<<<<<< HEAD
-use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
-=======
 use Illuminate\Support\Facades\Log;
 use Idev\EasyAdmin\app\Helpers\Constant;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
 use Illuminate\Support\Facades\Http;
->>>>>>> dev
 
 class EmployeeController extends DefaultController
 {
@@ -27,47 +23,31 @@ class EmployeeController extends DefaultController
         $this->title = 'Employee';
         $this->generalUri = 'employee';
         // $this->arrPermissions = [];
-<<<<<<< HEAD
-        $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
-
-        $this->tableHeaders = [
-                    ['name' => 'No', 'column' => '#', 'order' => true],
-                    ['name' => 'Signature', 'column' => 'signature', 'order' => true],
-                    ['name' => 'Employee id', 'column' => 'employee_id', 'order' => true], 
-                    ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
-                    ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
-        ];
-
-
-=======
         $this->actionButtons = ['btn_delete'];
 
         $this->tableHeaders = [
-                    ['name' => 'No', 'column' => '#', 'order' => true],
-                    ['name' => 'name', 'column' => 'nama', 'order' => true],
-                    ['name' => 'department', 'column' => 'divisi', 'order' => true],
-                    ['name' => 'work unit', 'column' => 'unit_kerja', 'order' => true],
-                    ['name' => 'status', 'column' => 'status', 'order' => true],
-                    ['name' => 'Gender', 'column' => 'jk', 'order' => true],
-                    ['name' => 'email', 'column' => 'email', 'order' => true],
-                    ['name' => 'phone', 'column' => 'telp', 'order' => true],
-                    ['name' => 'company', 'column' => 'company', 'order' => true],
-                    ['name' => 'signature', 'column' => 'signature', 'order' => true],
-                    ['name' => 'NIK', 'column' => 'nik', 'order' => true],
+            ['name' => 'No', 'column' => '#', 'order' => true],
+            ['name' => 'name', 'column' => 'nama', 'order' => true],
+            ['name' => 'department', 'column' => 'divisi', 'order' => true],
+            ['name' => 'work unit', 'column' => 'unit_kerja', 'order' => true],
+            ['name' => 'status', 'column' => 'status', 'order' => true],
+            ['name' => 'Gender', 'column' => 'jk', 'order' => true],
+            ['name' => 'email', 'column' => 'email', 'order' => true],
+            ['name' => 'phone', 'column' => 'telp', 'order' => true],
+            ['name' => 'company', 'column' => 'company', 'order' => true],
+            ['name' => 'signature', 'column' => 'signature', 'order' => true],
+            ['name' => 'NIK', 'column' => 'nik', 'order' => true],
         ];
 
->>>>>>> dev
-        $this->importExcelConfig = [ 
+        $this->importExcelConfig = [
             'primaryKeys' => ['signature'],
             'headers' => [
-                    ['name' => 'Signature', 'column' => 'signature'],
-                    ['name' => 'Employee id', 'column' => 'employee_id'], 
+                ['name' => 'Signature', 'column' => 'signature'],
+                ['name' => 'Employee id', 'column' => 'employee_id'],
             ]
         ];
     }
 
-<<<<<<< HEAD
-=======
     protected function getEmployeeOptions()
     {
         try {
@@ -75,7 +55,7 @@ class EmployeeController extends DefaultController
 
             if ($response->successful()) {
                 // Langsung ambil body JSON karena responsnya adalah array
-                $employees = $response->json(); 
+                $employees = $response->json();
                 $options = [];
 
                 if (is_array($employees)) {
@@ -125,17 +105,17 @@ class EmployeeController extends DefaultController
                         }
                     }
                 }
-                
+
                 // Langkah 4: Lakukan Paginasi Manual terhadap data yang sudah disaring.
                 $limit = (int) request()->get('length', 10);
                 $start = (int) request()->get('start', 0);
                 $page = ($start / $limit) + 1;
-                
+
                 $totalRecords = count($filteredData);
-                
+
                 // Ambil "potongan" data untuk halaman saat ini menggunakan array_slice.
                 $paginatedData = array_slice($filteredData, $start, $limit);
-                
+
                 // Langkah 5: Susun ulang menjadi format yang mirip dengan respons API asli.
                 return [
                     'data' => $paginatedData,
@@ -154,7 +134,7 @@ class EmployeeController extends DefaultController
     public function indexApi()
     {
         $permission = (new Constant)->permissionByMenu($this->generalUri);
-        
+
         $eb = [];
         $data_columns = [];
         foreach ($this->tableHeaders as $key => $col) {
@@ -177,7 +157,7 @@ class EmployeeController extends DefaultController
         if (!is_array($dataQueries)) {
             $dataQueries = json_decode($dataQueries, true);
         }
-        
+
         // ... (sisa kode Anda tetap sama) ...
         $datas['extra_buttons'] = $eb;
         $datas['data_columns'] = $data_columns;
@@ -187,7 +167,6 @@ class EmployeeController extends DefaultController
 
         return $datas;
     }
->>>>>>> dev
 
     protected function fields($mode = "create", $id = '-')
     {
@@ -196,64 +175,42 @@ class EmployeeController extends DefaultController
             $edit = $this->modelClass::where('id', $id)->first();
         }
 
-<<<<<<< HEAD
-=======
         $employeeOptions = $this->getEmployeeOptions();
 
->>>>>>> dev
         $fields = [
-                    [
-                        'type' => 'text',
-                        'label' => 'Signature',
-                        'name' =>  'signature',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('signature', $id),
-                        'value' => (isset($edit)) ? $edit->signature : ''
-                    ],
-                    [
-<<<<<<< HEAD
-                        'type' => 'text',
-                        'label' => 'Employee id',
-                        'name' =>  'employee_id',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('employee_id', $id),
-                        'value' => (isset($edit)) ? $edit->employee_id : ''
-=======
-                        'type' => 'select2',
-                        'label' => 'Employee', // Label bisa diubah agar lebih deskriptif
-                        'name' => 'nik',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('nik', $id),
-                        'value' => (isset($edit)) ? $edit->nik : '',
-                        
-                        // Tambahkan key 'options' dengan data yang sudah diformat
-                        'options' => $employeeOptions,
-                        
-                        // (Optional) Tambahkan placeholder untuk UX yang lebih baik
-                        'placeholder' => 'Pilih Karyawan'
->>>>>>> dev
-                    ],
+            [
+                'type' => 'text',
+                'label' => 'Signature',
+                'name' =>  'signature',
+                'class' => 'col-md-12 my-2',
+                'required' => $this->flagRules('signature', $id),
+                'value' => (isset($edit)) ? $edit->signature : ''
+            ],
+            [
+                'type' => 'select2',
+                'label' => 'Employee', // Label bisa diubah agar lebih deskriptif
+                'name' => 'nik',
+                'class' => 'col-md-12 my-2',
+                'required' => $this->flagRules('nik', $id),
+                'value' => (isset($edit)) ? $edit->nik : '',
+
+                // Tambahkan key 'options' dengan data yang sudah diformat
+                'options' => $employeeOptions,
+
+                // (Optional) Tambahkan placeholder untuk UX yang lebih baik
+                'placeholder' => 'Pilih Karyawan'
+            ],
         ];
-        
+
         return $fields;
     }
 
-<<<<<<< HEAD
-
     protected function rules($id = null)
     {
         $rules = [
-                    'signature' => 'required|string',
-                    'employee_id' => 'required|string',
-=======
-    protected function rules($id = null)
-    {
-        $rules = [
-                    'nik' => 'required|string',
->>>>>>> dev
+            'nik' => 'required|string',
         ];
 
         return $rules;
     }
-
 }
