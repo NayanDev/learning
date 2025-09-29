@@ -114,3 +114,10 @@
         width: 50%;
     }
 }
+
+.vertical {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    white-space: nowrap;
+}
