@@ -301,16 +301,5 @@ function addLineBreaks($text) {
         </tr>
     </table>
     <p style="text-align: right">F.DUP.34.R.00.T.01.07.10</p>
-
-    <div class="hanya-tampil-di-layar" style="margin-top:20px;">
-        <p>Intruksi Kerja:</p>
-        <br>
-        <p>1. Perhatikan bagian "Pelatihan Khusus dan Tambahan" terlebih dahulu.</p>
-        <p>2. Sunting bagian "Pelatihan Khusus dan Tambahan" sesuai dengan kebutuhan divisi masing-masing.</p>
-        <p>3. Isi Kolom "Jumlah Personil" sesuai dengan kebutuhan masing-masing.</p>
-        <p>4. Beri tanda "✓" pada kolom "Qualifications" sesuai dengan kualifikasi dari pemangku jabatan.</p>
-        <p>5. Sesuaikan pelatihan dengan kualifikasi dari pemangku jabatan.</p>
-        <p>6. Beri tanda "✓" pada kolom "Jenis pelatihan" untuk menandai pelatihan yang dibutuhkan berdasarkan kualifikasi dari pemangku jabatan.</p>
-    </div>
 </body>
 </html>

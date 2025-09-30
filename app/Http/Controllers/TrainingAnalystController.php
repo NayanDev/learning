@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Idev\EasyAdmin\app\Helpers\Constant;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
 
@@ -340,5 +341,21 @@ class TrainingAnalystController extends DefaultController
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function generatePDF()
+    {
+        $analystHeader = AnalystHeader::all();
+        $analystBody = AnalystBody::all();
+
+        $data = [
+            'analystHeader' => $analystHeader,
+            'analystBody' => $analystBody
+        ];
+
+        $pdf = PDF::loadView('pdf.analisa_training', $data)
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->stream($this->title . '.pdf');
     }
 }
