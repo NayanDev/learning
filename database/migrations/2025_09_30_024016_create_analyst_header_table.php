@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('training_analysis', function (Blueprint $table) {
+        Schema::create('analyst_header', function (Blueprint $table) {
             $table->id();
-            $table->string('position');
-            $table->string('personil');
             $table->json('qualification')->nullable();      // array text
-            $table->json('general_training')->nullable();    // array text
-            $table->json('technic_training')->nullable();    // array text
-            $table->enum('status', ['open', 'submit', 'approve'])->default('open');
+            $table->json('general')->nullable();    // array text
+            $table->json('technic')->nullable();    // array text
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->unsignedBigInteger('approve_by')->nullable();
+            $table->enum('status', ['open', 'submit', 'approve'])->default('open');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('training_analysis');
+        Schema::dropIfExists('analyst_header');
     }
 };
