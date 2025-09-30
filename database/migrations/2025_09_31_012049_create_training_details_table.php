@@ -19,7 +19,7 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->foreignId('training_analyst_id')
-                ->constrained('training_analysis')
+                ->constrained('analyst_headers')
                 ->onDelete('cascade');
 
             $table->foreignId('training_needs_id')

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AnalystHeader extends Model
 {
-    protected $table = 'analyst_header';
+    protected $table = 'analyst_headers';
     protected $primaryKey = 'id';
     protected $fillable = [
         'qualification',

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('analyst_body', function (Blueprint $table) {
+        Schema::create('analyst_bodys', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('analyst_head_id')->constrained()->onDelete('cascade');
+            $table->foreignId('analyst_head_id')->constrained('analyst_headers')->onDelete('cascade');
             $table->string('position')->nullable();
             $table->string('personil')->nullable();
             $table->json('qualification')->nullable();      // array text
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('analyst_body');
+        Schema::dropIfExists('analyst_bodys');
     }
 };

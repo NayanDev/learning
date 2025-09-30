@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AnalystBody extends Model
 {
-    protected $table = 'analyst_body';
+    protected $table = 'analyst_bodys';
     protected $primaryKey = 'id';
     protected $fillable = [
         'analyst_head_id',
