@@ -1,3 +1,11 @@
+@foreach($training_data as $item)
+    @php
+        $qualification = json_decode($item->qualification, true);
+        $general = json_decode($item->general, true);
+        $technical = json_decode($item->technic, true);
+    @endphp
+@endforeach
+
 @extends("easyadmin::backend.parent")
 @section("content")
 @push('mtitle')
@@ -31,98 +39,117 @@
                         
                         <div class="table-responsive p-0">
                             
-<!-- [ Main Content ] start -->
-<div class="row">
-  <div class="col-sm-12">
-    <div class="card">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-12">
-            <div class="table-responsive">
-              <table class="table table-bordered mb-0">
-                <thead>
-                    <tr>
-                        <th class="text-center" rowspan="2">Jabatan</th>
-                        <th class="text-center" rowspan="2">Jumlah <br> Personil</th>
-                        <th class="text-center" colspan="5">Qualifications</th>
-                        <th class="text-center" colspan="4">Pelatihan Umum</th>
-                        <th class="text-center" colspan="7">Pelatihan Khusus & Tambahan</th>
-                    </tr>
-                  <tr>
-                    <th class="vertical">SMA</th>
-                    <th class="vertical">D3</th>
-                    <th class="vertical">Apoteker/S.APT</th>
-                    <th class="vertical">Magister</th>
-                    <th class="vertical">Doktor</th>
-                    <th class="vertical">K3</th>
-                    <th class="vertical">APD & APAR</th>
-                    <th class="vertical">Sanitasi & Higiene</th>
-                    <th class="vertical">GDP 2023</th>
-                    <th class="vertical">Leadership</th>
-                    <th class="vertical">Tanggap Darurat</th>
-                    <th class="vertical">Material Handling</th>
-                    <th class="vertical">Warehouse System</th>
-                    <th class="vertical">Penggunaan Forklift Forklift Forklift</th>
-                    <th class="vertical">Skill Khusus</th>
-                    <th class="text-center"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><input type="text" class="form-control form-control-sm"></td>
-                    <td><input type="number" class="form-control form-control-sm"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td><input class="form-check-input input-primary" type="checkbox"></td>
-                    <td class="text-center">
-                      <a href="#" class="avtar avtar-s btn-link-danger btn-pc-default"><i
-                          class="ti ti-trash f-20"></i></a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="text-start">
-              <hr class="mb-4 mt-0 border-secondary border-opacity-50">
-              <button class="btn btn-light-primary d-flex align-items-center gap-2"><i class="ti ti-plus"></i> Add new
-                item</button>
-                <br>
-  <center>
-    <button class="btn btn-primary">Save Data</button>
-    <button class="btn btn-danger">Print Data</button>
-    <button class="btn btn-success">Submitted</button>
-  </center>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="table-responsive">
+                                                        @if (!empty($training_data) && is_countable($training_data) && count($training_data) > 0)
+                                                            <table class="table table-bordered mb-0">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th rowspan="3" class="text-center">Jabatan</th>
+                                                                        <th rowspan="3" class="text-center">Jumlah <br> Personil</th>
+                                                                        <th colspan="<?=count($qualification) + count($general) + count($technical) + 1 ?>" class="text-center">Jenis Pelatihan</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th colspan="<?=count($qualification)?>" class="text-center">Qualification</th>
+                                                                        <th colspan="<?=count($general)?>" class="text-center">Pelatihan Umum</th>
+                                                                        <th colspan="<?=count($technical) + 1 ?>" class="text-center">Pelatihan Khusus & Tambahan</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        @foreach($training_data as $item)
+                                                                            @php
+                                                                                $qualification = json_decode($item->qualification, true);
+                                                                                $general = json_decode($item->general, true);
+                                                                                $technical = json_decode($item->technic, true);
+                                                                            @endphp
+                                                                            @foreach($qualification as $key )
+                                                                                <th class="th"><span class="vertical">{{ $key }}</span></th>
+                                                                            @endforeach
+                                                                            @foreach($general as $key )
+                                                                                <th class="th"><span class="vertical">{{ $key }}</span></th>
+                                                                            @endforeach
+                                                                            @foreach($technical as $key )
+                                                                                <th class="th"><span class="vertical">{{ $key }}</span></th>
+                                                                            @endforeach
+                                                                            <th class="th"><span class="vertical"></span></th>
+                                                                        @endforeach
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="itemRows">
+                                                                @foreach($training_body as $item)
+                                                                @php
+                                                                    $qualification = json_decode($item->qualification, true);
+                                                                    $general = json_decode($item->general, true);
+                                                                    $technical = json_decode($item->technic, true);
+                                                                @endphp
+                                                                    <tr>
+                                                                        <td><input type="text" value="{{ old('position', $item->position) }}" class="form-control form-control-sm"></td>
+                                                                        <td><input type="number" value="{{ old('personil', $item->personil) }}" class="form-control form-control-sm"></td>
 
-      <div class="hanya-tampil-di-layar" style="margin-top:20px;">
-        <p>Intruksi Kerja:</p>
-        <br>
-        <p>1. Perhatikan bagian "Pelatihan Khusus dan Tambahan" terlebih dahulu.</p>
-        <p>2. Sunting bagian "Pelatihan Khusus dan Tambahan" sesuai dengan kebutuhan divisi masing-masing.</p>
-        <p>3. Isi Kolom "Jumlah Personil" sesuai dengan kebutuhan masing-masing.</p>
-        <p>4. Beri tanda "&#10003;" pada kolom "Qualifications" sesuai dengan kualifikasi dari pemangku jabatan.</p>
-        <p>5. Sesuaikan pelatihan dengan kualifikasi dari pemangku jabatan.</p>
-        <p>6. Beri tanda "&#10003;" pada kolom "Jenis pelatihan" untuk menandai pelatihan yang dibutuhkan berdasarkan kualifikasi dari pemangku jabatan.</p>
-    </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+                                                                        {{-- Qualifications --}}
+                                                                        @foreach($qualification as $qual)
+                                                                            <td class="text-center"><input class="form-check-input input-primary" type="checkbox" {{$qual === "true" ? 'checked' : ''}}></td>
+                                                                        @endforeach
+                                                                        
+                                                                        {{-- Qualifications --}}
+                                                                        @foreach($general as $gen)
+                                                                            <td class="text-center"><input class="form-check-input input-primary" type="checkbox" {{$gen === "true" ? 'checked' : ''}}></td>
+                                                                        @endforeach
 
+                                                                        {{-- Qualifications --}}
+                                                                        @foreach($technical as $tech)
+                                                                            <td class="text-center"><input class="form-check-input input-primary" type="checkbox" {{$tech === "true" ? 'checked' : ''}}></td>
+                                                                        @endforeach
+                                                                        
+                                                                            <td class="text-center">
+                                                                                <button type="button" class="delete-row btn avtar avtar-s btn-link-danger btn-pc-default">
+                                                                                    <i class="ti ti-trash f-20"></i>
+                                                                                </button>
+                                                                            </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        @else
+                                                            <p>Data belum tersedia, buat header dulu dibagian kanan atas.</p>
+                                                        @endif
+
+                                                        <br>
+
+                                                        <button id="btnAddItem" class="btn btn-light-primary d-flex align-items-center gap-2">
+                                                            <i class="ti ti-plus"></i> Add new item
+                                                        </button>
+
+                                                        <hr>
+
+                                                        <center>
+                                                            <button id="btnSaveData" class="btn btn-primary"><i class="ti ti-device-floppy f-20"></i> Save Data</button>
+                                                            <button class="btn btn-danger"><i class="ti ti-printer f-20"></i> Print Data</button>
+                                                            <button class="btn btn-success"><i class="ti ti-rocket f-20"></i> Submitted</button>
+                                                        </center>
+
+                                                        <div class="hanya-tampil-di-layar" style="margin-top:20px;">
+                                                            <p>Intruksi Kerja:</p>
+                                                            <br>
+                                                            <p>1. Perhatikan bagian "Pelatihan Khusus dan Tambahan" terlebih dahulu.</p>
+                                                            <p>2. Sunting bagian "Pelatihan Khusus dan Tambahan" sesuai dengan kebutuhan divisi masing-masing.</p>
+                                                            <p>3. Isi Kolom "Jumlah Personil" sesuai dengan kebutuhan masing-masing.</p>
+                                                            <p>4. Beri tanda "&#10003;" pada kolom "Qualifications" sesuai dengan kualifikasi dari pemangku jabatan.</p>
+                                                            <p>5. Sesuaikan pelatihan dengan kualifikasi dari pemangku jabatan.</p>
+                                                            <p>6. Beri tanda "&#10003;" pada kolom "Jenis pelatihan" untuk menandai pelatihan yang dibutuhkan berdasarkan kualifikasi dari pemangku jabatan.</p>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             
                         </div>
                     </div>
@@ -209,7 +236,131 @@
         $('form input').on('keypress', function(e) {
             return e.which !== 13;
         });
-    })
+
+        $("#btnAddItem").click(function() {
+        var newRow = `
+            <tr>
+                <td><input name="position[]" type="text" class="form-control form-control-sm"></td>
+                <td><input name="personil[]" type="number" class="form-control form-control-sm"></td>
+                            
+                {{-- Qualifications --}}
+                @if (!empty($qualification) && is_countable($qualification))
+                    @foreach($qualification as $qual)
+                        <td class="text-center">
+                            <input class="form-check-input input-primary" type="checkbox">
+                        </td>
+                    @endforeach
+                @endif
+
+                {{-- General Training --}}
+                @if (!empty($general) && is_countable($general))
+                    @foreach($general as $gen)
+                        <td class="text-center">
+                            <input class="form-check-input input-primary" type="checkbox">
+                        </td>
+                    @endforeach
+                @endif
+
+                {{-- Technical Training --}}
+                @if (!empty($technical) && is_countable($technical))
+                    @foreach($technical as $tech)
+                        <td class="text-center">
+                            <input class="form-check-input input-primary" type="checkbox">
+                        </td>
+                    @endforeach
+                @endif
+
+                    <td class="text-center">
+                        <button type="button" class="delete-row btn avtar avtar-s btn-link-danger btn-pc-default">
+                            <i class="ti ti-trash f-20"></i>
+                        </button>
+                    </td>
+            </tr>
+        `;
+        
+        $("#itemRows").append(newRow);
+    });
+
+    // Fungsi untuk menghapus baris langsung tanpa konfirmasi
+    $("#itemRows").on("click", ".delete-row", function() {
+        $(this).closest('tr').remove();
+    });
+
+    // Handler untuk tombol Save Data
+    $("#btnSaveData").click(function() {
+        var trainingData = [];
+        
+        // Loop setiap baris di tabel
+        $("#itemRows tr").each(function() {
+            var row = $(this);
+            var rowData = {
+                position: row.find('td:eq(0) input').val(),
+                personil: row.find('td:eq(1) input').val(),
+                qualification: {},
+                general: {},
+                technic: {}
+            };
+
+            // Ambil data qualification
+            var qualIndex = 2;
+
+            // Ambil data qualification
+            @if (!empty($qualification) && is_countable($qualification))
+                @foreach($qualification as $key => $val)
+                    rowData.qualification['{{$key}}'] = row.find(`td:eq(${qualIndex}) input`).is(':checked');
+                    qualIndex++;
+                @endforeach
+            @endif
+
+            // Ambil data general training
+            @if (!empty($general) && is_countable($general))
+                @foreach($general as $key => $val)
+                    rowData.general['{{$key}}'] = row.find(`td:eq(${qualIndex}) input`).is(':checked');
+                    qualIndex++;
+                @endforeach
+            @endif
+
+            // Ambil data technical training
+            @if (!empty($technical) && is_countable($technical))
+                @foreach($technical as $key => $val)
+                    rowData.technic['{{$key}}'] = row.find(`td:eq(${qualIndex}) input`).is(':checked');
+                    qualIndex++;
+                @endforeach
+            @endif
+
+            trainingData.push(rowData);
+        });
+
+        // Kirim data ke server
+        $.ajax({
+            url: '{{ route("training-analys.saveAll") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                training_data: trainingData
+            },
+            success: function(response) {
+                if(response.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: response.message
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan saat menyimpan data'
+                });
+            }
+        });
+    });
+
+
+
+})
     $(".search-list-{{$uri_key}}").keyup(delay(function(e) {
         var dInput = this.value;
         if (dInput.length > 3 || dInput.length == 0) {
