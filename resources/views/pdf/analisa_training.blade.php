@@ -1,104 +1,6 @@
-<?php
-$trainings = [
-    [
-        'no' => 1,
-        'jabatan' => 'Manager SCM',
-        'jumlah_personil' => 1,
-        'Jenis Pelatihan' => [
-                'Qualifications' => [
-                    'SMA' => true,
-                    'Bachelor' => true, 
-                    'Sertifikasi APT' => true,
-                    'Magister' => true,
-                    'Doktoral' => true,
-                    'Profesi' => true
-                ],
-                'Pelatihan Umum' => [
-                    'Organisasi perusahaan' => true,
-                    'CBOP Dasar' => true,
-                    'Bahasa Inggris' => true,
-                    'Bahasa Indonesia' => true
-                ],
-                'Pelatihan Khusus & Tambahan' => [
-                    'Pelatihan Sistem' => true,
-                    'Penguatan Motivasi' => true,
-                    'Kepemimpinan' => true,
-                    'Skill Khusus' => true,
-                    'Job Description' => true,
-                    'Programming' => true,
-                ]
-            ]
-        
-    ],
-    [
-        'no' => 2,
-        'jabatan' => 'Manager SCM',
-        'jumlah_personil' => 1,
-        'Jenis Pelatihan' => [
-                'Qualifications' => [
-                    'SMA' => true,
-                    'Bachelor' => true, 
-                    'Sertifikasi APT' => true,
-                    'Magister' => true,
-                    'Doktoral' => true,
-                    'Profesi' => true
-                ],
-                'Pelatihan Umum' => [
-                    'Organisasi perusahaan' => true,
-                    'CBOP Dasar' => true,
-                    'Bahasa Inggris' => true,
-                    'Bahasa Indonesia' => true
-                ],
-                'Pelatihan Khusus & Tambahan' => [
-                    'Pelatihan Sistem' => true,
-                    'Penguatan Motivasi' => true,
-                    'Kepemimpinan' => true,
-                    'Skill Khusus' => true,
-                    'Job Description' => true,
-                    'Programming' => true,
-                ]
-            ]
-        
-    ],
-    [
-        'no' => 3,
-        'jabatan' => 'Manager SCM',
-        'jumlah_personil' => 1,
-        'Jenis Pelatihan' => [
-                'Qualifications' => [
-                    'SMA' => true,
-                    'Bachelor' => true, 
-                    'Sertifikasi APT' => true,
-                    'Magister' => true,
-                    'Doktoral' => true,
-                    'Profesi' => true
-                ],
-                'Pelatihan Umum' => [
-                    'Organisasi perusahaan',
-                    'CBOP Dasar' => true,
-                    'Bahasa Inggris' => true,
-                    'Bahasa Indonesia' => true
-                ],
-                'Pelatihan Khusus & Tambahan' => [
-                    'Pelatihan Sistem' => true,
-                    'Penguatan Motivasi' => true,
-                    'Kepemimpinan' => true,
-                    'Skill Khusus' => true,
-                    'Job Description' => true,
-                    'Programming' => true,
-                ]
-            ]
-        
-    ],
-];
-
-// Calculate colspan
-$totalCols = 0;
-foreach ($trainings[0]['Jenis Pelatihan'] as $section => $items) {
-    $totalCols += count($items);
-}
-
-function addLineBreaks($text) {
+@php
+function addLineBreaks($text) 
+{
     $words = explode(' ', $text);
     $result = [];
     
@@ -112,7 +14,15 @@ function addLineBreaks($text) {
     
     return implode(' ', $result);
 }
-?>
+@endphp
+
+@foreach($analystHeader as $item)
+    @php
+        $qualification = json_decode($item->qualification, true);
+        $general = json_decode($item->general, true);
+        $technical = json_decode($item->technic, true);
+    @endphp
+@endforeach
 
 <!DOCTYPE html>
 <html>
@@ -189,7 +99,7 @@ function addLineBreaks($text) {
         padding: 0;
         text-align: center;
         vertical-align: middle;
-        height: 80px;
+        height: 100px;
         width: 25px;
         position: relative; /* Tambahkan ini */
     }
@@ -235,50 +145,65 @@ function addLineBreaks($text) {
     <br>
     <table>
         <thead>
-        <tr>
-            <th rowspan="3" style="width: 15px">No</th>
-            <th rowspan="3">Jabatan</th>
-            <th rowspan="3" style="width: 30px;">Jumlah Personil</th>
-            <th colspan="<?php echo $totalCols ?>">Jenis Pelatihan</th>
-        </tr>
-        <tr>
-            {{-- Tampilkan header hanya sekali --}}
-        @foreach($trainings[0]['Jenis Pelatihan'] as $section => $items)
-            <th colspan="{{ count($items) }}">{{ $section }}</th>
-        @endforeach
-        </tr>
-        <tr>
-            @foreach($trainings[0]['Jenis Pelatihan'] as $section => $items)
-                @foreach($items as $item => $key)
-                    <th class="th"><span class="rotate-text"><?= addLineBreaks($item); ?></span></th>
+            <tr>
+                <th rowspan="3" style="width: 15px">No</th>
+                <th rowspan="3">Jabatan</th>
+                <th rowspan="3" style="width: 30px;">Jumlah Personil</th>
+                <th colspan="<?= count($qualification) + count($general) + count($technical) ?>">Jenis Pelatihan</th>
+            </tr>
+            <tr>
+                <th colspan="<?= count($qualification) ?>" class="text-center">Qualification</th>
+                <th colspan="<?= count($general) ?>" class="text-center">Pelatihan Umum</th>
+                <th colspan="<?= count($technical) ?>" class="text-center">Pelatihan Khusus & Tambahan</th>
+            </tr>
+            <tr>
+                @foreach($analystHeader as $item)
+                    @php
+                        $qualification = json_decode($item->qualification, true);
+                        $general = json_decode($item->general, true);
+                        $technical = json_decode($item->technic, true);
+                    @endphp
+                    @foreach($qualification as $key )
+                        <th class="th"><span class="rotate-text"><?= addLineBreaks($key); ?></span></th>
+                    @endforeach
+                    @foreach($general as $key )
+                        <th class="th"><span class="rotate-text"><?= addLineBreaks($key); ?></span></th>
+                    @endforeach
+                    @foreach($technical as $key )
+                        <th class="th"><span class="rotate-text"><?= addLineBreaks($key); ?></span></th>
+                    @endforeach
                 @endforeach
-            @endforeach
-        </tr>
-    </thead>
+            </tr>
+        </thead>
         <tbody>
-    @foreach($trainings as $training)
-    <tr>
-        <td>{{ $training['no'] }}</td>
-        <td class="text-start">{{ $training['jabatan'] }}</td>
-        <td>{{ $training['jumlah_personil'] }}</td>
-        
-        {{-- Qualifications --}}
-        @foreach($training['Jenis Pelatihan']['Qualifications'] as $qual)
-            <td>{!! $qual ? '&#10003;' : '' !!}</td>
-        @endforeach
+            @foreach($analystBody as $item)
+                @php
+                    $qualification = json_decode($item->qualification, true);
+                    $general = json_decode($item->general, true);
+                    $technical = json_decode($item->technic, true);
+                @endphp
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td class="text-start">{{ $item->position }}</td>
+                    <td>{{ $item->personil }}</td>
 
-        {{-- Pelatihan Umum --}}
-        @foreach($training['Jenis Pelatihan']['Pelatihan Umum'] as $umum)
-            <td>{!! $umum ? '&#10003;' : '' !!}</td>
-        @endforeach
+                    {{-- Qualifications --}}
+                    @foreach($qualification as $qual)
+                        <td class="text-center" style="font-size: 9px">{!! $qual === "true" ? '&#10003;' : '' !!}</td>
+                    @endforeach
+                                                                        
+                    {{-- Qualifications --}}
+                    @foreach($general as $gen)
+                        <td class="text-center" style="font-size: 9px">{!! $gen === "true" ? '&#10003;' : '' !!}</td>
+                    @endforeach
 
-        {{-- Pelatihan Khusus --}}
-        @foreach($training['Jenis Pelatihan']['Pelatihan Khusus & Tambahan'] as $khusus)
-            <td>{!! $khusus ? '&#10003;' : '' !!}</td>
-        @endforeach
-    </tr>
-    @endforeach
-</tbody>
+                    {{-- Qualifications --}}
+                    @foreach($technical as $tech)
+                        <td class="text-center" style="font-size: 9px">{!! $tech === "true" ? '&#10003;' : '' !!}</td>
+                    @endforeach
+                </tr>
+            @endforeach
+        </tbody>
     </table>
 
     <br>
@@ -288,29 +213,22 @@ function addLineBreaks($text) {
     <table class="no-border" style="width:100%;">
         <tr>
             <td class="no-border text-center"style="width:20%;">
-                Disiapkan Oleh,<br><br><br><br>
+                Disiapkan Oleh,<br><br>
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <br>
                 <strong>Anto Wardana</strong>
             </td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border text-center"style="width:20%;">
-                Disetujui Oleh,<br><br><br><br>
+                Disetujui Oleh,<br><br>
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <br>
                 <strong>Ramadhan Reza Akbar</strong>
             </td>
         </tr>
     </table>
     <p style="text-align: right">F.DUP.34.R.00.T.01.07.10</p>
-
-    <div class="hanya-tampil-di-layar" style="margin-top:20px;">
-        <p>Intruksi Kerja:</p>
-        <br>
-        <p>1. Perhatikan bagian "Pelatihan Khusus dan Tambahan" terlebih dahulu.</p>
-        <p>2. Sunting bagian "Pelatihan Khusus dan Tambahan" sesuai dengan kebutuhan divisi masing-masing.</p>
-        <p>3. Isi Kolom "Jumlah Personil" sesuai dengan kebutuhan masing-masing.</p>
-        <p>4. Beri tanda "✓" pada kolom "Qualifications" sesuai dengan kualifikasi dari pemangku jabatan.</p>
-        <p>5. Sesuaikan pelatihan dengan kualifikasi dari pemangku jabatan.</p>
-        <p>6. Beri tanda "✓" pada kolom "Jenis pelatihan" untuk menandai pelatihan yang dibutuhkan berdasarkan kualifikasi dari pemangku jabatan.</p>
-    </div>
 </body>
 </html>
