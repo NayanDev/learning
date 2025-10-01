@@ -22,11 +22,11 @@
                     <div class="col-md-12">
                         <div class="page-header-title">
                         </div>
-                        @if (in_array('create', $permissions))
+                        {{-- @if (in_array('create', $permissions))
                         <a class="btn btn-secondary float-end text-white mx-1" data-bs-toggle="offcanvas" data-bs-target="#createForm-{{$uri_key}}">
                             Create Header
                         </a>
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
                 @endif
@@ -128,7 +128,7 @@
 
                                                         <center>
                                                             <button id="btnSaveData" class="btn btn-primary"><i class="ti ti-device-floppy f-20"></i> Save Data</button>
-                                                            <button class="btn btn-danger" onclick="window.location.href='{{ route('training-analys.pdf') }}'"><i class="ti ti-printer f-20"></i> Print Data</button>
+                                                            <button class="btn btn-danger" onclick="window.location.href='{{ route('training-analyst.pdf', ['header' => request()->input('header')]) }}'"><i class="ti ti-printer f-20"></i> Print Data</button>
                                                             <button class="btn btn-success"><i class="ti ti-rocket f-20"></i> Submitted</button>
                                                         </center>
 
@@ -227,6 +227,8 @@
 @endforeach
 @endif
 <script>
+    const analystHeadId = new URLSearchParams(window.location.search).get('header');
+
     $(document).ready(function() {
         if ($(".idev-actionbutton").children().length == 0) {
             $("#dropdownMoreTopButton").remove()
@@ -333,10 +335,11 @@
 
         // Kirim data ke server
         $.ajax({
-            url: '{{ route("training-analys.saveAll") }}',
+            url: '{{ route("training-analyst.saveAll") }}',
             method: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',
+                analyst_head_id: analystHeadId,
                 training_data: trainingData
             },
             success: function(response) {

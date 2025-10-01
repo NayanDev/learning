@@ -32,14 +32,11 @@ class TrainingAnalystController extends DefaultController
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
-            ['name' => 'Position', 'column' => 'position', 'order' => true],
-            ['name' => 'Personil', 'column' => 'personil', 'order' => true],
-            ['name' => 'Qualification', 'column' => 'qualification', 'order' => true],
-            ['name' => 'General training', 'column' => 'general_training', 'order' => true],
-            ['name' => 'Technic training', 'column' => 'technic_training', 'order' => true],
-            ['name' => 'Status', 'column' => 'status', 'order' => true],
-            ['name' => 'User id', 'column' => 'user_id', 'order' => true],
-            ['name' => 'Approve by', 'column' => 'approve_by', 'order' => true],
+            ['name' => 'qualification', 'column' => 'qualification', 'order' => true],
+            ['name' => 'general', 'column' => 'general', 'order' => true],
+            ['name' => 'technic', 'column' => 'technic', 'order' => true],
+            ['name' => 'user', 'column' => 'user_id', 'order' => true],
+            ['name' => 'status', 'column' => 'status', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
@@ -67,7 +64,15 @@ class TrainingAnalystController extends DefaultController
             $edit = $this->modelClass::where('id', $id)->first();
         }
 
+        $trainingId = request()->query('training_id');
+
         $fields = [
+            [
+                'type' => 'hidden',
+                'name' => 'training_id',
+                'label' => 'Training ID',
+                'value' => $trainingId,
+            ],
             [
                 'type' => 'multiinput',
                 'label' => 'Qualification',
@@ -184,64 +189,6 @@ class TrainingAnalystController extends DefaultController
         return $rules;
     }
 
-    public function index()
-    {
-        $baseUrlExcel = route($this->generalUri . '.export-excel-default');
-        $baseUrlPdf = route($this->generalUri . '.export-pdf-default');
-
-        $moreActions = [
-            [
-                'key' => 'import-excel-default',
-                'name' => 'Import Excel',
-                'html_button' => "<button id='import-excel' type='button' class='btn btn-sm btn-info radius-6' href='#' data-bs-toggle='modal' data-bs-target='#modalImportDefault' title='Import Excel' ><i class='ti ti-upload'></i></button>"
-            ],
-            [
-                'key' => 'export-excel-default',
-                'name' => 'Export Excel',
-                'html_button' => "<a id='export-excel' data-base-url='" . $baseUrlExcel . "' class='btn btn-sm btn-success radius-6' target='_blank' href='" . url($this->generalUri . '-export-excel-default') . "'  title='Export Excel'><i class='ti ti-cloud-download'></i></a>"
-            ],
-            [
-                'key' => 'export-pdf-default',
-                'name' => 'Export Pdf',
-                'html_button' => "<a id='export-pdf' data-base-url='" . $baseUrlPdf . "' class='btn btn-sm btn-danger radius-6' target='_blank' href='" . url($this->generalUri . '-export-pdf-default') . "' title='Export PDF'><i class='ti ti-file'></i></a>"
-            ],
-        ];
-
-        $permissions =  $this->arrPermissions;
-        if ($this->dynamicPermission) {
-            $permissions = (new Constant())->permissionByMenu($this->generalUri);
-        }
-        $layout = (request('from_ajax') && request('from_ajax') == true) ? 'easyadmin::backend.idev.list_drawer_ajax' : 'backend.idev.training_analyst';
-        if (isset($this->drawerLayout)) {
-            $layout = $this->drawerLayout;
-        }
-
-        $analystHeader = AnalystHeader::all();
-        $analystBody = AnalystBody::all();
-
-        $data['permissions'] = $permissions;
-        $data['more_actions'] = $moreActions;
-        $data['headerLayout'] = $this->pageHeaderLayout;
-        $data['table_headers'] = $this->tableHeaders;
-        $data['title'] = $this->title;
-        $data['uri_key'] = $this->generalUri;
-        $data['uri_list_api'] = route($this->generalUri . '.listapi');
-        $data['uri_create'] = route($this->generalUri . '.create');
-        $data['url_store'] = route($this->generalUri . '.store');
-        $data['fields'] = $this->fields();
-        $data['edit_fields'] = $this->fields('edit');
-        $data['actionButtonViews'] = $this->actionButtonViews;
-        $data['templateImportExcel'] = "#";
-        $data['import_scripts'] = $this->importScripts;
-        $data['import_styles'] = $this->importStyles;
-        $data['filters'] = $this->filters();
-
-        $data['training_data'] = $analystHeader;
-        $data['training_body'] = $analystBody;
-
-        return view($layout, $data);
-    }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -269,6 +216,7 @@ class TrainingAnalystController extends DefaultController
             $technicalData = $request->technical;
 
             AnalystHeader::create([
+                'training_id' => $request->input('training_id'),
                 'qualification' => json_encode($qualificationData),
                 'general'   => json_encode($generalData),
                 'technic'   => json_encode($technicalData),
@@ -293,9 +241,10 @@ class TrainingAnalystController extends DefaultController
     {
         try {
             DB::beginTransaction();
+            $headerId = intval($request->analyst_head_id);
 
             // Dapatkan semua ID yang ada untuk user ini
-            $existingIds = AnalystBody::where('analyst_head_id', Auth::id())
+            $existingIds = AnalystBody::where('analyst_head_id', $headerId)
                 ->pluck('id')
                 ->toArray();
 
@@ -308,7 +257,7 @@ class TrainingAnalystController extends DefaultController
                 $training = AnalystBody::updateOrCreate(
                     [
                         'id' => $id,
-                        'analyst_head_id' => Auth::id()
+                        'analyst_head_id' => $headerId
                     ],
                     [
                         'position' => $data['position'],
@@ -323,7 +272,7 @@ class TrainingAnalystController extends DefaultController
             }
 
             // Hapus data yang tidak ada lagi di form
-            AnalystBody::where('analyst_head_id', Auth::id())
+            AnalystBody::where('analyst_head_id', $headerId)
                 ->whereNotIn('id', $processedIds)
                 ->delete();
 
@@ -343,10 +292,20 @@ class TrainingAnalystController extends DefaultController
         }
     }
 
-    public function generatePDF()
+    public function generatePDF(Request $request)
     {
-        $analystHeader = AnalystHeader::all();
-        $analystBody = AnalystBody::all();
+        if (!$request->has('header')) {
+            abort(404); // atau redirect()->route('home');
+        }
+
+        // Cek validitas ID-nya
+        $header = AnalystHeader::find($request->input('header'));
+        if (!$header) {
+            abort(404);
+        }
+
+        $analystHeader = AnalystHeader::where('id', $request->header)->get();
+        $analystBody = AnalystBody::where('analyst_head_id', $request->header)->get();
 
         $data = [
             'analystHeader' => $analystHeader,
@@ -357,5 +316,44 @@ class TrainingAnalystController extends DefaultController
             ->setPaper('A4', 'portrait');
 
         return $pdf->stream($this->title . '.pdf');
+    }
+
+    public function trainingForm(Request $request)
+    {
+        if (!$request->has('header')) {
+            abort(404); // atau redirect()->route('home');
+        }
+
+        // Cek validitas ID-nya
+        $header = AnalystHeader::find($request->input('header'));
+        if (!$header) {
+            abort(404);
+        }
+
+        $permissions =  $this->arrPermissions;
+        if ($this->dynamicPermission) {
+            $permissions = (new Constant())->permissionByMenu($this->generalUri);
+        }
+        $layout = (request('from_ajax') && request('from_ajax') == true) ? 'easyadmin::backend.idev.list_drawer_ajax' : 'backend.idev.training_analyst';
+        if (isset($this->drawerLayout)) {
+            $layout = $this->drawerLayout;
+        }
+
+        $analystHeader = AnalystHeader::where('id', $request->header)->get();
+        $analystBody = AnalystBody::where('analyst_head_id', $request->header)->get();
+
+        $data['title'] = $this->title;
+        $data['uri_key'] = $this->generalUri;
+        $data['permissions'] = $permissions;
+        $data['url_store'] = route($this->generalUri . '.store');
+        $data['fields'] = $this->fields();
+        $data['actionButtonViews'] = $this->actionButtonViews;
+        $data['edit_fields'] = $this->fields('edit');
+        $data['templateImportExcel'] = "#";
+
+        $data['training_data'] = $analystHeader;
+        $data['training_body'] = $analystBody;
+
+        return view($layout, $data);
     }
 }
