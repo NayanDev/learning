@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\TrainingController;
@@ -16,6 +17,10 @@ Route::post('login', [AuthController::class, 'authenticate'])->middleware('web')
 Route::get('/', [AuthController::class, 'login'])->name('login')->middleware('web');
 
 Route::group(['middleware' => ['web', 'auth']], function () {
+    // Route Users
+    Route::resource('user', UserController::class);
+    Route::get('user-api', [UserController::class, 'indexApi'])->name('user.listapi');
+
     // Route Department
     Route::resource('department', DepartmentController::class);
     Route::get('department-api', [DepartmentController::class, 'indexApi'])->name('department.listapi');
