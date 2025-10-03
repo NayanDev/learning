@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TrainingAnalystController;
 use App\Http\Controllers\TrainingDetailController;
 use App\Http\Controllers\TrainingNeedController;
+use App\Http\Controllers\TrainingNeedParticipantController;
 use App\Http\Controllers\TrainingScheduleController;
 use App\Http\Controllers\TrainingUnplannedController;
 use Illuminate\Support\Facades\Route;
@@ -73,6 +74,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-need-export-pdf-default', [TrainingNeedController::class, 'exportPdf'])->name('training-need.export-pdf-default');
     Route::get('training-need-export-excel-default', [TrainingNeedController::class, 'exportExcel'])->name('training-need.export-excel-default');
     Route::post('training-need-import-excel-default', [TrainingNeedController::class, 'importExcel'])->name('training-need.import-excel-default');
+
+    // Route Training Needs Participant
+    Route::resource('training-need-participant', TrainingNeedParticipantController::class);
+    Route::get('training-need-participant-api', [TrainingNeedParticipantController::class, 'indexApi'])->name('training-need-participant.listapi');
+    Route::get('training-need-participant-export-pdf-default', [TrainingNeedParticipantController::class, 'exportPdf'])->name('training-need-participant.export-pdf-default');
+    Route::get('training-need-participant-export-excel-default', [TrainingNeedParticipantController::class, 'exportExcel'])->name('training-need-participant.export-excel-default');
+    Route::post('training-need-participant-import-excel-default', [TrainingNeedParticipantController::class, 'importExcel'])->name('training-need-participant.import-excel-default');
 
     // Route Training Schedule
     Route::resource('training-schedule', TrainingScheduleController::class);

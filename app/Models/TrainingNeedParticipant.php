@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TrainingNeed extends Model
+class TrainingNeedParticipant extends Model
 {
     use HasFactory;
 
-    protected $table = 'training_needs';
+    protected $table = 'need_participants';
     protected $primaryKey = 'id';
-    protected $fillable = ["nik","training_id","workshop_id","user_id","status","approve_by","start_date","end_date","instructur","name","position"];
+    protected $fillable = [];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
 
@@ -37,9 +37,9 @@ class TrainingNeed extends Model
 
     public function getBtnShowAttribute()
     {
-        $html = "<a href='" . url('training-need-participant') . "?header=" . $this->id . "' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
+        $html = "<button type='button' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;' onclick='setShowPreview(" . json_encode($this->id) . ")'>
                 <i class='ti ti-eye'></i>
-                </a>";
+                </button>";
         return $html;
     }
     
