@@ -44,7 +44,7 @@ class UserController extends BaseUserController
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
-            ['name' => 'Name', 'column' => 'nama', 'order' => true],
+            ['name' => 'Name', 'column' => 'name', 'order' => true],
             ['name' => 'Email', 'column' => 'email', 'order' => true],
             ['name' => 'Company', 'column' => 'company', 'order' => true],
             ['name' => 'Department', 'column' => 'divisi', 'order' => true],
@@ -54,7 +54,7 @@ class UserController extends BaseUserController
             ['name' => 'Phone', 'column' => 'telp', 'order' => true],
             ['name' => 'NIK', 'column' => 'nik', 'order' => true],
             ['name' => 'Signature', 'column' => 'signature', 'order' => true],
-            ['name' => 'Role', 'column' => 'role_id', 'order' => true],
+            ['name' => 'Role', 'column' => 'role_name', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
@@ -165,6 +165,57 @@ class UserController extends BaseUserController
         return ['data' => [], 'total' => 0];
     }
 
+    protected function defaultDataQuery()
+    {
+        $filters = [];
+        $orThose = null;
+        $orderBy = 'users.id';
+        $orderState = 'DESC';
+        if (request('search')) {
+            $orThose = request('search');
+        }
+        if (request('order')) {
+            $orderBy = request('order');
+            $orderState = request('order_state');
+        }
+        if (request('role_id')) {
+            $filters[] = ['roles.id', '=', request('role_id')];
+        }
+
+        $dataQueries = User::join('roles', 'roles.id', 'users.role_id')
+            ->where($filters)
+            ->where(function ($query) use ($orThose) {
+                $query->where('users.name', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('email', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('company', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('divisi', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('unit_kerja', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('status', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('jk', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('telp', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('roles.name', 'LIKE', '%' . $orThose . '%');
+            })
+            ->select(
+                'users.id',
+                'users.name',
+                'users.email',
+                'users.company',
+                'users.divisi',
+                'users.unit_kerja',
+                'users.status',
+                'users.jk',
+                'users.telp',
+                'users.nik',
+                'users.signature',
+                'users.created_at',
+                'users.updated_at',
+                'roles.name as role_name'
+            )
+            ->orderBy($orderBy, $orderState);
+
+        return $dataQueries;
+    }
+
     public function indexApi()
     {
         $permission = (new Constant)->permissionByMenu($this->generalUri);
@@ -183,16 +234,8 @@ class UserController extends BaseUserController
             }
         }
 
-        // --- CUKUP UBAH BARIS INI ---
-        $dataQueries = $this->getFilteredApiData();
-        // ---------------------------
+        $dataQueries = $this->defaultDataQuery()->paginate(10);
 
-        // Kode di bawah ini tidak perlu diubah sama sekali.
-        if (!is_array($dataQueries)) {
-            $dataQueries = json_decode($dataQueries, true);
-        }
-
-        // ... (sisa kode Anda tetap sama) ...
         $datas['extra_buttons'] = $eb;
         $datas['data_columns'] = $data_columns;
         $datas['data_queries'] = $dataQueries;
