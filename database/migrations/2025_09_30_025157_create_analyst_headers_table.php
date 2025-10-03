@@ -17,9 +17,10 @@ return new class extends Migration
             $table->json('qualification')->nullable();      // array text
             $table->json('general')->nullable();    // array text
             $table->json('technic')->nullable();    // array text
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->unsignedBigInteger('approve_by')->nullable();
             $table->enum('status', ['open', 'submit', 'approve'])->default('open');
+            $table->dateTime('created_date')->nullable();
+            $table->unsignedBigInteger('approve_by')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
