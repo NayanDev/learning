@@ -49,24 +49,24 @@ class Sidebar
           'ajax_load' => false,
           'childrens' => []
         ],
-        [
-          'name' => 'Department',
-          'icon' => 'ti ti-menu',
-          'key' => 'department',
-          'base_key' => 'department',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
-        [
-          'name' => 'Employee',
-          'icon' => 'ti ti-menu',
-          'key' => 'employee',
-          'base_key' => 'employee',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
+        // [
+        //   'name' => 'Department',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'department',
+        //   'base_key' => 'department',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        // [
+        //   'name' => 'Employee',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'employee',
+        //   'base_key' => 'employee',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
         [
           'name' => 'Workshop',
           'icon' => 'ti ti-menu',
