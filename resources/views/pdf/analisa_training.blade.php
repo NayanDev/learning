@@ -214,18 +214,32 @@ function addLineBreaks($text)
         <tr>
             <td class="no-border text-center"style="width:20%;">
                 Disiapkan Oleh,<br><br>
+                @if($signature->status === 'approve')
                 <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>Anto Wardana</strong>
+                <strong>{{ $signature->user->name ?? '-' }}</strong>
+                @elseif($signature->status === 'submit')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <br>
+                <strong>{{ $signature->user->name ?? '-' }}</strong>
+                @else
+                <div style="height: 50px"></div>
+                <strong>{{ $signature->user->name ?? '-' }}</strong>
+                @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border text-center"style="width:20%;">
                 Disetujui Oleh,<br><br>
+                @if($signature->status === 'approve')
                 <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>Ramadhan Reza Akbar</strong>
+                <strong>{{ $signature->approver->name ?? '-' }}</strong>
+                @else
+                <div style="height: 50px"></div>
+                <em>Data belum disiapkan</em>
+                @endif
             </td>
         </tr>
     </table>
