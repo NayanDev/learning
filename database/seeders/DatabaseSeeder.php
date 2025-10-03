@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         // $this->sampleData();
 
         $this->call([
-            DepartmentSeeder::class,
+            // DepartmentSeeder::class,
             WorkshopSeeder::class,
         ]);
     }
