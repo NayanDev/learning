@@ -310,7 +310,7 @@ class TrainingAnalystController extends DefaultController
         $data = [
             'analystHeader' => $analystHeader,
             'analystBody' => $analystBody,
-            'signature' => AnalystHeader::with(['user', 'approver'])->findOrFail($request->header),
+            'created' => AnalystHeader::with(['user', 'approver'])->findOrFail($request->header),
         ];
 
         $pdf = PDF::loadView('pdf.analisa_training', $data)

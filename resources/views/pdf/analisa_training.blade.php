@@ -139,7 +139,7 @@ function addLineBreaks($text)
         <p><em>Training Needs Analysis</em></p>
     </div>
     <div class="info-section">
-        <span style="float:left;font-size:6px;">Divisi / Bagian / Unit Kerja :  Produksi</span>
+        <span style="float:left;font-size:6px;">Divisi / Bagian / Unit Kerja :  {{ $created->user->divisi }}</span>
         <span style="float:right;font-size:6px;">Periode 2025</span>
     </div>
     <br>
@@ -208,23 +208,23 @@ function addLineBreaks($text)
 
     <br>
     <p><i>Catatan: berilah tanda &#10003; pada kolom yang sesuai</i></p>
-    <br><br>
+    <br>
 
     <table class="no-border" style="width:100%;">
         <tr>
             <td class="no-border text-center"style="width:20%;">
                 Disiapkan Oleh,<br><br>
-                @if($signature->status === 'approve')
+                @if($created->status === 'approve')
                 <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>{{ $signature->user->name ?? '-' }}</strong>
-                @elseif($signature->status === 'submit')
+                <strong>{{ $created->user->name ?? '-' }}</strong>
+                @elseif($created->status === 'submit')
                 <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>{{ $signature->user->name ?? '-' }}</strong>
+                <strong>{{ $created->user->name ?? '-' }}</strong>
                 @else
                 <div style="height: 50px"></div>
-                <strong>{{ $signature->user->name ?? '-' }}</strong>
+                <strong>{{ $created->user->name ?? '-' }}</strong>
                 @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
@@ -232,10 +232,10 @@ function addLineBreaks($text)
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border text-center"style="width:20%;">
                 Disetujui Oleh,<br><br>
-                @if($signature->status === 'approve')
+                @if($created->status === 'approve')
                 <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>{{ $signature->approver->name ?? '-' }}</strong>
+                <strong>{{ $created->approver->name ?? '-' }}</strong>
                 @else
                 <div style="height: 50px"></div>
                 <em>Data belum disiapkan</em>
