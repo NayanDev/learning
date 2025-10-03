@@ -60,7 +60,7 @@ class WorkshopController extends DefaultController
                         'value' => (isset($edit)) ? $edit->name : ''
                     ],
                     [
-                        'type' => 'text',
+                        'type' => 'onlyview',
                         'label' => 'Department',
                         'name' =>  'department',
                         'class' => 'col-md-12 my-2',

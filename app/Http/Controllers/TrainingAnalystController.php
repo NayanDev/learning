@@ -144,7 +144,7 @@ class TrainingAnalystController extends DefaultController
                         'name' => 'general',
                         'label' => 'Data',
                         'placeholder' => 'Input name general training',
-                        'class' => 'form-group col-md-10'
+                        'class' => 'form-group col-md-10',
                     ],
                 ],
                 'required' => $this->flagRules('general', $id),
