@@ -15,6 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('company');
+            $table->string('divisi');
+            $table->string('unit_kerja');
+            $table->string('status');
+            $table->string('jk');
+            $table->string('telp');
             $table->string('nik')->unique();
             $table->string('signature')->nullable();
             $table->unsignedBigInteger('role_id');

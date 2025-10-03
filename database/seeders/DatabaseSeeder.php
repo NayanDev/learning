@@ -89,6 +89,12 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Nayan',
                 'email' => 'admin@idev.com',
+                'company' => 'PT. SAMPHARINDO PERDANA',
+                'divisi' => 'UMUM & SDM',
+                'unit_kerja' => 'HRGA',
+                'status' => 'BULANAN KONTRAK',
+                'jk' => 'Laki-laki',
+                'telp' => '0895832720752',
                 'nik' => '3.251.141',
                 'password' => bcrypt('qwerty'),
                 'role_id' => Role::where('name', 'admin')->first()->id,

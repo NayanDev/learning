@@ -46,7 +46,12 @@ class UserController extends BaseUserController
             ['name' => 'No', 'column' => '#', 'order' => true],
             ['name' => 'Name', 'column' => 'nama', 'order' => true],
             ['name' => 'Email', 'column' => 'email', 'order' => true],
+            ['name' => 'Company', 'column' => 'company', 'order' => true],
             ['name' => 'Department', 'column' => 'divisi', 'order' => true],
+            ['name' => 'Unit Kerja', 'column' => 'unit_kerja', 'order' => true],
+            ['name' => 'Status', 'column' => 'status', 'order' => true],
+            ['name' => 'Gender', 'column' => 'jk', 'order' => true],
+            ['name' => 'Phone', 'column' => 'telp', 'order' => true],
             ['name' => 'NIK', 'column' => 'nik', 'order' => true],
             ['name' => 'Signature', 'column' => 'signature', 'order' => true],
             ['name' => 'Role', 'column' => 'role_id', 'order' => true],
@@ -235,8 +240,14 @@ class UserController extends BaseUserController
                             $options[] = [
                                 'value' => $employee['nik'],
                                 'text'  => $employee['nama'] . ' (' . $employee['nik'] . ')',
-                                'email' => $employee['email'] ?? '', // Add email
-                                'name'  => $employee['nama'] ?? ''   // Add name
+                                'email' => $employee['email'] ?? '',
+                                'name'  => $employee['nama'] ?? '',
+                                'company' => $employee['company'] ?? '',
+                                'divisi' => $employee['divisi'] ?? '',
+                                'unit_kerja' => $employee['unit_kerja'] ?? '',
+                                'status' => $employee['status'] ?? '',
+                                'jk' => $employee['jk'] ?? '',
+                                'telp' => $employee['telp'] ?? '',
                             ];
                         }
                     }
@@ -292,6 +303,49 @@ class UserController extends BaseUserController
                 'value' => (isset($edit)) ? $edit->email : ''
             ],
             [
+                'type' => 'text',
+                'label' => 'Company',
+                'name' => 'company',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->company : ''
+            ],
+            [
+                'type' => 'text',
+                'label' => 'Divisi',
+                'name' => 'divisi',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->divisi : ''
+            ],
+            [
+                'type' => 'text',
+                'label' => 'Unit Kerja',
+                'name' => 'unit_kerja',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->unit_kerja : ''
+            ],
+            [
+                'type' => 'text',
+                'label' => 'Status',
+                'name' => 'status',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->status : ''
+            ],
+            [
+                'type' => 'text',
+                'label' => 'Gender',
+                'name' => 'jk',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->jk : ''
+            ],
+
+            [
+                'type' => 'text',
+                'label' => 'Phone',
+                'name' => 'telp',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->telp : ''
+            ],
+            [
                 'type' => 'image',
                 'label' => 'Signature',
                 'name' => 'signature',
@@ -340,6 +394,12 @@ class UserController extends BaseUserController
         $rules = $this->rules();
         $name = $request->name;
         $email = $request->email;
+        $company = $request->company;
+        $divisi = $request->divisi;
+        $unit_kerja = $request->unit_kerja;
+        $status = $request->status;
+        $jk = $request->jk;
+        $telp = $request->telp;
         $nik = $request->nik;
         $signature = $request->signature;
         $roleId = $request->role_id;
@@ -364,6 +424,12 @@ class UserController extends BaseUserController
             $insert->name = $name;
             $insert->email = $email;
             $insert->nik = $nik;
+            $insert->company = $company;
+            $insert->divisi = $divisi;
+            $insert->unit_kerja = $unit_kerja;
+            $insert->status = $status;
+            $insert->jk = $jk;
+            $insert->telp = $telp;
             $insert->signature = $signature;
             $insert->role_id = $roleId;
             $insert->password = bcrypt($password);

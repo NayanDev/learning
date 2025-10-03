@@ -20,8 +20,16 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'signature',
+        'nik',
         'email',
         'password',
+        'company',
+        'divisi',
+        'unit_kerja',
+        'status',
+        'jk',
+        'telp',
     ];
 
     /**
@@ -52,7 +60,7 @@ class User extends Authenticatable
 
         return $html;
     }
-    
+
 
     public function getBtnEditAttribute()
     {
@@ -77,5 +85,4 @@ class User extends Authenticatable
     {
         return $this->belongsTo(\Idev\EasyAdmin\app\Models\Role::class, 'role_id', 'id');
     }
-    
 }
