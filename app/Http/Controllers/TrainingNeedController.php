@@ -35,6 +35,7 @@ class TrainingNeedController extends DefaultController
                     ['name' => 'No', 'column' => '#', 'order' => true], 
                     ['name' => 'Year', 'column' => 'year', 'order' => true],
                     ['name' => 'User', 'column' => 'username', 'order' => true], 
+                    ['name' => 'Department', 'column' => 'divisi', 'order' => true], 
                     ['name' => 'Status', 'column' => 'status', 'order' => true], 
                     ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
                     ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
@@ -80,6 +81,14 @@ class TrainingNeedController extends DefaultController
                         'class' => 'col-md-12 my-2',
                         'required' => $this->flagRules('name', $id),
                         'value' => (isset($edit)) ? $edit->status : 'open'
+                    ],
+                    [
+                        'type' => 'hidden',
+                        'label' => 'Divisi',
+                        'name' =>  'divisi',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('name', $id),
+                        'value' => (isset($edit)) ? $edit->position : Auth::user()->divisi
                     ],
                 ];
         
@@ -200,6 +209,7 @@ class TrainingNeedController extends DefaultController
         $dataQueries = TrainingNeed::join('trainings', 'trainings.id', '=', 'training_needs.training_id')
             // ->join('employees', 'employees.id', '=', 'training_needs.nik')
             ->join('users', 'users.id', '=', 'training_needs.user_id')
+            ->where('training_needs.divisi', Auth::user()->divisi)
             ->where($filters)
             ->where(function ($query) use ($orThose) {
                 $query->where('trainings.year', 'LIKE', '%' . $orThose . '%')
@@ -217,62 +227,62 @@ class TrainingNeedController extends DefaultController
     }
 
     public function generatePDF(Request $request)
-{
-    try {
-        $trainingNeeds = TrainingNeed::with([
-            'training',
-            'user',
-            'approver',
-            'workshops' => function($query) {
-                $query->with('workshop');
-            },
-            'participants.user'
-        ])
-        ->when($request->training_id, function($query) use ($request) {
-            $query->where('training_id', $request->training_id);
-        })
-        ->get()
-        ->map(function($trainingNeed) {
-            // Transform workshops data
-            $workshopsData = $trainingNeed->workshops->map(function($workshopItem) {
-                return [
-                    'header' => [
-                        'workshop_name' => $workshopItem->workshop->name,
-                        'training_year' => $workshopItem->trainingNeed->training->year,
-                        'instructor' => $workshopItem->instructor,
-                        'start_date' => $workshopItem->start_date,
-                        'end_date' => $workshopItem->end_date,
-                        'position' => $workshopItem->position,
-                        'created_by' => $workshopItem->trainingNeed->user->name,
-                        'approved_by' => $workshopItem->trainingNeed->approver->name ?? 'Belum Disetujui',
-                        'status' => $workshopItem->trainingNeed->status
-                    ],
-                    'participants' => $workshopItem->trainingNeed->participants
-                ];
-            });
-            return $workshopsData;
-        })
-        ->flatten(1); // Flatten the collection to get all workshops in a single level
+    {
+        try {
+            $trainingNeeds = TrainingNeed::with([
+                'training',
+                'user',
+                'approver',
+                'workshops' => function($query) {
+                    $query->with('workshop');
+                },
+                'participants.user'
+            ])
+            ->when($request->training_id, function($query) use ($request) {
+                $query->where('training_id', $request->training_id);
+            })
+            ->get()
+            ->map(function($trainingNeed) {
+                // Transform workshops data
+                $workshopsData = $trainingNeed->workshops->map(function($workshopItem) {
+                    return [
+                        'header' => [
+                            'workshop_name' => $workshopItem->workshop->name,
+                            'training_year' => $workshopItem->trainingNeed->training->year,
+                            'instructor' => $workshopItem->instructor,
+                            'start_date' => $workshopItem->start_date,
+                            'end_date' => $workshopItem->end_date,
+                            'position' => $workshopItem->position,
+                            'created_by' => $workshopItem->trainingNeed->user->name,
+                            'approved_by' => $workshopItem->trainingNeed->approver->name ?? 'Belum Disetujui',
+                            'status' => $workshopItem->trainingNeed->status
+                        ],
+                        'participants' => $workshopItem->trainingNeed->participants
+                    ];
+                });
+                return $workshopsData;
+            })
+            ->flatten(1); // Flatten the collection to get all workshops in a single level
 
-        if ($trainingNeeds->isEmpty()) {
-            return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+            if ($trainingNeeds->isEmpty()) {
+                return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+            }
+
+            $data = [
+                'trainings' => $trainingNeeds,
+                'created' => TrainingNeed::with(['user', 'approver'])->findOrFail($request->training_id),
+                'year' => TrainingNeed::with(['training'])->findOrFail($request->training_id)
+            ];
+
+            $pdf = PDF::loadView('pdf.rencana_training', $data)
+                ->setPaper('A4', 'landscape');
+
+            return $pdf->stream("Rencana_Training_" . date('Y-m-d') . ".pdf");
+
+        } catch (\Exception $e) {
+            Log::error("Gagal generate PDF: " . $e->getMessage());
+            return response()->json(['message' => 'Gagal generate PDF: ' . $e->getMessage()], 500);
         }
-
-        $data = [
-            'trainings' => $trainingNeeds,
-            'created' => TrainingNeed::with(['user', 'approver'])->findOrFail($request->training_id),
-            'year' => TrainingNeed::with(['training'])->findOrFail($request->training_id)
-        ];
-
-        $pdf = PDF::loadView('pdf.rencana_training', $data)
-            ->setPaper('A4', 'landscape');
-
-        return $pdf->stream("Rencana_Training_" . date('Y-m-d') . ".pdf");
-
-    } catch (\Exception $e) {
-        Log::error("Gagal generate PDF: " . $e->getMessage());
-        return response()->json(['message' => 'Gagal generate PDF: ' . $e->getMessage()], 500);
     }
-}
 
 }

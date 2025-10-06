@@ -59,23 +59,228 @@ class WorkshopSeeder extends Seeder
         ]);
 
         Workshop::create([
-            'name' => 'Organisasi Perusahaan',
-            'department' => 'UMUM & SDM',
+            'name' => 'Warehouse in Pharmaceutical Industry',
+            'department' => 'SCM',
         ]);
 
         Workshop::create([
-            'name' => 'Peraturan Perusahaan',
-            'department' => 'UMUM & SDM',
+            'name' => 'Leadership',
+            'department' => 'SCM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Tanggap Darurat',
+            'department' => 'SCM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Manual Handling K3',
+            'department' => 'SCM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Penggunaan APD',
+            'department' => 'TEKNIK',
+        ]);
+
+        Workshop::create([
+            'name' => '5R',
+            'department' => 'TEKNIK',
+        ]);
+
+        Workshop::create([
+            'name' => 'K3 Listrik',
+            'department' => 'TEKNIK',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pengelasan Argon',
+            'department' => 'TEKNIK',
+        ]);
+
+        Workshop::create([
+            'name' => 'Service AC',
+            'department' => 'TEKNIK',
+        ]);
+
+        Workshop::create([
+            'name' => 'Service HVAC',
+            'department' => 'TEKNIK',
+        ]);
+
+        Workshop::create([
+            'name' => 'Operasional Boiler K3',
+            'department' => 'TEKNIK',
+        ]);
+
+        Workshop::create([
+            'name' => 'Leadership',
+            'department' => 'TEKNIK',
         ]);
 
         Workshop::create([
             'name' => 'CPOB Dasar',
+            'department' => 'TEKNIK',
+        ]);
+
+        Workshop::create([
+            'name' => 'Good Review Practice',
+            'department' => 'RND',
+        ]);
+
+        Workshop::create([
+            'name' => 'UDT dan Uji Bioekivalensi',
+            'department' => 'RND',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan Umum',
             'department' => 'UMUM & SDM',
         ]);
 
         Workshop::create([
             'name' => 'Regulasi Pemerintah',
             'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan Teknis',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan Time Management',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan AMT',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Operator Udara PPPU',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Penanggung Jawab Udara PPPU',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Operator OPL B3',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => '3Penanggung Jawab OPL B3',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'SKP dan Lisensi K3',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Ekternal - Tanggap darurat & APAR',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Ekternal - PMI',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'K3 Dasar Karyawan Baru',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Safety Riding',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Simulasi Tanggap Darurat Tumpahan',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan Pengelolaan Limbah',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan Kebersihan Lingkungan',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan 5R',
+            'department' => 'UMUM & SDM',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan gDocP-Laboratorium',
+            'department' => 'QC',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan Line Clearance',
+            'department' => 'QC',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan Good Weighing practice',
+            'department' => 'QC',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan Problem Resolve HPLC',
+            'department' => 'QC',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan Problem Resolver AAS',
+            'department' => 'QC',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan sampling produk padat, cair dan semi solid',
+            'department' => 'QC',
+        ]);
+
+        Workshop::create([
+            'name' => 'Pelatihan pengisian dokumen yang baik dan benar',
+            'department' => 'QC',
+        ]);
+
+        Workshop::create([
+            'name' => 'Jobdesk',
+            'department' => 'QA',
+        ]);
+
+        Workshop::create([
+            'name' => 'Refresh CPOB Dasar',
+            'department' => 'QA',
+        ]);
+
+        Workshop::create([
+            'name' => 'Minitab',
+            'department' => 'QA',
+        ]);
+
+        Workshop::create([
+            'name' => '2D Barcode',
+            'department' => 'QA',
+        ]);
+
+        Workshop::create([
+            'name' => 'Refresh Sistem Halal',
+            'department' => 'QA',
         ]);
     }
 }

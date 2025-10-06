@@ -82,4 +82,42 @@ class WorkshopController extends DefaultController
         return $rules;
     }
 
+    protected function defaultDataQuery()
+    {
+        $filters = [];
+        $orThose = null;
+        $orderBy = 'id';
+        $orderState = 'DESC';
+        if (request('search')) {
+            $orThose = request('search');
+        }
+        if (request('order')) {
+            $orderBy = request('order');
+            $orderState = request('order_state');
+        }
+
+        $dataQueries = $this->modelClass::where($filters)
+            ->where('department', Auth::user()->divisi)
+            ->where(function ($query) use ($orThose) {
+                $efc = ['#', 'created_at', 'updated_at', 'id'];
+
+                foreach ($this->tableHeaders as $key => $th) {
+                    if (array_key_exists('search', $th) && $th['search'] == false) {
+                        $efc[] = $th['column'];
+                    }
+                    if(!in_array($th['column'], $efc))
+                    {
+                        if($key == 0){
+                            $query->where($th['column'], 'LIKE', '%' . $orThose . '%');
+                        }else{
+                            $query->orWhere($th['column'], 'LIKE', '%' . $orThose . '%');
+                        }
+                    }
+                }
+            })
+            ->orderBy($orderBy, $orderState);
+
+        return $dataQueries;
+    }
+
 }

@@ -17,12 +17,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('approve_by')->nullable()->constrained('users')->nullOnDelete();
             $table->enum('status', ['open', 'submit', 'approve'])->default('open');
-            $table->foreignId('workshop_id')->constrained()->onDelete('cascade');
             $table->dateTime('created_date')->nullable();
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
-            $table->enum('instructor', ['internal', 'external']);
-            $table->string('position');
+            $table->string('divisi');
             $table->timestamps();
         });
     }

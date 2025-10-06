@@ -103,6 +103,14 @@ class NeedWorkshopController extends DefaultController
                     ],
                     [
                         'type' => 'hidden',
+                        'label' => 'Divisi',
+                        'name' =>  'divisi',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('name', $id),
+                        'value' => (isset($edit)) ? $edit->position : Auth::user()->divisi
+                    ],
+                    [
+                        'type' => 'hidden',
                         'label' => 'TrainingID',
                         'name' =>  'training_need_id',
                         'class' => 'col-md-12 my-2',
@@ -140,6 +148,7 @@ class NeedWorkshopController extends DefaultController
         $dataQueries = NeedWorkshop::join('training_needs', 'training_needs.id', '=', 'training_need_workshops.training_need_id')
             // ->join('employees', 'employees.id', '=', 'training_needs.nik')
             ->join('workshops', 'workshops.id', '=', 'training_need_workshops.workshop_id')
+            ->where('training_need_workshops.divisi', Auth::user()->divisi)
             ->where($filters)
             ->where(function ($query) use ($orThose) {
                 $query->where('workshops.name', 'LIKE', '%' . $orThose . '%');

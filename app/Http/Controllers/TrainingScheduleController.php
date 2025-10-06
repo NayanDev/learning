@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TrainingSchedule;
+use App\Models\NeedWorkshop;
+use App\Models\Workshop;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
 
 class TrainingScheduleController extends DefaultController
 {
-    protected $modelClass = TrainingSchedule::class;
+    protected $modelClass = NeedWorkshop::class;
     protected $title;
     protected $generalUri;
     protected $tableHeaders;
@@ -20,20 +21,14 @@ class TrainingScheduleController extends DefaultController
         $this->title = 'Training Schedule';
         $this->generalUri = 'training-schedule';
         // $this->arrPermissions = [];
-        $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
+        $this->actionButtons = ['btn_edit', 'btn_show'];
 
         $this->tableHeaders = [
                     ['name' => 'No', 'column' => '#', 'order' => true],
-                    ['name' => 'Nik', 'column' => 'nik', 'order' => true],
-                    ['name' => 'Training id', 'column' => 'training_id', 'order' => true],
-                    ['name' => 'Workshop id', 'column' => 'workshop_id', 'order' => true],
-                    ['name' => 'User id', 'column' => 'user_id', 'order' => true],
-                    ['name' => 'Status', 'column' => 'status', 'order' => true],
-                    ['name' => 'Approve by', 'column' => 'approve_by', 'order' => true],
-                    ['name' => 'Start date', 'column' => 'start_date', 'order' => true],
-                    ['name' => 'End date', 'column' => 'end_date', 'order' => true],
-                    ['name' => 'Instructur', 'column' => 'instructur', 'order' => true],
-                    ['name' => 'Name', 'column' => 'name', 'order' => true],
+                    ['name' => 'Training', 'column' => 'workshop', 'order' => true], 
+                    ['name' => 'Start Date', 'column' => 'start_date', 'order' => true], 
+                    ['name' => 'End Date', 'column' => 'end_date', 'order' => true], 
+                    ['name' => 'Instructor', 'column' => 'instructor', 'order' => true], 
                     ['name' => 'Position', 'column' => 'position', 'order' => true], 
                     ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
                     ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
@@ -66,94 +61,63 @@ class TrainingScheduleController extends DefaultController
             $edit = $this->modelClass::where('id', $id)->first();
         }
 
+        $instructor = [
+            ['value' => 'internal', 'text' => 'Internal'],
+            ['value' => 'external', 'text' => 'External'],
+        ];
+
+        $workshop = Workshop::select(['id as value', 'name as text'])->get();
+
         $fields = [
                     [
-                        'type' => 'text',
-                        'label' => 'Nik',
-                        'name' =>  'nik',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('nik', $id),
-                        'value' => (isset($edit)) ? $edit->nik : ''
-                    ],
-                    [
-                        'type' => 'text',
-                        'label' => 'Training id',
-                        'name' =>  'training_id',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('training_id', $id),
-                        'value' => (isset($edit)) ? $edit->training_id : ''
-                    ],
-                    [
-                        'type' => 'text',
-                        'label' => 'Workshop id',
+                        'type' => 'select2',
+                        'label' => 'Workshop',
                         'name' =>  'workshop_id',
                         'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('workshop_id', $id),
-                        'value' => (isset($edit)) ? $edit->workshop_id : ''
+                        'required' => $this->flagRules('name', $id),
+                        'value' => (isset($edit)) ? $edit->workshop_id : '',
+                        'options' => $workshop
                     ],
                     [
-                        'type' => 'text',
-                        'label' => 'User id',
-                        'name' =>  'user_id',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('user_id', $id),
-                        'value' => (isset($edit)) ? $edit->user_id : ''
-                    ],
-                    [
-                        'type' => 'text',
-                        'label' => 'Status',
-                        'name' =>  'status',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('status', $id),
-                        'value' => (isset($edit)) ? $edit->status : ''
-                    ],
-                    [
-                        'type' => 'text',
-                        'label' => 'Approve by',
-                        'name' =>  'approve_by',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('approve_by', $id),
-                        'value' => (isset($edit)) ? $edit->approve_by : ''
-                    ],
-                    [
-                        'type' => 'text',
-                        'label' => 'Start date',
+                        'type' => 'datetime',
+                        'label' => 'Start Date',
                         'name' =>  'start_date',
                         'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('start_date', $id),
+                        'required' => $this->flagRules('name', $id),
                         'value' => (isset($edit)) ? $edit->start_date : ''
                     ],
                     [
-                        'type' => 'text',
-                        'label' => 'End date',
+                        'type' => 'datetime',
+                        'label' => 'End Date',
                         'name' =>  'end_date',
                         'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('end_date', $id),
+                        'required' => $this->flagRules('name', $id),
                         'value' => (isset($edit)) ? $edit->end_date : ''
                     ],
                     [
-                        'type' => 'text',
-                        'label' => 'Instructur',
-                        'name' =>  'instructur',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('instructur', $id),
-                        'value' => (isset($edit)) ? $edit->instructur : ''
-                    ],
-                    [
-                        'type' => 'text',
-                        'label' => 'Name',
-                        'name' =>  'name',
+                        'type' => 'select2',
+                        'label' => 'Instructor',
+                        'name' =>  'instructor',
                         'class' => 'col-md-12 my-2',
                         'required' => $this->flagRules('name', $id),
-                        'value' => (isset($edit)) ? $edit->name : ''
+                        'value' => (isset($edit)) ? $edit->instructor : '',
+                        'options' => $instructor
                     ],
                     [
                         'type' => 'text',
                         'label' => 'Position',
                         'name' =>  'position',
                         'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('position', $id),
-                        'value' => (isset($edit)) ? $edit->position : ''
+                        'required' => $this->flagRules('name', $id),
+                        'value' => (isset($edit)) ? $edit->position : '',
+                    ],
+                    [
+                        'type' => 'hidden',
+                        'label' => 'TrainingID',
+                        'name' =>  'training_need_id',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('name', $id),
+                        'value' => (isset($edit)) ? $edit->training_need_id : request('header')
                     ],
         ];
         
@@ -179,5 +143,38 @@ class TrainingScheduleController extends DefaultController
 
         return $rules;
     }
+
+    protected function defaultDataQuery()
+    {
+        $filters = [];
+        $orThose = null;
+        $orderBy = 'id';
+        $orderState = 'DESC';
+        if (request('search')) {
+            $orThose = request('search');
+        }
+        if (request('order')) {
+            $orderBy = request('order');
+            $orderState = request('order_state');
+        }
+
+        $dataQueries = NeedWorkshop::join('training_needs', 'training_needs.id', '=', 'training_need_workshops.training_need_id')
+            // ->join('employees', 'employees.id', '=', 'training_needs.nik')
+            ->join('workshops', 'workshops.id', '=', 'training_need_workshops.workshop_id')
+            ->where($filters)
+            ->where(function ($query) use ($orThose) {
+                $query->where('workshops.name', 'LIKE', '%' . $orThose . '%');
+            })
+                ->orderBy($orderBy, $orderState)
+                ->select(
+                'training_need_workshops.*',
+                'workshops.name as workshop',
+                // 'users.name as username',
+                // 'employees.first_name as employeename'
+            );
+
+        return $dataQueries;
+    }
+
 
 }

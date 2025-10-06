@@ -19,6 +19,7 @@ return new class extends Migration
             $table->dateTime('end_date');
             $table->enum('instructor', ['internal', 'external']);
             $table->string('position');
+            $table->string('divisi');
             $table->timestamps();
         });
     }
