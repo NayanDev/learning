@@ -80,6 +80,21 @@
                 intCurrentData++;
             });
 
+            var paginateLink = ""
+            $.each(bodies.links, function(index, link) {
+                if (link.url != null && link.label != "&laquo; Previous" && link.label != "Next &raquo;") {
+                    var linkActive = link.active ? "btn-primary" : "btn-outline-primary"
+                    paginateLink += "<button data-url='" + link.url + "' class='btn btn-sm btn-paginate-{{$field['name']}} " + linkActive + "' type='button'>" + link.label + "</button>"
+                }
+            })
+
+            $(".paginate-{{$field['name']}}").html(paginateLink)
+            $(".ajx-table-{{$field['name']}} tbody").html(mHtml)
+
+            $(".btn-paginate-{{$field['name']}}").click(function() {
+                getTableContent($(this).data('url'))
+            })
+
             $(".ajx-table-{{$field['name']}} tbody").html(mHtml);
 
             // Event handler untuk checkbox

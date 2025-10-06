@@ -32,20 +32,19 @@ class TrainingNeedController extends DefaultController
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
 
         $this->tableHeaders = [
-                    ['name' => 'No', 'column' => '#', 'order' => true], 
-                    ['name' => 'Year', 'column' => 'year', 'order' => true],
-                    ['name' => 'User', 'column' => 'username', 'order' => true], 
-                    ['name' => 'Department', 'column' => 'divisi', 'order' => true], 
-                    ['name' => 'Status', 'column' => 'status', 'order' => true], 
-                    ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
-                    ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
+            ['name' => 'No', 'column' => '#', 'order' => true],
+            ['name' => 'Year', 'column' => 'year', 'order' => true],
+            ['name' => 'User', 'column' => 'username', 'order' => true],
+            ['name' => 'Department', 'column' => 'divisi', 'order' => true],
+            ['name' => 'Status', 'column' => 'status', 'order' => true],
+            ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
+            ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
 
 
-        $this->importExcelConfig = [ 
+        $this->importExcelConfig = [
             'primaryKeys' => ['nik'],
-            'headers' => [
-            ]
+            'headers' => []
         ];
     }
 
@@ -58,52 +57,100 @@ class TrainingNeedController extends DefaultController
         }
 
         $fields = [
-                    [
-                        'type' => 'onlyview',
-                        'label' => 'TrainingID',
-                        'name' =>  'training_id',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('name', $id),
-                        'value' => (isset($edit)) ? $edit->training_id : request('training_id')
-                    ],
-                    [
-                        'type' => 'onlyview',
-                        'label' => 'UserID',
-                        'name' =>  'user_id',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('name', $id),
-                        'value' => (isset($edit)) ? $edit->user_id : Auth::user()->id
-                    ],
-                    [
-                        'type' => 'onlyview',
-                        'label' => 'Status',
-                        'name' =>  'status',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('name', $id),
-                        'value' => (isset($edit)) ? $edit->status : 'open'
-                    ],
-                    [
-                        'type' => 'hidden',
-                        'label' => 'Divisi',
-                        'name' =>  'divisi',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('name', $id),
-                        'value' => (isset($edit)) ? $edit->position : Auth::user()->divisi
-                    ],
-                ];
-        
+            [
+                'type' => 'onlyview',
+                'label' => 'Divisi',
+                'name' =>  'divisi',
+                'class' => 'col-md-12 my-2',
+                'required' => $this->flagRules('name', $id),
+                'value' => (isset($edit)) ? $edit->position : Auth::user()->divisi
+            ],
+            [
+                'type' => 'onlyview',
+                'label' => 'Status',
+                'name' =>  'status',
+                'class' => 'col-md-12 my-2',
+                'required' => $this->flagRules('name', $id),
+                'value' => (isset($edit)) ? $edit->status : 'open'
+            ],
+            [
+                'type' => 'hidden',
+                'label' => 'TrainingID',
+                'name' =>  'training_id',
+                'class' => 'col-md-12 my-2',
+                'required' => $this->flagRules('name', $id),
+                'value' => (isset($edit)) ? $edit->training_id : request('training_id')
+            ],
+            [
+                'type' => 'hidden',
+                'label' => 'UserID',
+                'name' =>  'user_id',
+                'class' => 'col-md-12 my-2',
+                'required' => $this->flagRules('name', $id),
+                'value' => (isset($edit)) ? $edit->user_id : Auth::user()->id
+            ],
+        ];
+
         return $fields;
     }
 
 
     protected function rules($id = null)
     {
-        $rules = [
-                    
-        ];
+        $rules = [];
 
         return $rules;
     }
+
+    // protected function getFilteredApiData()
+    // {
+    //     try {
+    //         $response = Http::acceptJson()->get('https://simco.sampharindogroup.com/api/pegawai');
+
+    //         if ($response->successful()) {
+    //             $apiEmployees = $response->json();
+
+    //             if (!is_array($apiEmployees)) {
+    //                 return ['data' => [], 'total' => 0];
+    //             }
+
+    //             // Ambil parameter search
+    //             $search = request()->get('search', null);
+
+    //             // Jika ada search, filter data manual
+    //             if ($search && strlen($search) > 3) {
+    //                 $apiEmployees = array_filter($apiEmployees, function ($item) use ($search) {
+    //                     // Misal cari di 'nama', 'divisi', 'unit_kerja', 'nik'
+    //                     return stripos($item['nama'], $search) !== false
+    //                         || stripos($item['divisi'], $search) !== false
+    //                         || stripos($item['unit_kerja'], $search) !== false
+    //                         || stripos($item['nik'], $search) !== false;
+    //                 });
+    //                 // reset index array setelah filter
+    //                 $apiEmployees = array_values($apiEmployees);
+    //             }
+
+    //             $limit = (int) request()->get('length', 10);
+    //             $start = (int) request()->get('start', 0);
+    //             $page = ($start / $limit) + 1;
+
+    //             $totalRecords = count($apiEmployees);
+
+    //             // Pagination slice dari data yang sudah difilter
+    //             $paginatedData = array_slice($apiEmployees, $start, $limit);
+
+    //             return [
+    //                 'data' => $paginatedData,
+    //                 'total' => $totalRecords,
+    //                 'per_page' => $limit,
+    //                 'current_page' => $page
+    //             ];
+    //         }
+    //     } catch (Exception $e) {
+    //         Log::error("Gagal mengambil data API: " . $e->getMessage());
+    //     }
+    //     return ['data' => [], 'total' => 0];
+    // }
 
     protected function getFilteredApiData()
     {
@@ -117,31 +164,71 @@ class TrainingNeedController extends DefaultController
                     return ['data' => [], 'total' => 0];
                 }
 
+                // Ambil parameter search
+                $search = request()->get('search', null);
+
+                // Jika ada search, filter data manual
+                if ($search && strlen($search) > 3) {
+                    $apiEmployees = array_filter($apiEmployees, function ($item) use ($search) {
+                        return stripos($item['nama'], $search) !== false
+                            || stripos($item['divisi'], $search) !== false
+                            || stripos($item['unit_kerja'], $search) !== false
+                            || stripos($item['nik'], $search) !== false;
+                    });
+                    // reset index array setelah filter
+                    $apiEmployees = array_values($apiEmployees);
+                }
+
                 $limit = (int) request()->get('length', 10);
                 $start = (int) request()->get('start', 0);
-                $page = ($start / $limit) + 1;
+                $page = max(1, (int) (($start / $limit) + 1));
 
                 $totalRecords = count($apiEmployees);
+                $lastPage = (int) ceil($totalRecords / $limit);
 
+                // Pagination slice dari data yang sudah difilter
                 $paginatedData = array_slice($apiEmployees, $start, $limit);
+
+                // URL dasar untuk pagination (sesuaikan URL endpointmu)
+                $baseUrl = url()->current();
+
+                // Fungsi untuk generate URL halaman
+                $getPageUrl = function ($pageNum) use ($baseUrl, $limit) {
+                    return $pageNum > 0 ? $baseUrl . '?' . http_build_query(['start' => ($pageNum - 1) * $limit, 'length' => $limit]) : null;
+                };
 
                 return [
                     'data' => $paginatedData,
                     'total' => $totalRecords,
                     'per_page' => $limit,
-                    'current_page' => $page
+                    'current_page' => $page,
+                    'last_page' => $lastPage,
+                    'first_page_url' => $getPageUrl(1),
+                    'last_page_url' => $getPageUrl($lastPage),
+                    'next_page_url' => $page < $lastPage ? $getPageUrl($page + 1) : null,
+                    'prev_page_url' => $page > 1 ? $getPageUrl($page - 1) : null,
+                    'path' => $baseUrl,
+                    'from' => $totalRecords > 0 ? $start + 1 : 0,
+                    'to' => min($start + $limit, $totalRecords),
+                    'links' => collect(range(1, $lastPage))->map(function ($pageNum) use ($page, $getPageUrl) {
+                        return [
+                            'url' => $getPageUrl($pageNum),
+                            'label' => (string) $pageNum,
+                            'active' => $pageNum === $page,
+                        ];
+                    })->toArray(),
                 ];
             }
         } catch (Exception $e) {
-        Log::error("Gagal mengambil data API: " . $e->getMessage());
+            Log::error("Gagal mengambil data API: " . $e->getMessage());
         }
         return ['data' => [], 'total' => 0];
     }
 
     public function index()
     {
-        $baseUrlExcel = route($this->generalUri.'.export-excel-default');
-        $baseUrlPdf = route($this->generalUri.'.export-pdf-default');
+        $baseUrlExcel = route($this->generalUri . '.export-excel-default');
+        $baseUrlPdf = route($this->generalUri . '.export-pdf-default');
 
         $moreActions = [
             // [
@@ -156,7 +243,7 @@ class TrainingNeedController extends DefaultController
             $permissions = (new Constant())->permissionByMenu($this->generalUri);
         }
         $layout = (request('from_ajax') && request('from_ajax') == true) ? 'easyadmin::backend.idev.list_drawer_ajax' : 'easyadmin::backend.idev.list_drawer';
-        if(isset($this->drawerLayout)){
+        if (isset($this->drawerLayout)) {
             $layout = $this->drawerLayout;
         }
         $data['permissions'] = $permissions;
@@ -175,7 +262,7 @@ class TrainingNeedController extends DefaultController
         $data['import_scripts'] = $this->importScripts;
         $data['import_styles'] = $this->importStyles;
         $data['filters'] = $this->filters();
-        
+
         return view($layout, $data);
     }
 
@@ -215,8 +302,8 @@ class TrainingNeedController extends DefaultController
                 $query->where('trainings.year', 'LIKE', '%' . $orThose . '%')
                     ->orWhere('users.name', 'LIKE', '%' . $orThose . '%');
             })
-                ->orderBy($orderBy, $orderState)
-                ->select(
+            ->orderBy($orderBy, $orderState)
+            ->select(
                 'training_needs.*',
                 'trainings.year as year',
                 'users.name as username',
@@ -233,36 +320,36 @@ class TrainingNeedController extends DefaultController
                 'training',
                 'user',
                 'approver',
-                'workshops' => function($query) {
+                'workshops' => function ($query) {
                     $query->with('workshop');
                 },
                 'participants.user'
             ])
-            ->when($request->training_id, function($query) use ($request) {
-                $query->where('training_id', $request->training_id);
-            })
-            ->get()
-            ->map(function($trainingNeed) {
-                // Transform workshops data
-                $workshopsData = $trainingNeed->workshops->map(function($workshopItem) {
-                    return [
-                        'header' => [
-                            'workshop_name' => $workshopItem->workshop->name,
-                            'training_year' => $workshopItem->trainingNeed->training->year,
-                            'instructor' => $workshopItem->instructor,
-                            'start_date' => $workshopItem->start_date,
-                            'end_date' => $workshopItem->end_date,
-                            'position' => $workshopItem->position,
-                            'created_by' => $workshopItem->trainingNeed->user->name,
-                            'approved_by' => $workshopItem->trainingNeed->approver->name ?? 'Belum Disetujui',
-                            'status' => $workshopItem->trainingNeed->status
-                        ],
-                        'participants' => $workshopItem->trainingNeed->participants
-                    ];
-                });
-                return $workshopsData;
-            })
-            ->flatten(1); // Flatten the collection to get all workshops in a single level
+                ->when($request->training_id, function ($query) use ($request) {
+                    $query->where('training_id', $request->training_id);
+                })
+                ->get()
+                ->map(function ($trainingNeed) {
+                    // Transform workshops data
+                    $workshopsData = $trainingNeed->workshops->map(function ($workshopItem) {
+                        return [
+                            'header' => [
+                                'workshop_name' => $workshopItem->workshop->name,
+                                'training_year' => $workshopItem->trainingNeed->training->year,
+                                'instructor' => $workshopItem->instructor,
+                                'start_date' => $workshopItem->start_date,
+                                'end_date' => $workshopItem->end_date,
+                                'position' => $workshopItem->position,
+                                'created_by' => $workshopItem->trainingNeed->user->name,
+                                'approved_by' => $workshopItem->trainingNeed->approver->name ?? 'Belum Disetujui',
+                                'status' => $workshopItem->trainingNeed->status
+                            ],
+                            'participants' => $workshopItem->trainingNeed->participants
+                        ];
+                    });
+                    return $workshopsData;
+                })
+                ->flatten(1); // Flatten the collection to get all workshops in a single level
 
             if ($trainingNeeds->isEmpty()) {
                 return response()->json(['message' => 'Data tidak ditemukan.'], 404);
@@ -278,11 +365,9 @@ class TrainingNeedController extends DefaultController
                 ->setPaper('A4', 'landscape');
 
             return $pdf->stream("Rencana_Training_" . date('Y-m-d') . ".pdf");
-
         } catch (\Exception $e) {
             Log::error("Gagal generate PDF: " . $e->getMessage());
             return response()->json(['message' => 'Gagal generate PDF: ' . $e->getMessage()], 500);
         }
     }
-
 }
