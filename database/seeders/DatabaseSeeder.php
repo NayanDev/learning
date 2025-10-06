@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         // $this->sampleData();
 
         $this->call([
-            DepartmentSeeder::class,
+            // DepartmentSeeder::class,
             WorkshopSeeder::class,
         ]);
     }
@@ -89,20 +89,15 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Nayan',
                 'email' => 'admin@idev.com',
+                'company' => 'PT. SAMPHARINDO PERDANA',
+                'divisi' => 'UMUM & SDM',
+                'unit_kerja' => 'HRGA',
+                'status' => 'BULANAN KONTRAK',
+                'jk' => 'Laki-laki',
+                'telp' => '0895832720752',
+                'nik' => '3.251.141',
                 'password' => bcrypt('qwerty'),
                 'role_id' => Role::where('name', 'admin')->first()->id,
-            ]
-        );
-
-        User::updateOrCreate(
-            [
-                'email' => 'johny@idev.com',
-            ],
-            [
-                'name' => 'Johny Nur Ahmad',
-                'email' => 'johny@idev.com',
-                'password' => bcrypt('qwerty'),
-                'role_id' => Role::where('name', 'manager')->first()->id,
             ]
         );
     }

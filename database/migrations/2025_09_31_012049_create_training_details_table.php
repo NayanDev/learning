@@ -14,12 +14,8 @@ return new class extends Migration
         Schema::create('training_details', function (Blueprint $table) {
             $table->id();
             // Foreign Keys
-            $table->foreignId('department_id')
-                ->constrained('departments')
-                ->onDelete('cascade');
-
             $table->foreignId('training_analyst_id')
-                ->constrained('training_analysis')
+                ->constrained('analyst_headers')
                 ->onDelete('cascade');
 
             $table->foreignId('training_needs_id')

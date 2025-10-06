@@ -49,24 +49,24 @@ class Sidebar
           'ajax_load' => false,
           'childrens' => []
         ],
-        [
-          'name' => 'Department',
-          'icon' => 'ti ti-menu',
-          'key' => 'department',
-          'base_key' => 'department',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
-        [
-          'name' => 'Employee',
-          'icon' => 'ti ti-menu',
-          'key' => 'employee',
-          'base_key' => 'employee',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
+        // [
+        //   'name' => 'Department',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'department',
+        //   'base_key' => 'department',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        // [
+        //   'name' => 'Employee',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'employee',
+        //   'base_key' => 'employee',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
         [
           'name' => 'Workshop',
           'icon' => 'ti ti-menu',
@@ -108,6 +108,15 @@ class Sidebar
           'icon' => 'ti ti-menu',
           'key' => 'training-need',
           'base_key' => 'training-need',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Training Need Participant',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-need-participant',
+          'base_key' => 'training-need-participant',
           'visibility' => true,
           'ajax_load' => false,
           'childrens' => []

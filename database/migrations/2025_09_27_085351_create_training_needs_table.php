@@ -13,16 +13,15 @@ return new class extends Migration
     {
         Schema::create('training_needs', function (Blueprint $table) {
             $table->id();
-            $table->string('nik')->default('0'); // ID dari API, bukan foreign key
             $table->foreignId('training_id')->constrained()->onDelete('cascade');
-            $table->foreignId('workshop_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['open', 'submit', 'approve'])->default('open');
             $table->foreignId('approve_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->enum('status', ['open', 'submit', 'approve'])->default('open');
+            $table->foreignId('workshop_id')->constrained()->onDelete('cascade');
+            $table->dateTime('created_date')->nullable();
             $table->dateTime('start_date');
             $table->dateTime('end_date');
-            $table->enum('instructur', ['internal', 'external']);
-            $table->string('name');
+            $table->enum('instructor', ['internal', 'external']);
             $table->string('position');
             $table->timestamps();
         });

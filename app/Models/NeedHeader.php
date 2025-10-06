@@ -2,18 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TrainingAnalyst extends Model
+class NeedHeader extends Model
 {
-    use HasFactory;
-
-    protected $table = 'training_analysis';
+    protected $table = 'need_headers';
     protected $primaryKey = 'id';
-    protected $fillable = ["position","personil","qualification","general_training","technic_training","status","user_id","approve_by"];
+    protected $fillable = [];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
-
 
     public function getBtnDeleteAttribute()
     {
@@ -37,9 +33,9 @@ class TrainingAnalyst extends Model
 
     public function getBtnShowAttribute()
     {
-        $html = "<button type='button' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;' onclick='setShowPreview(" . json_encode($this->id) . ")'>
+        $html = "<a href='" . url('training-need-participant') . "?header=" . $this->id . "' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
                 <i class='ti ti-eye'></i>
-                </button>";
+                </a>";
         return $html;
     }
     

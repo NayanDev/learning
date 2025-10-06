@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Workshop;
+use Illuminate\Support\Facades\Auth;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
 
 class WorkshopController extends DefaultController
@@ -49,26 +50,22 @@ class WorkshopController extends DefaultController
             $edit = $this->modelClass::where('id', $id)->first();
         }
 
-        $department = Department::select(['id as value', 'name as text'])->get();
-
         $fields = [
-            [
-                'type' => 'text',
-                'label' => 'Name',
-                'name' =>  'name',
-                'class' => 'col-md-12 my-2',
-                'required' => $this->flagRules('name', $id),
-                'value' => (isset($edit)) ? $edit->name : ''
-            ],
-            [
-                'type' => 'select2',
-                'label' => 'Department',
-                'name' =>  'department_id',
-                'class' => 'col-md-12 my-2',
-                'required' => $this->flagRules('department_id', $id),
-                'value' => (isset($edit)) ? $edit->department_id : '',
-                'options' => $department,
-            ],
+                    [
+                        'type' => 'text',
+                        'label' => 'Name',
+                        'name' =>  'name',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('name', $id),
+                        'value' => (isset($edit)) ? $edit->name : ''
+                    ],
+                    [
+                        'type' => 'onlyview',
+                        'label' => 'Department',
+                        'name' =>  'department',
+                        'class' => 'col-md-12 my-2',
+                        'value' => (isset($edit)) ? $edit->department : Auth::user()->divisi,
+                    ],
         ];
 
         return $fields;
@@ -85,29 +82,4 @@ class WorkshopController extends DefaultController
         return $rules;
     }
 
-    protected function defaultDataQuery()
-    {
-        $filters = [];
-        $orThose = null;
-        $orderBy = 'id';
-        $orderState = 'DESC';
-        if (request('search')) {
-            $orThose = request('search');
-        }
-        if (request('order')) {
-            $orderBy = request('order');
-            $orderState = request('order_state');
-        }
-
-        $dataQueries = Workshop::join('departments', 'departments.id', '=', 'workshops.department_id')
-            ->where($filters)
-            ->where(function ($query) use ($orThose) {
-                $query->where('workshops.name', 'LIKE', '%' . $orThose . '%')
-                    ->orWhere('departments.name', 'LIKE', '%' . $orThose . '%');
-            })
-            ->orderBy($orderBy, $orderState)
-            ->select('workshops.*', 'departments.name as department');
-
-        return $dataQueries;
-    }
 }

@@ -176,7 +176,7 @@ class TrainingController extends DefaultController
                 'name' =>  'description',
                 'class' => 'col-md-12 my-2',
                 'required' => $this->flagRules('name', $id),
-                'value' => (isset($edit)) ? $edit->description : ''
+                'value' => (isset($edit)) ? $edit->description : '-'
             ],
             [
                 'type' => 'datetime',
@@ -217,7 +217,10 @@ class TrainingController extends DefaultController
 
     protected function rules($id = null)
     {
-        $rules = [];
+        $rules = [
+            'description' => 'required|string',
+            'end_date' => 'required',
+        ];
 
         return $rules;
     }
