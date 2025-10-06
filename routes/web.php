@@ -76,6 +76,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('training-need-import-excel-default', [TrainingNeedController::class, 'importExcel'])->name('training-need.import-excel-default');
     // Custome Route Training Needs
     Route::get('participant-ajax', [TrainingNeedController::class, 'participantAjax']);
+    Route::get('training-need-pdf', [TrainingNeedController::class, 'generatePDF'])->name('training-need.pdf');
 
     // Route Training Needs Participant
     Route::resource('training-need-participant', TrainingNeedParticipantController::class);

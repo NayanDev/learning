@@ -14,6 +14,30 @@ class TrainingNeed extends Model
     protected $fillable = ["nik","training_id","workshop_id","user_id","status","approve_by","start_date","end_date","instructur","name","position"];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
+    public function training()
+{
+    return $this->belongsTo(Training::class); // pastikan namespace model benar
+}
+
+public function workshop()
+{
+    return $this->belongsTo(Workshop::class); // pastikan namespace model benar
+}
+
+public function user()
+{
+    return $this->belongsTo(User::class, 'user_id'); // pastikan namespace model benar
+}
+
+public function approver()
+{
+    return $this->belongsTo(User::class); // pastikan namespace model benar
+}
+
+public function participants()
+{
+    return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id');
+}
 
     public function getBtnDeleteAttribute()
     {

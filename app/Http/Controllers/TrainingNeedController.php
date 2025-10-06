@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use App\Models\TrainingNeed;
+use App\Models\TrainingNeedParticipant;
 use App\Models\Workshop;
 use Idev\EasyAdmin\app\Helpers\Constant;
 use Illuminate\Support\Facades\Http;
@@ -192,7 +196,7 @@ class TrainingNeedController extends DefaultController
             [
                 'key' => 'export-pdf-default',
                 'name' => 'Export Pdf',
-                'html_button' => "<a id='export-pdf' data-base-url='".$baseUrlPdf."' class='btn btn-md btn-danger radius-6' target='_blank' href='" . url($this->generalUri . '-export-pdf-default') . "' title='Export PDF'><i class='ti ti-file'></i> Print Data</a>"
+                'html_button' => "<a id='export-pdf' data-base-url='".$baseUrlPdf."' class='btn btn-md btn-danger radius-6' target='_blank' href='" . url('training-need-pdf') . "' title='Export PDF'><i class='ti ti-file'></i> Print Data</a>"
             ],
         ];
 
@@ -277,5 +281,57 @@ class TrainingNeedController extends DefaultController
 
         return $dataQueries;
     }
+
+    public function generatePDF(Request $request)
+{
+    try {
+        $trainingNeeds = TrainingNeed::with([
+            'training',
+            'workshop',
+            'user',
+            'approver',
+            'participants.user'
+        ])
+        ->when($request->training_id, function($query) use ($request) {
+            $query->where('training_id', $request->training_id);
+        })
+        ->get()
+        ->map(function($item) {
+            return [
+                'header' => [
+                    'workshop_name' => $item->workshop->name,
+                    'training_year' => $item->training->year,
+                    'instructor' => $item->instructor,
+                    'start_date' => $item->start_date,
+                    'end_date' => $item->end_date,
+                    'position' => $item->position,
+                    'created_by' => $item->user->name,
+                    'approved_by' => $item->approver->name ?? 'Belum Disetujui',
+                    'status' => $item->status
+                ],
+                'participants' => $item->participants
+            ];
+        });
+
+        if ($trainingNeeds->isEmpty()) {
+            return response()->json(['message' => 'Data tidak ditemukan.'], 404);
+        }
+
+        $data = [
+            'trainings' => $trainingNeeds,
+            'department' => Auth::user()->divisi ?? 'All',
+            'year' => date('Y')
+        ];
+
+        $pdf = PDF::loadView('pdf.rencana_training', $data)
+            ->setPaper('A4', 'landscape');
+
+        return $pdf->stream("Rencana_Training_" . date('Y-m-d') . ".pdf");
+
+    } catch (\Exception $e) {
+        Log::error("Gagal generate PDF: " . $e->getMessage());
+        return response()->json(['message' => 'Gagal generate PDF: ' . $e->getMessage()], 500);
+    }
+}
 
 }
