@@ -74,6 +74,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-need-export-pdf-default', [TrainingNeedController::class, 'exportPdf'])->name('training-need.export-pdf-default');
     Route::get('training-need-export-excel-default', [TrainingNeedController::class, 'exportExcel'])->name('training-need.export-excel-default');
     Route::post('training-need-import-excel-default', [TrainingNeedController::class, 'importExcel'])->name('training-need.import-excel-default');
+    // Custome Route Training Needs
+    Route::get('participant-ajax', [TrainingNeedController::class, 'participantAjax']);
 
     // Route Training Needs Participant
     Route::resource('training-need-participant', TrainingNeedParticipantController::class);

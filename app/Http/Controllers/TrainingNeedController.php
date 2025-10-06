@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\TrainingNeed;
 use App\Models\Workshop;
+use Idev\EasyAdmin\app\Helpers\Constant;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -77,22 +78,6 @@ class TrainingNeedController extends DefaultController
 
         $fields = [
                     [
-                        'type' => 'text',
-                        'label' => 'TrainingID',
-                        'name' =>  'training_id',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('name', $id),
-                        'value' => (isset($edit)) ? $edit->training_id : ''
-                    ],
-                    [
-                        'type' => 'onlyview',
-                        'label' => 'UserID',
-                        'name' =>  'user_id',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('name', $id),
-                        'value' => (isset($edit)) ? $edit->email : Auth::user()->id
-                    ],
-                    [
                         'type' => 'select2',
                         'label' => 'Workshop',
                         'name' =>  'workshop_id',
@@ -133,6 +118,22 @@ class TrainingNeedController extends DefaultController
                         'class' => 'col-md-12 my-2',
                         'required' => $this->flagRules('name', $id),
                         'value' => (isset($edit)) ? $edit->position : Auth::user()->divisi
+                    ],
+                    [
+                        'type' => 'hidden',
+                        'label' => 'TrainingID',
+                        'name' =>  'training_id',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('name', $id),
+                        'value' => (isset($edit)) ? $edit->training_id : request('training_id')
+                    ],
+                    [
+                        'type' => 'hidden',
+                        'label' => 'UserID',
+                        'name' =>  'user_id',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('name', $id),
+                        'value' => (isset($edit)) ? $edit->email : Auth::user()->id
                     ],
                 ];
         
@@ -180,6 +181,47 @@ class TrainingNeedController extends DefaultController
         Log::error("Gagal mengambil data API: " . $e->getMessage());
         }
         return ['data' => [], 'total' => 0];
+    }
+
+    public function index()
+    {
+        $baseUrlExcel = route($this->generalUri.'.export-excel-default');
+        $baseUrlPdf = route($this->generalUri.'.export-pdf-default');
+
+        $moreActions = [
+            [
+                'key' => 'export-pdf-default',
+                'name' => 'Export Pdf',
+                'html_button' => "<a id='export-pdf' data-base-url='".$baseUrlPdf."' class='btn btn-md btn-danger radius-6' target='_blank' href='" . url($this->generalUri . '-export-pdf-default') . "' title='Export PDF'><i class='ti ti-file'></i> Print Data</a>"
+            ],
+        ];
+
+        $permissions =  $this->arrPermissions;
+        if ($this->dynamicPermission) {
+            $permissions = (new Constant())->permissionByMenu($this->generalUri);
+        }
+        $layout = (request('from_ajax') && request('from_ajax') == true) ? 'easyadmin::backend.idev.list_drawer_ajax' : 'easyadmin::backend.idev.list_drawer';
+        if(isset($this->drawerLayout)){
+            $layout = $this->drawerLayout;
+        }
+        $data['permissions'] = $permissions;
+        $data['more_actions'] = $moreActions;
+        $data['headerLayout'] = $this->pageHeaderLayout;
+        $data['table_headers'] = $this->tableHeaders;
+        $data['title'] = $this->title;
+        $data['uri_key'] = $this->generalUri;
+        $data['uri_list_api'] = route($this->generalUri . '.listapi');
+        $data['uri_create'] = route($this->generalUri . '.create');
+        $data['url_store'] = route($this->generalUri . '.store');
+        $data['fields'] = $this->fields();
+        $data['edit_fields'] = $this->fields('edit');
+        $data['actionButtonViews'] = $this->actionButtonViews;
+        $data['templateImportExcel'] = "#";
+        $data['import_scripts'] = $this->importScripts;
+        $data['import_styles'] = $this->importStyles;
+        $data['filters'] = $this->filters();
+        
+        return view($layout, $data);
     }
 
     public function participantAjax()
