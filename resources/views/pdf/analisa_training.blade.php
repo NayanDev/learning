@@ -140,7 +140,7 @@ function addLineBreaks($text)
     </div>
     <div class="info-section">
         <span style="float:left;font-size:6px;">Divisi / Bagian / Unit Kerja :  {{ $created->user->divisi }}</span>
-        <span style="float:right;font-size:6px;">Periode 2025</span>
+        <span style="float:right;font-size:6px;">Periode {{ $year->training->year }}</span>
     </div>
     <br>
     <table>

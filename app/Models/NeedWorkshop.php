@@ -5,38 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TrainingNeed extends Model
+class NeedWorkshop extends Model
 {
     use HasFactory;
 
-    protected $table = 'training_needs';
+    protected $table = 'training_need_workshops';
     protected $primaryKey = 'id';
-    protected $fillable = ['nik','training_id','workshop_id','user_id','status','approve_by','start_date','end_date','instructur','position'];
+    protected $fillable = [];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
-    public function training()
+    public function trainingNeed()
     {
-        return $this->belongsTo(Training::class, 'training_id');
+        return $this->belongsTo(TrainingNeed::class, 'training_need_id');
     }
 
-    public function user()
+    public function workshop()
     {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-        public function participants()
-    {
-        return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id');
-    }
-
-    public function workshops()
-    {
-        return $this->hasMany(NeedWorkshop::class, 'training_need_id');
-    }
-
-    public function approver()
-    {
-        return $this->belongsTo(User::class, 'approve_by');
+        return $this->belongsTo(Workshop::class, 'workshop_id');
     }
 
     public function getBtnDeleteAttribute()
@@ -61,7 +46,7 @@ class TrainingNeed extends Model
 
     public function getBtnShowAttribute()
     {
-        $html = "<a href='" . url('need-workshop') . "?header=" . $this->id . "' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
+        $html = "<a href='" . url('training-need-participant') . "?header=" . $this->id . "' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
                 <i class='ti ti-eye'></i>
                 </a>";
         return $html;

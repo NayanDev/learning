@@ -68,12 +68,6 @@ class TrainingAnalystController extends DefaultController
 
         $fields = [
             [
-                'type' => 'hidden',
-                'name' => 'training_id',
-                'label' => 'Training ID',
-                'value' => $trainingId,
-            ],
-            [
                 'type' => 'multiinput',
                 'label' => 'Qualification',
                 'name' =>  'qualification',
@@ -167,6 +161,12 @@ class TrainingAnalystController extends DefaultController
                 ],
                 'required' => $this->flagRules('technical', $id),
                 'value' => (isset($edit)) ? $edit->technical : ''
+            ],
+            [
+                'type' => 'hidden',
+                'name' => 'training_id',
+                'label' => 'Training ID',
+                'value' => $trainingId,
             ],
         ];
 
@@ -310,6 +310,7 @@ class TrainingAnalystController extends DefaultController
         $data = [
             'analystHeader' => $analystHeader,
             'analystBody' => $analystBody,
+            'year' => AnalystHeader::with(['training'])->findOrFail($request->header),
             'created' => AnalystHeader::with(['user', 'approver'])->findOrFail($request->header),
         ];
 

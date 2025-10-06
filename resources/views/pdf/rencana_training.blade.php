@@ -5,7 +5,7 @@ foreach ($trainings as $training) {
     // Hitung durasi dalam jam
     $start = \Carbon\Carbon::parse($training['header']['start_date']);
     $end = \Carbon\Carbon::parse($training['header']['end_date']);
-    $durasi = $end->diffInHours($start) . ' Jam';
+    $durasi = $start->diffInHours($end) . ' Jam';
 
     // Tentukan minggu mana yang aktif berdasarkan start_date
     $weekNumber = \Carbon\Carbon::parse($training['header']['start_date'])->weekOfMonth;
@@ -149,8 +149,8 @@ $trainings = $transformedTrainings;
             <h3>RENCANA USULAN PELATIHAN</h3>
     </div>
     <div class="info-section">
-        <span style="float:left;font-size:7px;">Divisi / Bagian / Unit Kerja :  Produksi</span>
-        <span style="float:right;font-size:7px;">Periode 2025</span>
+        <span style="float:left;font-size:7px;">Divisi / Bagian / Unit Kerja :  {{ $created->user->divisi }}</span>
+        <span style="float:right;font-size:7px;">Periode {{ $year->training->year }}</span>
     </div>
     <br>
 
@@ -212,9 +212,20 @@ $trainings = $transformedTrainings;
             <td class="no-border text-center"style="width:20%;">
                 Disiapkan Oleh,
                 <br><br>
-                <img width="75" src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="Tanda Tangan">
+                @if($created->status === 'approve')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>{{ 'nayan' }}</strong>
+                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <br>
+                <span>Staff {{ $created->user->divisi ?? '-' }}-{{ $created->user->unit_kerja ?? '-' }}</span>
+                @elseif($created->status === 'submit')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <br>
+                <strong>{{ $created->user->name ?? '-' }}</strong>
+                @else
+                <div style="height: 50px"></div>
+                <strong>{{ $created->user->name ?? '-' }}</strong>
+                @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
@@ -222,9 +233,16 @@ $trainings = $transformedTrainings;
             <td class="no-border text-center"style="width:20%;">
                 Disetujui Oleh,
                 <br><br>
-                <img width="75" src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="Tanda Tangan">
+                @if($created->status === 'approve')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>Ramadhan Reza Akbar</strong>
+                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
+                <br>
+                <span>Manager {{ $created->approver->divisi ?? '-' }}</span>
+                @else
+                <div style="height: 50px"></div>
+                <em>Data belum disiapkan</em>
+                @endif
             </td>
         </tr>
     </table>

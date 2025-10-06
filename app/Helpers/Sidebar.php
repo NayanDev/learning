@@ -113,6 +113,15 @@ class Sidebar
           'childrens' => []
         ],
         [
+          'name' => 'Need Workshop',
+          'icon' => 'ti ti-menu',
+          'key' => 'need-workshop',
+          'base_key' => 'need-workshop',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
           'name' => 'Training Need Participant',
           'icon' => 'ti ti-menu',
           'key' => 'training-need-participant',
