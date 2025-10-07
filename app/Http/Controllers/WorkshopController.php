@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
 use App\Models\Workshop;
 use Illuminate\Support\Facades\Auth;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
@@ -27,7 +26,7 @@ class WorkshopController extends DefaultController
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
             ['name' => 'Name', 'column' => 'name', 'order' => true],
-            ['name' => 'Department', 'column' => 'department', 'order' => true],
+            ['name' => 'Department', 'column' => 'divisi', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
@@ -37,7 +36,7 @@ class WorkshopController extends DefaultController
             'primaryKeys' => ['name'],
             'headers' => [
                 ['name' => 'Name', 'column' => 'name'],
-                ['name' => 'Department id', 'column' => 'department_id'],
+                ['name' => 'Divisi', 'column' => 'divisi_id'],
             ]
         ];
     }
@@ -62,9 +61,9 @@ class WorkshopController extends DefaultController
             [
                 'type' => 'onlyview',
                 'label' => 'Department',
-                'name' =>  'department',
+                'name' =>  'divisi',
                 'class' => 'col-md-12 my-2',
-                'value' => (isset($edit)) ? $edit->department : Auth::user()->divisi,
+                'value' => (isset($edit)) ? $edit->divisi : Auth::user()->divisi,
             ],
         ];
 
@@ -76,7 +75,7 @@ class WorkshopController extends DefaultController
     {
         $rules = [
             'name' => 'required|string',
-            'department' => 'required',
+            'divisi' => 'required',
         ];
 
         return $rules;
@@ -102,7 +101,7 @@ class WorkshopController extends DefaultController
 
         // Cek role user
         if (Auth::user()->role->name !== 'admin') {
-            $dataQueries = $dataQueries->where('department', Auth::user()->divisi);
+            $dataQueries = $dataQueries->where('divisi', Auth::user()->divisi);
         }
 
         // Pencarian kolom (searching)
