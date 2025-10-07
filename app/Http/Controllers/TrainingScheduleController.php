@@ -65,8 +65,15 @@ class TrainingScheduleController extends DefaultController
         $baseUrlPdf = route($this->generalUri . '.export-pdf-default');
 
         $params = "";
+        $pdfParams = "";
         if (request('training_id')) {
             $params = "?training_id=" . request('training_id');
+            $pdfParams = "?training_id=" . request('training_id');
+        }
+        if (request('year')) {
+            $yearParam = "year=" . request('year');
+            $params = $params ? $params . "&" . $yearParam : "?" . $yearParam;
+            $pdfParams = $pdfParams ? $pdfParams . "&" . $yearParam : "?" . $yearParam;
         }
 
         $moreActions = [
@@ -78,12 +85,12 @@ class TrainingScheduleController extends DefaultController
             [
                 'key' => 'export-excel-default',
                 'name' => 'Export Excel',
-                'html_button' => "<a id='export-excel' data-base-url='" . $baseUrlExcel . "' class='btn btn-sm btn-success radius-6' target='_blank' href='" . url($this->generalUri . '-export-excel-default') . "'  title='Export Excel'><i class='ti ti-cloud-download'></i></a>"
+                'html_button' => "<a id='export-excel' data-base-url='" . $baseUrlExcel . "' class='btn btn-sm btn-success radius-6' target='_blank' href='" . url($this->generalUri . '-export-excel-default') . $params . "'  title='Export Excel'><i class='ti ti-cloud-download'></i></a>"
             ],
             [
                 'key' => 'export-pdf-default',
                 'name' => 'Export Pdf',
-                'html_button' => "<a id='export-pdf' data-base-url='" . $baseUrlPdf . "' class='btn btn-sm btn-danger radius-6' target='_blank' href='" . url('training-schedule-pdf') . "' title='Export PDF'><i class='ti ti-file'></i></a>"
+                'html_button' => "<a id='export-pdf' data-base-url='" . $baseUrlPdf . "' class='btn btn-sm btn-danger radius-6' target='_blank' href='" . url('training-schedule-pdf') . $pdfParams . "' title='Export PDF'><i class='ti ti-file'></i></a>"
             ],
         ];
 
@@ -185,6 +192,28 @@ class TrainingScheduleController extends DefaultController
         return $fields;
     }
 
+    protected function filters()
+    {
+        $currentYear = date('Y');
+        $years = [];
+        for ($i = $currentYear - 2; $i <= $currentYear + 2; $i++) {
+            $years[] = ['value' => $i, 'text' => $i];
+        }
+
+        $filters = [
+            [
+                'type' => 'select2',
+                'label' => 'Year',
+                'name' => 'year',
+                'class' => 'col-md-3 my-2',
+                'options' => $years,
+                'value' => request('year', $currentYear)
+            ]
+        ];
+
+        return $filters;
+    }
+
 
     protected function rules($id = null)
     {
@@ -245,66 +274,78 @@ class TrainingScheduleController extends DefaultController
                 'workshop',
                 'trainingNeed.training',
                 'trainingNeed.user',
-                'participants.user'
+                'participants'
             ])
                 ->when($request->training_id, function ($query) use ($request) {
                     $query->whereHas('trainingNeed', function ($subQuery) use ($request) {
                         $subQuery->where('id', $request->training_id);
                     });
                 })
+                ->when($request->year, function ($query) use ($request) {
+                    $query->whereHas('trainingNeed.training', function ($subQuery) use ($request) {
+                        $subQuery->where('year', $request->year);
+                    });
+                })
                 ->get();
 
             if ($workshopsData->isEmpty()) {
-                return response()->json(['message' => 'Data tidak ditemukan.'], 404);
-            }
+                // If no data found, create empty structure for all divisions
+                // $allDivisions = ['Produksi', 'RND-REG', 'SDM & Umum', 'QC', 'QA', 'Engineering'];
+                $trainings = [];
 
-            // Group workshops by division
-            $trainingsByDivision = $workshopsData->groupBy('divisi');
+                // foreach ($allDivisions as $divisi) {
+                //     $trainings[] = [
+                //         'divisi' => $divisi,
+                //         'training' => [
+                //             'workshop' => []
+                //         ]
+                //     ];
+                // }
+            } else {
+                // Group workshops by division
+                $trainingsByDivision = $workshopsData->groupBy('divisi');
 
-            // Transform data according to jadwal_training.blade.php structure
-            $trainings = [];
-            foreach ($trainingsByDivision as $divisi => $workshops) {
-                $workshopData = [];
-                
-                foreach ($workshops as $workshop) {
-                    // Count participants
-                    $participantCount = $workshop->participants->count();
-                    $participantText = $participantCount > 0 ? $participantCount . ' Peserta' : '';
+                // Transform data according to jadwal_training.blade.php structure
+                $trainings = [];
+                foreach ($trainingsByDivision as $divisi => $workshops) {
+                    $workshopData = [];
 
-                    // Determine which weeks/months to highlight based on start_date
-                    $schedule = $this->generateScheduleArray($workshop->start_date, $workshop->end_date);
+                    foreach ($workshops as $workshop) {
+                        // Count participants
+                        $participantCount = $workshop->participants->count();
+                        $participantText = $participantCount > 0 ? $participantCount . ' Personil' : '';
 
-                    $workshopData[$workshop->workshop->name] = [
-                        'personil' => $participantText,
-                        'schedule' => $schedule
+                        // Determine which weeks/months to highlight based on start_date
+                        $schedule = $this->generateScheduleArray($workshop->start_date, $workshop->end_date);
+
+                        $workshopData[$workshop->workshop->name] = [
+                            'personil' => $participantText,
+                            'schedule' => $schedule
+                        ];
+                    }
+
+                    $trainings[] = [
+                        'divisi' => $divisi ?: 'Divisi Tidak Ditentukan',
+                        'training' => [
+                            'workshop' => $workshopData
+                        ]
                     ];
                 }
 
-                $trainings[] = [
-                    'divisi' => $divisi ?: 'Divisi Tidak Ditentukan',
-                    'training' => [
-                        'workshop' => $workshopData
-                    ]
-                ];
-            }
+                // Add empty divisions if they don't exist
+                // $allDivisions = ['Produksi', 'RND-REG', 'SDM & Umum', 'QC', 'QA', 'Engineering'];
+                $existingDivisions = collect($trainings)->pluck('divisi')->toArray();
 
-            // If no specific training_id is provided, get all divisions
-            if (!$request->training_id) {
-                // Get unique divisions from users or a predefined list
-                $allDivisions = ['Produksi', 'RND-REG', 'SDM & Umum', 'QC', 'QA', 'Engineering'];
-                
-                foreach ($allDivisions as $divisi) {
-                    $existingDivision = collect($trainings)->firstWhere('divisi', $divisi);
-                    if (!$existingDivision) {
-                        // Add empty division structure
-                        $trainings[] = [
-                            'divisi' => $divisi,
-                            'training' => [
-                                'workshop' => []
-                            ]
-                        ];
-                    }
-                }
+                // foreach ($allDivisions as $divisi) {
+                //     if (!in_array($divisi, $existingDivisions)) {
+                //         $trainings[] = [
+                //             'divisi' => $divisi,
+                //             'training' => [
+                //                 'workshop' => []
+                //             ]
+                //         ];
+                //     }
+                // }
             }
 
             $data = [
@@ -315,7 +356,7 @@ class TrainingScheduleController extends DefaultController
             $pdf = PDF::loadView('pdf.jadwal_training', $data)
                 ->setPaper('A4', 'landscape');
 
-            return $pdf->stream("Jadwal_Training_" . date('Y-m-d') . ".pdf");
+            return $pdf->stream("Jadwal_Training_" . ($request->year ?? date('Y')) . ".pdf");
         } catch (\Exception $e) {
             Log::error("Gagal generate PDF: " . $e->getMessage());
             return response()->json(['message' => 'Gagal generate PDF: ' . $e->getMessage()], 500);
@@ -328,9 +369,18 @@ class TrainingScheduleController extends DefaultController
     private function generateScheduleArray($startDate, $endDate)
     {
         $schedule = [
-            'jan' => [], 'feb' => [], 'mar' => [], 'apr' => [],
-            'may' => [], 'jun' => [], 'jul' => [], 'aug' => [],
-            'sep' => [], 'oct' => [], 'nov' => [], 'dec' => []
+            'jan' => [],
+            'feb' => [],
+            'mar' => [],
+            'apr' => [],
+            'may' => [],
+            'jun' => [],
+            'jul' => [],
+            'aug' => [],
+            'sep' => [],
+            'oct' => [],
+            'nov' => [],
+            'dec' => []
         ];
 
         if (!$startDate || !$endDate) {
@@ -345,15 +395,24 @@ class TrainingScheduleController extends DefaultController
         while ($current->lte($end)) {
             $monthKey = strtolower($current->format('M'));
             $weekOfMonth = ceil($current->day / 7);
-            
+
             // Ensure week is between 1-4
             $weekOfMonth = min(4, max(1, $weekOfMonth));
-            
+
             // Map month abbreviations
             $monthMap = [
-                'jan' => 'jan', 'feb' => 'feb', 'mar' => 'mar', 'apr' => 'apr',
-                'may' => 'may', 'jun' => 'jun', 'jul' => 'jul', 'aug' => 'aug',
-                'sep' => 'sep', 'oct' => 'oct', 'nov' => 'nov', 'dec' => 'dec'
+                'jan' => 'jan',
+                'feb' => 'feb',
+                'mar' => 'mar',
+                'apr' => 'apr',
+                'may' => 'may',
+                'jun' => 'jun',
+                'jul' => 'jul',
+                'aug' => 'aug',
+                'sep' => 'sep',
+                'oct' => 'oct',
+                'nov' => 'nov',
+                'dec' => 'dec'
             ];
 
             if (isset($monthMap[$monthKey]) && !in_array($weekOfMonth, $schedule[$monthMap[$monthKey]])) {

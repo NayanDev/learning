@@ -26,7 +26,7 @@ class NeedWorkshop extends Model
 
     public function participants()
     {
-        return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id');
+        return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id', 'id');
     }
 
     public function getBtnDeleteAttribute()
