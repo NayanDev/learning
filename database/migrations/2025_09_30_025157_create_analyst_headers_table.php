@@ -21,6 +21,7 @@ return new class extends Migration
             $table->dateTime('created_date')->nullable();
             $table->unsignedBigInteger('approve_by')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('divisi');
             $table->timestamps();
         });
     }

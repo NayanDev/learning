@@ -68,6 +68,13 @@ class TrainingAnalystController extends DefaultController
 
         $fields = [
             [
+                'type' => 'onlyview',
+                'label' => 'Department',
+                'name' =>  'divisi',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->department : Auth::user()->divisi,
+            ],
+            [
                 'type' => 'multiinput',
                 'label' => 'Qualification',
                 'name' =>  'qualification',
@@ -274,7 +281,7 @@ class TrainingAnalystController extends DefaultController
 
         // Cek role user
         if (Auth::user()->role->name !== 'admin') {
-            $dataQueries = $dataQueries->where('department', Auth::user()->divisi);
+            $dataQueries = $dataQueries->where('divisi', Auth::user()->divisi);
         }
 
         $dataQueries = $dataQueries
@@ -316,6 +323,7 @@ class TrainingAnalystController extends DefaultController
                 'general'   => json_encode($generalData),
                 'technic'   => json_encode($technicalData),
                 'user_id'   => Auth::user()->id,
+                'divisi'   => $request->input('divisi'),
             ]);
 
             // Mengembalikan response JSON yang sesuai untuk EasyAdmin
