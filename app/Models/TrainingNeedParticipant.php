@@ -14,8 +14,9 @@ class TrainingNeedParticipant extends Model
     protected $fillable = [];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
-    public function participants() {
-    return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id');
+    public function participants()
+    {
+        return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id');
     }
 
     public function user()
@@ -31,7 +32,7 @@ class TrainingNeedParticipant extends Model
 
         return $html;
     }
-    
+
 
     public function getBtnEditAttribute()
     {
@@ -50,7 +51,7 @@ class TrainingNeedParticipant extends Model
                 </button>";
         return $html;
     }
-    
+
 
     public function getUpdatedAtAttribute($value)
     {

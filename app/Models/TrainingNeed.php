@@ -11,8 +11,8 @@ class TrainingNeed extends Model
 
     protected $table = 'training_needs';
     protected $primaryKey = 'id';
-    protected $fillable = ['nik','training_id','workshop_id','user_id','status','approve_by','start_date','end_date','instructur','position'];
-    protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
+    protected $fillable = ['nik', 'training_id', 'workshop_id', 'user_id', 'status', 'approve_by', 'start_date', 'end_date', 'instructur', 'position'];
+    protected $appends = ['btn_delete', 'btn_edit', 'btn_show', 'btn_print'];
 
     public function training()
     {
@@ -24,7 +24,7 @@ class TrainingNeed extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-        public function participants()
+    public function participants()
     {
         return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id');
     }
@@ -39,6 +39,14 @@ class TrainingNeed extends Model
         return $this->belongsTo(User::class, 'approve_by');
     }
 
+    public function getBtnPrintAttribute()
+    {
+        $html = "<a href='" . url('training-need-pdf') . "?training_id=" . $this->id . "' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
+                <i class='ti ti-file'></i>
+                </a>";
+        return $html;
+    }
+
     public function getBtnDeleteAttribute()
     {
         $html = "<button type='button' class='btn btn-outline-danger btn-sm radius-6' style='margin:1px;' data-bs-toggle='modal' data-bs-target='#modalDelete' onclick='setDelete(" . json_encode($this->id) . ")'>
@@ -47,7 +55,7 @@ class TrainingNeed extends Model
 
         return $html;
     }
-    
+
 
     public function getBtnEditAttribute()
     {
@@ -66,7 +74,7 @@ class TrainingNeed extends Model
                 </a>";
         return $html;
     }
-    
+
 
     public function getUpdatedAtAttribute($value)
     {

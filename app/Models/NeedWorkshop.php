@@ -24,6 +24,11 @@ class NeedWorkshop extends Model
         return $this->belongsTo(Workshop::class, 'workshop_id');
     }
 
+    public function participants()
+    {
+        return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id');
+    }
+
     public function getBtnDeleteAttribute()
     {
         $html = "<button type='button' class='btn btn-outline-danger btn-sm radius-6' style='margin:1px;' data-bs-toggle='modal' data-bs-target='#modalDelete' onclick='setDelete(" . json_encode($this->id) . ")'>
@@ -32,7 +37,7 @@ class NeedWorkshop extends Model
 
         return $html;
     }
-    
+
 
     public function getBtnEditAttribute()
     {
@@ -51,7 +56,7 @@ class NeedWorkshop extends Model
                 </a>";
         return $html;
     }
-    
+
 
     public function getUpdatedAtAttribute($value)
     {

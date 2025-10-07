@@ -29,7 +29,7 @@ class TrainingNeedController extends DefaultController
         $this->title = 'Training Need';
         $this->generalUri = 'training-need';
         // $this->arrPermissions = [];
-        $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
+        $this->actionButtons = ['btn_edit', 'btn_show', 'btn_print', 'btn_delete'];
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
@@ -175,6 +175,41 @@ class TrainingNeedController extends DefaultController
         return ['data' => [], 'total' => 0];
     }
 
+    protected function indexApi()
+    {
+        $permission = (new Constant)->permissionByMenu($this->generalUri);
+        $permission[] = 'print';
+
+        $eb = [];
+        $dataColumns = [];
+        $dataColFormat = [];
+        foreach ($this->tableHeaders as $key => $col) {
+            if ($key > 0) {
+                $dataColumns[] = $col['column'];
+                if (array_key_exists("formatting", $col)) {
+                    $dataColFormat[$col['column']] = $col['formatting'];
+                }
+            }
+        }
+
+        foreach ($this->actionButtons as $key => $ab) {
+            if (in_array(str_replace("btn_", "", $ab), $permission)) {
+                $eb[] = $ab;
+            }
+        }
+
+        $dataQueries = $this->defaultDataQuery()->paginate(10);
+
+        $datas['extra_buttons'] = $eb;
+        $datas['data_columns'] = $dataColumns;
+        $datas['data_col_formatting'] = $dataColFormat;
+        $datas['data_queries'] = $dataQueries;
+        $datas['data_permissions'] = $permission;
+        $datas['uri_key'] = $this->generalUri;
+
+        return $datas;
+    }
+
     public function index()
     {
         $baseUrlExcel = route($this->generalUri . '.export-excel-default');
@@ -212,7 +247,12 @@ class TrainingNeedController extends DefaultController
         $data['url_store'] = route($this->generalUri . '.store');
         $data['fields'] = $this->fields();
         $data['edit_fields'] = $this->fields('edit');
-        $data['actionButtonViews'] = $this->actionButtonViews;
+        $data['actionButtonViews'] = [
+            'easyadmin::backend.idev.buttons.delete',
+            'easyadmin::backend.idev.buttons.edit',
+            'easyadmin::backend.idev.buttons.show',
+            'backend.idev.buttons.print',
+        ];
         $data['templateImportExcel'] = "#";
         $data['import_scripts'] = $this->importScripts;
         $data['import_styles'] = $this->importStyles;
@@ -285,12 +325,12 @@ class TrainingNeedController extends DefaultController
                 'user',
                 'approver',
                 'workshops' => function ($query) {
-                    $query->with('workshop');
+                    $query->with(['workshop', 'participants.user']);
                 },
                 'participants.user'
             ])
                 ->when($request->training_id, function ($query) use ($request) {
-                    $query->where('training_id', $request->training_id);
+                    $query->where('id', $request->training_id);
                 })
                 ->get()
                 ->map(function ($trainingNeed) {
@@ -308,7 +348,7 @@ class TrainingNeedController extends DefaultController
                                 'approved_by' => $workshopItem->trainingNeed->approver->name ?? 'Belum Disetujui',
                                 'status' => $workshopItem->trainingNeed->status
                             ],
-                            'participants' => $workshopItem->trainingNeed->participants
+                            'participants' => $workshopItem->participants
                         ];
                     });
                     return $workshopsData;
@@ -324,6 +364,7 @@ class TrainingNeedController extends DefaultController
                 'created' => TrainingNeed::with(['user', 'approver'])->findOrFail($request->training_id),
                 'year' => TrainingNeed::with(['training'])->findOrFail($request->training_id)
             ];
+            // return dd($data);
 
             $pdf = PDF::loadView('pdf.rencana_training', $data)
                 ->setPaper('A4', 'landscape');

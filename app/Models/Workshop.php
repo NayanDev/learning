@@ -14,7 +14,6 @@ class Workshop extends Model
     protected $fillable = ["name", "department"];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
-
     public function getBtnDeleteAttribute()
     {
         $html = "<button type='button' class='btn btn-outline-danger btn-sm radius-6' style='margin:1px;' data-bs-toggle='modal' data-bs-target='#modalDelete' onclick='setDelete(" . json_encode($this->id) . ")'>
