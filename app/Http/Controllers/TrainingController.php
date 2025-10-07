@@ -82,11 +82,6 @@ class TrainingController extends DefaultController
         $baseUrlExcel = route($this->generalUri . '.export-excel-default');
         $baseUrlPdf = route($this->generalUri . '.export-pdf-default');
 
-        $params = "";
-        if (request('training_id')) {
-            $params = "?training_id=" . request('training_id');
-        }
-
         $moreActions = [
             [
                 'key' => 'import-excel-default',
@@ -119,7 +114,7 @@ class TrainingController extends DefaultController
         $data['table_headers'] = $this->tableHeaders;
         $data['title'] = $this->title;
         $data['uri_key'] = $this->generalUri;
-        $data['uri_list_api'] = route($this->generalUri . '.listapi') . $params;
+        $data['uri_list_api'] = route($this->generalUri . '.listapi');
         $data['uri_create'] = route($this->generalUri . '.create');
         $data['url_store'] = route($this->generalUri . '.store');
         $data['fields'] = $this->fields();
@@ -151,9 +146,6 @@ class TrainingController extends DefaultController
         if (request('order')) {
             $orderBy = request('order');
             $orderState = request('order_state');
-        }
-        if (request('training_id')) {
-            $filters[] = ['training_id', '=', request('training_id')];
         }
 
         $dataQueries = Training::join('users', 'users.id', '=', 'trainings.user_id')
