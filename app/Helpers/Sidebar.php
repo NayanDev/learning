@@ -122,7 +122,7 @@ class Sidebar
           'childrens' => []
         ],
         [
-          'name' => 'Training Need Participant',
+          'name' => 'Need Participant',
           'icon' => 'ti ti-menu',
           'key' => 'training-need-participant',
           'base_key' => 'training-need-participant',
