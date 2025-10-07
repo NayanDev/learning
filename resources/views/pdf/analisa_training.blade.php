@@ -218,13 +218,19 @@ function addLineBreaks($text)
                 <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
                 <strong>{{ $created->user->name ?? '-' }}</strong>
+                <br>
+                <span>Staff {{ $created->user->divisi }}</span>
                 @elseif($created->status === 'submit')
                 <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
                 <strong>{{ $created->user->name ?? '-' }}</strong>
+                <br>
+                <span>Staff {{ $created->user->divisi }}</span>
                 @else
                 <div style="height: 50px"></div>
                 <strong>{{ $created->user->name ?? '-' }}</strong>
+                <br>
+                <span>Staff {{ $created->user->divisi }}</span>
                 @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
@@ -236,6 +242,8 @@ function addLineBreaks($text)
                 <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
                 <strong>{{ $created->approver->name ?? '-' }}</strong>
+                <br>
+                <span>Manager {{ $created->approver->divisi }}</span>
                 @else
                 <div style="height: 50px"></div>
                 <em>Data belum disiapkan</em>

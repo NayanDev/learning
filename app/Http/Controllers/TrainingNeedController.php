@@ -102,56 +102,6 @@ class TrainingNeedController extends DefaultController
         return $rules;
     }
 
-    // protected function getFilteredApiData()
-    // {
-    //     try {
-    //         $response = Http::acceptJson()->get('https://simco.sampharindogroup.com/api/pegawai');
-
-    //         if ($response->successful()) {
-    //             $apiEmployees = $response->json();
-
-    //             if (!is_array($apiEmployees)) {
-    //                 return ['data' => [], 'total' => 0];
-    //             }
-
-    //             // Ambil parameter search
-    //             $search = request()->get('search', null);
-
-    //             // Jika ada search, filter data manual
-    //             if ($search && strlen($search) > 3) {
-    //                 $apiEmployees = array_filter($apiEmployees, function ($item) use ($search) {
-    //                     // Misal cari di 'nama', 'divisi', 'unit_kerja', 'nik'
-    //                     return stripos($item['nama'], $search) !== false
-    //                         || stripos($item['divisi'], $search) !== false
-    //                         || stripos($item['unit_kerja'], $search) !== false
-    //                         || stripos($item['nik'], $search) !== false;
-    //                 });
-    //                 // reset index array setelah filter
-    //                 $apiEmployees = array_values($apiEmployees);
-    //             }
-
-    //             $limit = (int) request()->get('length', 10);
-    //             $start = (int) request()->get('start', 0);
-    //             $page = ($start / $limit) + 1;
-
-    //             $totalRecords = count($apiEmployees);
-
-    //             // Pagination slice dari data yang sudah difilter
-    //             $paginatedData = array_slice($apiEmployees, $start, $limit);
-
-    //             return [
-    //                 'data' => $paginatedData,
-    //                 'total' => $totalRecords,
-    //                 'per_page' => $limit,
-    //                 'current_page' => $page
-    //             ];
-    //         }
-    //     } catch (Exception $e) {
-    //         Log::error("Gagal mengambil data API: " . $e->getMessage());
-    //     }
-    //     return ['data' => [], 'total' => 0];
-    // }
-
     protected function getFilteredApiData()
     {
         try {

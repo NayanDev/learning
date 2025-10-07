@@ -31,11 +31,11 @@ class TrainingAnalystController extends DefaultController
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
 
         $this->tableHeaders = [
-            ['name' => 'No', 'column' => '#', 'order' => true],
+            ['name' => 'No', 'column' => '#', 'order' => false],
             ['name' => 'qualification', 'column' => 'qualification', 'order' => true],
             ['name' => 'general', 'column' => 'general', 'order' => true],
             ['name' => 'technic', 'column' => 'technic', 'order' => true],
-            ['name' => 'user', 'column' => 'user_id', 'order' => true],
+            ['name' => 'user', 'column' => 'username', 'order' => true],
             ['name' => 'status', 'column' => 'status', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
@@ -187,6 +187,35 @@ class TrainingAnalystController extends DefaultController
         ];
 
         return $rules;
+    }
+
+    protected function defaultDataQuery()
+    {
+        $filters = [];
+        $orThose = null;
+        $orderBy = 'id';
+        $orderState = 'DESC';
+        if (request('search')) {
+            $orThose = request('search');
+        }
+        if (request('order')) {
+            $orderBy = request('order');
+            $orderState = request('order_state');
+        }
+
+        $dataQueries = AnalystHeader::join('users', 'users.id', '=', 'analyst_headers.user_id')
+            ->where($filters)
+            ->where(function ($query) use ($orThose) {
+                $query->where('analyst_headers.qualification', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('analyst_headers.general', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('analyst_headers.technic', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('analyst_headers.status', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('users.name', 'LIKE', '%' . $orThose . '%');
+            })
+            ->select('analyst_headers.*', 'users.name as username')
+            ->orderBy($orderBy, $orderState);
+
+        return $dataQueries;
     }
 
     public function store(Request $request)
