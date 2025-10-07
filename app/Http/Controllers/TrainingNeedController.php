@@ -254,12 +254,18 @@ class TrainingNeedController extends DefaultController
         $dataQueries = TrainingNeed::join('trainings', 'trainings.id', '=', 'training_needs.training_id')
             // ->join('employees', 'employees.id', '=', 'training_needs.nik')
             ->join('users', 'users.id', '=', 'training_needs.user_id')
-            ->where('training_needs.divisi', Auth::user()->divisi)
             ->where($filters)
             ->where(function ($query) use ($orThose) {
                 $query->where('trainings.year', 'LIKE', '%' . $orThose . '%')
                     ->orWhere('users.name', 'LIKE', '%' . $orThose . '%');
-            })
+            });
+
+        // Cek role user
+        if (Auth::user()->role->name !== 'admin') {
+            $dataQueries = $dataQueries->where('training_needs.divisi', Auth::user()->divisi);
+        }
+
+        $dataQueries = $dataQueries
             ->orderBy($orderBy, $orderState)
             ->select(
                 'training_needs.*',
