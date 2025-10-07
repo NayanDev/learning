@@ -99,6 +99,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-schedule-export-pdf-default', [TrainingScheduleController::class, 'exportPdf'])->name('training-schedule.export-pdf-default');
     Route::get('training-schedule-export-excel-default', [TrainingScheduleController::class, 'exportExcel'])->name('training-schedule.export-excel-default');
     Route::post('training-schedule-import-excel-default', [TrainingScheduleController::class, 'importExcel'])->name('training-schedule.import-excel-default');
+    // Custome Route Schedule
+    Route::get('training-schedule-pdf', [TrainingScheduleController::class, 'generatePDF'])->name('training-schedule.pdf');
 
     // Route Training Unplanned
     Route::resource('training-unplanned', TrainingUnplannedController::class);

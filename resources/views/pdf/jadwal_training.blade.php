@@ -506,8 +506,18 @@ $trainings = [
     
 ];
 
+<?php
 // Calculate Rowspan
-$totalRows = count($trainings[0]['training']['workshop']);
+$totalRows = 0;
+foreach ($trainings as $training) {
+    if (isset($training['training']['workshop']) && count($training['training']['workshop']) > 0) {
+        $totalRows = max($totalRows, count($training['training']['workshop']));
+    }
+}
+// Set minimum rows if no data
+if ($totalRows == 0) {
+    $totalRows = 1;
+}
 ?>
 
 <!DOCTYPE html>
@@ -683,7 +693,9 @@ $totalRows = count($trainings[0]['training']['workshop']);
                 <br><br>
                 <img width="75" src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="Tanda Tangan">
                 <br>
-                <strong>Anto Wardana</strong>
+                <u><strong>Anto Wardana</strong></u>
+                <br>
+                <span>Manager</span>
             </td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
@@ -693,7 +705,9 @@ $totalRows = count($trainings[0]['training']['workshop']);
                 <br><br>
                 <img width="75" src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="Tanda Tangan">
                 <br>
-                <strong>Ramadhan Reza Akbar</strong>
+                <u><strong>Ramadhan Reza Akbar</strong></u>
+                <br>
+                <span>Direktur</span>
             </td>
         </tr>
     </table>
