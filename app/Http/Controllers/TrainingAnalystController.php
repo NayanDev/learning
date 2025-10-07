@@ -270,7 +270,14 @@ class TrainingAnalystController extends DefaultController
                 $query->orWhere('analyst_headers.technic', 'LIKE', '%' . $orThose . '%');
                 $query->orWhere('analyst_headers.status', 'LIKE', '%' . $orThose . '%');
                 $query->orWhere('users.name', 'LIKE', '%' . $orThose . '%');
-            })
+            });
+
+        // Cek role user
+        if (Auth::user()->role->name !== 'admin') {
+            $dataQueries = $dataQueries->where('department', Auth::user()->divisi);
+        }
+
+        $dataQueries = $dataQueries
             ->select('analyst_headers.*', 'users.name as username')
             ->orderBy($orderBy, $orderState);
 
