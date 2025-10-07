@@ -68,13 +68,6 @@ class TrainingAnalystController extends DefaultController
 
         $fields = [
             [
-                'type' => 'onlyview',
-                'label' => 'Department',
-                'name' =>  'divisi',
-                'class' => 'col-md-12 my-2',
-                'value' => (isset($edit)) ? $edit->department : Auth::user()->divisi,
-            ],
-            [
                 'type' => 'multiinput',
                 'label' => 'Qualification',
                 'name' =>  'qualification',
@@ -174,6 +167,13 @@ class TrainingAnalystController extends DefaultController
                 'name' => 'training_id',
                 'label' => 'Training ID',
                 'value' => $trainingId,
+            ],
+            [
+                'type' => 'hidden',
+                'label' => 'Department',
+                'name' =>  'divisi',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->divisi : Auth::user()->divisi,
             ],
         ];
 
@@ -276,12 +276,13 @@ class TrainingAnalystController extends DefaultController
                 $query->orWhere('analyst_headers.general', 'LIKE', '%' . $orThose . '%');
                 $query->orWhere('analyst_headers.technic', 'LIKE', '%' . $orThose . '%');
                 $query->orWhere('analyst_headers.status', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('analyst_headers.divisi', 'LIKE', '%' . $orThose . '%');
                 $query->orWhere('users.name', 'LIKE', '%' . $orThose . '%');
             });
 
         // Cek role user
         if (Auth::user()->role->name !== 'admin') {
-            $dataQueries = $dataQueries->where('divisi', Auth::user()->divisi);
+            $dataQueries = $dataQueries->where('analyst_headers.divisi', Auth::user()->divisi);
         }
 
         $dataQueries = $dataQueries
