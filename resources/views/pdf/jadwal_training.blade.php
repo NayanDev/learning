@@ -41,6 +41,7 @@ if ($totalRows == 0) {
             position: absolute;
             width: 40px;
             padding-top: 13px;
+            padding-left: 10px;
             /* border: 1px solid green; */
         }
 
@@ -114,7 +115,7 @@ if ($totalRows == 0) {
 <body>
     <div class="letterhead">
             <img src="{{ asset('easyadmin/idev/img/kop-dokumen.png') }}" alt="PT Sampharindo">
-            <h3  style="border: 1px solid black;padding:20px 0 20px 20px;">JADWAL PELATIHAN KARYAWAN</h3>
+            <h3  style="border: 1px solid black;padding:25px 10px 25px 25px;">JADWAL PELATIHAN KARYAWAN</h3>
         </div>
         <div class="info-section">
             <span>Tahun : {{ $year ?? date('Y') }}</span>

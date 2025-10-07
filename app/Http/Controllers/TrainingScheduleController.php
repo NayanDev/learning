@@ -68,12 +68,9 @@ class TrainingScheduleController extends DefaultController
         $pdfParams = "";
         if (request('training_id')) {
             $params = "?training_id=" . request('training_id');
-            $pdfParams = "?training_id=" . request('training_id');
         }
         if (request('year')) {
-            $yearParam = "year=" . request('year');
-            $params = $params ? $params . "&" . $yearParam : "?" . $yearParam;
-            $pdfParams = $pdfParams ? $pdfParams . "&" . $yearParam : "?" . $yearParam;
+            $pdfParams = "?year=" . request('year');
         }
 
         $moreActions = [
@@ -194,22 +191,7 @@ class TrainingScheduleController extends DefaultController
 
     protected function filters()
     {
-        $currentYear = date('Y');
-        $years = [];
-        for ($i = $currentYear - 2; $i <= $currentYear + 2; $i++) {
-            $years[] = ['value' => $i, 'text' => $i];
-        }
-
-        $filters = [
-            [
-                'type' => 'select2',
-                'label' => 'Year',
-                'name' => 'year',
-                'class' => 'col-md-3 my-2',
-                'options' => $years,
-                'value' => request('year', $currentYear)
-            ]
-        ];
+        $filters = [];
 
         return $filters;
     }
@@ -350,7 +332,8 @@ class TrainingScheduleController extends DefaultController
 
             $data = [
                 'trainings' => $trainings,
-                'year' => $request->year ?? date('Y')
+                'year' => $request->year ?? date('Y'),
+
             ];
 
             $pdf = PDF::loadView('pdf.jadwal_training', $data)

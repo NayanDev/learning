@@ -20,7 +20,7 @@ class Training extends Model
             ['label' => 'Training Detail', 'url' => url('training-detail') . "?training_id=" . $this->id, 'icon' => 'ti ti-eye'],
             ['label' => 'Training Analyst', 'url' => url('training-analyst') . "?training_id=" . $this->id, 'icon' => 'ti ti-users'],
             ['label' => 'Training Needs', 'url' => url('training-need') . "?training_id=" . $this->id, 'icon' => 'ti ti-archive'],
-            ['label' => 'Training Schedule', 'url' => url('training-schedule') . "?training_id=" . $this->id, 'icon' => 'ti ti-calendar'],
+            ['label' => 'Training Schedule', 'url' => url('training-schedule') . "?year=" . $this->year, 'icon' => 'ti ti-calendar'],
             ['label' => 'Training Unplanned', 'url' => url('training-unplanned') . "?training_id=" . $this->id, 'icon' => 'ti ti-help'],
         ];
 
