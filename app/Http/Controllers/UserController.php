@@ -37,7 +37,8 @@ class UserController extends BaseUserController
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_destroy'];
         $this->importScripts = [
             ['source' => asset('vendor/select2/select2.min.js')],
-            ['source' => asset('vendor/select2/select2-initialize.js')]
+            ['source' => asset('vendor/select2/select2-initialize.js')],
+            ['source' => asset('js/user-signature-renderer.js')] // Custom script untuk render signature
         ];
         $this->importStyles = [
             ['source' => asset('vendor/select2/select2.min.css')],

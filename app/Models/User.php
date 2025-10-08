@@ -83,7 +83,7 @@ class User extends Authenticatable
     public function getSignatureDisplayAttribute()
     {
         if ($this->signature) {
-            $html = "<img src='" . asset('storage/signature/' . $this->signature) . "' alt='Signature' width='200'>";
+            $html = "<img src='" . asset('storage/signature/' . $this->signature) . "' alt='Signature' style='max-width: 20px; height: auto;'>";
         } else {
             $html = '<span class="text-muted">No signature</span>';
         }
