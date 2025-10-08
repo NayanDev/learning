@@ -14,6 +14,16 @@ class Training extends Model
     protected $fillable = [];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_multilink'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approve_by');
+    }
+
     public function getBtnMultilinkAttribute()
     {
         $arrLink = [

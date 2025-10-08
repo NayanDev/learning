@@ -36,6 +36,7 @@ class TrainingAnalystController extends DefaultController
             ['name' => 'general', 'column' => 'general', 'order' => true],
             ['name' => 'technic', 'column' => 'technic', 'order' => true],
             ['name' => 'user', 'column' => 'username', 'order' => true],
+            ['name' => 'departmen', 'column' => 'divisi', 'order' => true],
             ['name' => 'status', 'column' => 'status', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],

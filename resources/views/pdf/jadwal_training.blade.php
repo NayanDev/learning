@@ -200,11 +200,22 @@ if ($totalRows == 0) {
             <td class="no-border text-center"style="width:20%;">
                 Disiapkan Oleh,
                 <br><br>
-                <img width="75" src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="Tanda Tangan">
+                @if($created->status === 'approve')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <u><strong>Anto Wardana</strong></u>
+                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager</span>
+                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                @elseif($created->status === 'submit')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <br>
+                <strong>{{ $created->user->name ?? '-' }}</strong>
+                @else
+                <div style="height: 50px"></div>
+                <strong>{{ $created->user->name ?? '-' }}</strong>
+                <br>
+                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
@@ -212,11 +223,16 @@ if ($totalRows == 0) {
             <td class="no-border text-center"style="width:20%;">
                 Disetujui Oleh,
                 <br><br>
-                <img width="75" src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="Tanda Tangan">
+                @if($created->status === 'approve')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <u><strong>Ramadhan Reza Akbar</strong></u>
+                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Direktur</span>
+                <span>Manager {{ $created->approver->divisi ?? '-' }}</span>
+                @else
+                <div style="height: 50px"></div>
+                <em>Data belum disiapkan</em>
+                @endif
             </td>
         </tr>
     </table>

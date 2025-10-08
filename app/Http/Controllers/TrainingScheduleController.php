@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\NeedWorkshop;
+use App\Models\Training;
 use App\Models\TrainingNeed;
 use App\Models\Workshop;
 use Carbon\Carbon;
@@ -337,6 +338,9 @@ class TrainingScheduleController extends DefaultController
             $data = [
                 'trainings' => $trainings,
                 'year' => $request->year ?? date('Y'),
+                'created' => Training::with(['user', 'approver'])
+                    ->where('year', $request->year)
+                    ->firstOrFail(),
 
             ];
 

@@ -217,14 +217,18 @@ $trainings = $transformedTrainings;
                 <br>
                 <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
-                <span>Staff {{ $created->user->divisi ?? '-' }}-{{ $created->user->unit_kerja ?? '-' }}</span>
+                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
                 @elseif($created->status === 'submit')
                 <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>{{ $created->user->name ?? '-' }}</strong>
+                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <br>
+                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
                 @else
                 <div style="height: 50px"></div>
-                <strong>{{ $created->user->name ?? '-' }}</strong>
+                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <br>
+                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
                 @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
