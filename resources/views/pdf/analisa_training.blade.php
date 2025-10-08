@@ -215,13 +215,13 @@ function addLineBreaks($text)
             <td class="no-border text-center"style="width:20%;">
                 Disiapkan Oleh,<br><br>
                 @if($created->status === 'approve')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
                 <br>
                 <strong>{{ $created->user->name ?? '-' }}</strong>
                 <br>
                 <span>Staff {{ $created->user->divisi }}</span>
                 @elseif($created->status === 'submit')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
                 <br>
                 <strong>{{ $created->user->name ?? '-' }}</strong>
                 <br>
@@ -239,7 +239,7 @@ function addLineBreaks($text)
             <td class="no-border text-center"style="width:20%;">
                 Disetujui Oleh,<br><br>
                 @if($created->status === 'approve')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
                 <br>
                 <strong>{{ $created->approver->name ?? '-' }}</strong>
                 <br>

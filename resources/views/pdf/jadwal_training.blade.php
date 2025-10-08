@@ -201,13 +201,13 @@ if ($totalRows == 0) {
                 Disiapkan Oleh,
                 <br><br>
                 @if($created->status === 'approve')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
                 <br>
                 <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
                 <span>Staff {{ $created->user->divisi ?? '-' }}</span>
                 @elseif($created->status === 'submit')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
                 <br>
                 <strong>{{ $created->user->name ?? '-' }}</strong>
                 @else
@@ -224,7 +224,7 @@ if ($totalRows == 0) {
                 Disetujui Oleh,
                 <br><br>
                 @if($created->status === 'approve')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>

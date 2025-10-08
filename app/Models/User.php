@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-    protected $appends = ['btn_destroy', 'btn_edit', 'btn_show'];
+    protected $appends = ['btn_destroy', 'btn_edit', 'btn_show', 'signature_display'];
 
     /**
      * The attributes that are mass assignable.
@@ -78,6 +78,14 @@ class User extends Authenticatable
                 <i class='ti ti-eye'></i>
                 </button>";
         return $html;
+    }
+
+    public function getSignatureDisplayAttribute()
+    {
+        if ($this->signature) {
+            return "<img src='" . asset('storage/signature/' . $this->signature) . "' alt='Signature' class='img-fluid img-thumbnail'>";
+        }
+        return '<span class="text-muted">No signature</span>';
     }
 
 

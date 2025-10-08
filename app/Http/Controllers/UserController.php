@@ -53,7 +53,7 @@ class UserController extends BaseUserController
             ['name' => 'Gender', 'column' => 'jk', 'order' => true],
             ['name' => 'Phone', 'column' => 'telp', 'order' => true],
             ['name' => 'NIK', 'column' => 'nik', 'order' => true],
-            ['name' => 'Signature', 'column' => 'signature', 'order' => true],
+            ['name' => 'Signature', 'column' => 'signature_display', 'order' => false],
             ['name' => 'Role', 'column' => 'role_name', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
@@ -393,7 +393,9 @@ class UserController extends BaseUserController
                 'label' => 'Signature',
                 'name' => 'signature',
                 'class' => 'col-md-12 my-2',
-                'value' => (!empty($edit->signature)) ? asset('storage/signature/' . $edit->signature) : null,
+                'value' => (isset($edit) && !empty($edit->signature)) ? asset('storage/signature/' . $edit->signature) : null,
+                'required' => false,
+                'accept' => 'image/png,image/jpeg,image/jpg,image/gif',
             ],
             [
                 'type' => 'select',
@@ -408,33 +410,29 @@ class UserController extends BaseUserController
                 'label' => 'Password',
                 'name' => 'password',
                 'class' => 'col-md-12 my-2',
-                'value' => 'admin123'
+                'value' => (isset($edit)) ? '' : 'admin123',
             ],
         ];
 
         return $fields;
     }
 
-    private function rules($id = null)
+    public function edit($id)
     {
-        $rules = [
-            'name' => 'required|string',
-            'email' => 'required|string|unique:users,email,' . $id . ',id',
-            // 'email' => 'required|string|unique:users',
-            'password' => 'required|string',
-        ];
+        $data['fields'] = $this->fields('edit', $id);
 
-        if ($id != null) {
-            unset($rules['password']);
-        }
-
-        return $rules;
+        return $data;
     }
 
-    public function store(Request $request)
+    public function update(Request $request, $id)
     {
+        $rules = $this->rules($id);
 
-        $rules = $this->rules();
+        // Add signature validation rule if file is uploaded
+        if ($request->hasFile('signature')) {
+            $rules['signature'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
+        }
+
         $name = $request->name;
         $email = $request->email;
         $company = $request->company;
@@ -444,7 +442,6 @@ class UserController extends BaseUserController
         $jk = $request->jk;
         $telp = $request->telp;
         $nik = $request->nik;
-        $signature = $request->signature;
         $roleId = $request->role_id;
         $password = $request->password;
 
@@ -463,6 +460,141 @@ class UserController extends BaseUserController
         DB::beginTransaction();
 
         try {
+            $user = User::findOrFail($id);
+            $oldSignature = $user->signature;
+
+            // Handle signature file upload
+            $signatureFileName = $oldSignature; // Keep old signature by default
+            if ($request->hasFile('signature')) {
+                $file = $request->file('signature');
+                $signatureFileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+                // Create directory if it doesn't exist
+                $uploadPath = storage_path('app/public/signature');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+
+                // Move the new file to storage
+                $file->move($uploadPath, $signatureFileName);
+
+                // Delete old signature file if it exists
+                if ($oldSignature && file_exists(storage_path('app/public/signature/' . $oldSignature))) {
+                    unlink(storage_path('app/public/signature/' . $oldSignature));
+                }
+            }
+
+            $user->name = $name;
+            $user->email = $email;
+            $user->nik = $nik;
+            $user->company = $company;
+            $user->divisi = $divisi;
+            $user->unit_kerja = $unit_kerja;
+            $user->status = $status;
+            $user->jk = $jk;
+            $user->telp = $telp;
+            $user->signature = $signatureFileName;
+            $user->role_id = $roleId;
+
+            // Only update password if provided
+            if (!empty($password)) {
+                $user->password = bcrypt($password);
+            }
+
+            $user->save();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'alert' => 'success',
+                'message' => 'Data Was Updated Successfully',
+            ], 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            // Delete uploaded file if there was an error and it's a new file
+            if ($request->hasFile('signature') && $signatureFileName && $signatureFileName !== $oldSignature) {
+                $filePath = storage_path('app/public/signature/' . $signatureFileName);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    private function rules($id = null)
+    {
+        $rules = [
+            'name' => 'required|string',
+            'email' => 'required|string|unique:users,email,' . $id . ',id',
+            'password' => 'required|string',
+        ];
+
+        if ($id != null) {
+            unset($rules['password']);
+        }
+
+        return $rules;
+    }
+
+    public function store(Request $request)
+    {
+        $rules = $this->rules();
+
+        // Add signature validation rule if file is uploaded
+        if ($request->hasFile('signature')) {
+            $rules['signature'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
+        }
+
+        $name = $request->name;
+        $email = $request->email;
+        $company = $request->company;
+        $divisi = $request->divisi;
+        $unit_kerja = $request->unit_kerja;
+        $status = $request->status;
+        $jk = $request->jk;
+        $telp = $request->telp;
+        $nik = $request->nik;
+        $roleId = $request->role_id;
+        $password = $request->password;
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $messageErrors = (new Validation)->modify($validator, $rules);
+
+            return response()->json([
+                'status' => false,
+                'alert' => 'danger',
+                'message' => 'Required Form',
+                'validation_errors' => $messageErrors,
+            ], 200);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Handle signature file upload
+            $signatureFileName = null;
+            if ($request->hasFile('signature')) {
+                $file = $request->file('signature');
+                $signatureFileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+                // Create directory if it doesn't exist
+                $uploadPath = storage_path('app/public/signature');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+
+                // Move the file to storage
+                $file->move($uploadPath, $signatureFileName);
+            }
+
             $insert = new User();
             $insert->name = $name;
             $insert->email = $email;
@@ -473,7 +605,7 @@ class UserController extends BaseUserController
             $insert->status = $status;
             $insert->jk = $jk;
             $insert->telp = $telp;
-            $insert->signature = $signature;
+            $insert->signature = $signatureFileName;
             $insert->role_id = $roleId;
             $insert->password = bcrypt($password);
             $insert->save();
@@ -487,6 +619,14 @@ class UserController extends BaseUserController
             ], 200);
         } catch (Exception $e) {
             DB::rollBack();
+
+            // Delete uploaded file if there was an error
+            if ($signatureFileName) {
+                $filePath = storage_path('app/public/signature/' . $signatureFileName);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
 
             return response()->json([
                 'status' => false,
