@@ -5,23 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TrainingNeedParticipant extends Model
+class NeedWorkshop extends Model
 {
     use HasFactory;
 
-    protected $table = 'need_participants';
+    protected $table = 'training_need_workshops';
     protected $primaryKey = 'id';
     protected $fillable = [];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
-    public function participants()
+    public function trainingNeed()
     {
-        return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id');
+        return $this->belongsTo(TrainingNeed::class, 'training_need_id');
     }
 
-    public function user()
+    public function workshop()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Workshop::class, 'workshop_id');
+    }
+
+    public function participants()
+    {
+        return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id', 'id');
     }
 
     public function getBtnDeleteAttribute()
@@ -46,9 +51,9 @@ class TrainingNeedParticipant extends Model
 
     public function getBtnShowAttribute()
     {
-        $html = "<button type='button' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;' onclick='setShowPreview(" . json_encode($this->id) . ")'>
+        $html = "<a href='" . url('training-need-participant') . "?header=" . $this->id . "' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
                 <i class='ti ti-eye'></i>
-                </button>";
+                </a>";
         return $html;
     }
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NeedWorkshopController;
 use App\Http\Controllers\TrainingAnalystController;
 use App\Http\Controllers\TrainingDetailController;
 use App\Http\Controllers\TrainingNeedController;
@@ -76,8 +77,16 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('training-need-import-excel-default', [TrainingNeedController::class, 'importExcel'])->name('training-need.import-excel-default');
     // Custome Route Training Needs
     Route::get('participant-ajax', [TrainingNeedController::class, 'participantAjax']);
+    Route::get('training-need-pdf', [TrainingNeedController::class, 'generatePDF'])->name('training-need.pdf');
 
-    // Route Training Needs Participant
+    // Route Training Need Workshops
+    Route::resource('need-workshop', NeedWorkshopController::class);
+    Route::get('need-workshop-api', [NeedWorkshopController::class, 'indexApi'])->name('need-workshop.listapi');
+    Route::get('need-workshop-export-pdf-default', [NeedWorkshopController::class, 'exportPdf'])->name('need-workshop.export-pdf-default');
+    Route::get('need-workshop-export-excel-default', [NeedWorkshopController::class, 'exportExcel'])->name('need-workshop.export-excel-default');
+    Route::post('need-workshop-import-excel-default', [NeedWorkshopController::class, 'importExcel'])->name('need-workshop.import-excel-default');
+
+    // Route Training Need Participant
     Route::resource('training-need-participant', TrainingNeedParticipantController::class);
     Route::get('training-need-participant-api', [TrainingNeedParticipantController::class, 'indexApi'])->name('training-need-participant.listapi');
     Route::get('training-need-participant-export-pdf-default', [TrainingNeedParticipantController::class, 'exportPdf'])->name('training-need-participant.export-pdf-default');
@@ -90,6 +99,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-schedule-export-pdf-default', [TrainingScheduleController::class, 'exportPdf'])->name('training-schedule.export-pdf-default');
     Route::get('training-schedule-export-excel-default', [TrainingScheduleController::class, 'exportExcel'])->name('training-schedule.export-excel-default');
     Route::post('training-schedule-import-excel-default', [TrainingScheduleController::class, 'importExcel'])->name('training-schedule.import-excel-default');
+    // Custome Route Schedule
+    Route::get('training-schedule-pdf', [TrainingScheduleController::class, 'generatePDF'])->name('training-schedule.pdf');
 
     // Route Training Unplanned
     Route::resource('training-unplanned', TrainingUnplannedController::class);

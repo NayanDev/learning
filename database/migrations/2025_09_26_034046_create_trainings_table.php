@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('status', ['open', 'submit', 'approve', 'closed'])->default('open');
             $table->text('description')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('approve_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

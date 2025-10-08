@@ -31,11 +31,12 @@ class TrainingAnalystController extends DefaultController
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
 
         $this->tableHeaders = [
-            ['name' => 'No', 'column' => '#', 'order' => true],
+            ['name' => 'No', 'column' => '#', 'order' => false],
             ['name' => 'qualification', 'column' => 'qualification', 'order' => true],
             ['name' => 'general', 'column' => 'general', 'order' => true],
             ['name' => 'technic', 'column' => 'technic', 'order' => true],
-            ['name' => 'user', 'column' => 'user_id', 'order' => true],
+            ['name' => 'user', 'column' => 'username', 'order' => true],
+            ['name' => 'departmen', 'column' => 'divisi', 'order' => true],
             ['name' => 'status', 'column' => 'status', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
@@ -67,12 +68,6 @@ class TrainingAnalystController extends DefaultController
         $trainingId = request()->query('training_id');
 
         $fields = [
-            [
-                'type' => 'hidden',
-                'name' => 'training_id',
-                'label' => 'Training ID',
-                'value' => $trainingId,
-            ],
             [
                 'type' => 'multiinput',
                 'label' => 'Qualification',
@@ -168,6 +163,19 @@ class TrainingAnalystController extends DefaultController
                 'required' => $this->flagRules('technical', $id),
                 'value' => (isset($edit)) ? $edit->technical : ''
             ],
+            [
+                'type' => 'hidden',
+                'name' => 'training_id',
+                'label' => 'Training ID',
+                'value' => $trainingId,
+            ],
+            [
+                'type' => 'hidden',
+                'label' => 'Department',
+                'name' =>  'divisi',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->divisi : Auth::user()->divisi,
+            ],
         ];
 
         return $fields;
@@ -187,6 +195,102 @@ class TrainingAnalystController extends DefaultController
         ];
 
         return $rules;
+    }
+
+    public function index()
+    {
+        $baseUrlExcel = route($this->generalUri . '.export-excel-default');
+        $baseUrlPdf = route($this->generalUri . '.export-pdf-default');
+
+        $params = "";
+        if (request('training_id')) {
+            $params = "?training_id=" . request('training_id');
+        }
+
+        $moreActions = [
+            [
+                'key' => 'import-excel-default',
+                'name' => 'Import Excel',
+                'html_button' => "<button id='import-excel' type='button' class='btn btn-sm btn-info radius-6' href='#' data-bs-toggle='modal' data-bs-target='#modalImportDefault' title='Import Excel' ><i class='ti ti-upload'></i></button>"
+            ],
+            [
+                'key' => 'export-excel-default',
+                'name' => 'Export Excel',
+                'html_button' => "<a id='export-excel' data-base-url='" . $baseUrlExcel . "' class='btn btn-sm btn-success radius-6' target='_blank' href='" . url($this->generalUri . '-export-excel-default') . "'  title='Export Excel'><i class='ti ti-cloud-download'></i></a>"
+            ],
+            [
+                'key' => 'export-pdf-default',
+                'name' => 'Export Pdf',
+                'html_button' => "<a id='export-pdf' data-base-url='" . $baseUrlPdf . "' class='btn btn-sm btn-danger radius-6' target='_blank' href='" . url($this->generalUri . '-export-pdf-default') . "' title='Export PDF'><i class='ti ti-file'></i></a>"
+            ],
+        ];
+
+        $permissions =  $this->arrPermissions;
+        if ($this->dynamicPermission) {
+            $permissions = (new Constant())->permissionByMenu($this->generalUri);
+        }
+        $layout = (request('from_ajax') && request('from_ajax') == true) ? 'easyadmin::backend.idev.list_drawer_ajax' : 'easyadmin::backend.idev.list_drawer';
+        if (isset($this->drawerLayout)) {
+            $layout = $this->drawerLayout;
+        }
+        $data['permissions'] = $permissions;
+        $data['more_actions'] = $moreActions;
+        $data['headerLayout'] = $this->pageHeaderLayout;
+        $data['table_headers'] = $this->tableHeaders;
+        $data['title'] = $this->title;
+        $data['uri_key'] = $this->generalUri;
+        $data['uri_list_api'] = route($this->generalUri . '.listapi') . $params;
+        $data['uri_create'] = route($this->generalUri . '.create');
+        $data['url_store'] = route($this->generalUri . '.store');
+        $data['fields'] = $this->fields();
+        $data['edit_fields'] = $this->fields('edit');
+        $data['actionButtonViews'] = $this->actionButtonViews;
+        $data['templateImportExcel'] = "#";
+        $data['import_scripts'] = $this->importScripts;
+        $data['import_styles'] = $this->importStyles;
+        $data['filters'] = $this->filters();
+
+        return view($layout, $data);
+    }
+
+    protected function defaultDataQuery()
+    {
+        $filters = [];
+        $orThose = null;
+        $orderBy = 'id';
+        $orderState = 'DESC';
+        if (request('search')) {
+            $orThose = request('search');
+        }
+        if (request('order')) {
+            $orderBy = request('order');
+            $orderState = request('order_state');
+        }
+        if (request('training_id')) {
+            $filters[] = ['training_id', '=', request('training_id')];
+        }
+
+        $dataQueries = AnalystHeader::join('users', 'users.id', '=', 'analyst_headers.user_id')
+            ->where($filters)
+            ->where(function ($query) use ($orThose) {
+                $query->where('analyst_headers.qualification', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('analyst_headers.general', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('analyst_headers.technic', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('analyst_headers.status', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('analyst_headers.divisi', 'LIKE', '%' . $orThose . '%');
+                $query->orWhere('users.name', 'LIKE', '%' . $orThose . '%');
+            });
+
+        // Cek role user
+        if (Auth::user()->role->name !== 'admin') {
+            $dataQueries = $dataQueries->where('analyst_headers.divisi', Auth::user()->divisi);
+        }
+
+        $dataQueries = $dataQueries
+            ->select('analyst_headers.*', 'users.name as username')
+            ->orderBy($orderBy, $orderState);
+
+        return $dataQueries;
     }
 
     public function store(Request $request)
@@ -221,6 +325,7 @@ class TrainingAnalystController extends DefaultController
                 'general'   => json_encode($generalData),
                 'technic'   => json_encode($technicalData),
                 'user_id'   => Auth::user()->id,
+                'divisi'   => $request->input('divisi'),
             ]);
 
             // Mengembalikan response JSON yang sesuai untuk EasyAdmin
@@ -310,6 +415,7 @@ class TrainingAnalystController extends DefaultController
         $data = [
             'analystHeader' => $analystHeader,
             'analystBody' => $analystBody,
+            'year' => AnalystHeader::with(['training'])->findOrFail($request->header),
             'created' => AnalystHeader::with(['user', 'approver'])->findOrFail($request->header),
         ];
 

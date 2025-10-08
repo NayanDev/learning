@@ -11,9 +11,8 @@ class Workshop extends Model
 
     protected $table = 'workshops';
     protected $primaryKey = 'id';
-    protected $fillable = ["name","department_id"];
+    protected $fillable = ["name", "department"];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
-
 
     public function getBtnDeleteAttribute()
     {
@@ -23,7 +22,7 @@ class Workshop extends Model
 
         return $html;
     }
-    
+
 
     public function getBtnEditAttribute()
     {
@@ -42,7 +41,7 @@ class Workshop extends Model
                 </button>";
         return $html;
     }
-    
+
 
     public function getUpdatedAtAttribute($value)
     {

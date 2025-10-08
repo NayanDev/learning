@@ -16,9 +16,15 @@ class AnalystHeader extends Model
         'user_id',
         'approve_by',
         'status',
+        'divisi',
     ];
 
     protected $appends = ['btn_delete', 'btn_show'];
+
+    public function training()
+    {
+        return $this->belongsTo(Training::class, 'training_id');
+    }
 
     public function user()
     {

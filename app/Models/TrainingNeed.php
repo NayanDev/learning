@@ -11,9 +11,42 @@ class TrainingNeed extends Model
 
     protected $table = 'training_needs';
     protected $primaryKey = 'id';
-    protected $fillable = ["nik","training_id","workshop_id","user_id","status","approve_by","start_date","end_date","instructur","name","position"];
-    protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
+    protected $fillable = ['nik', 'training_id', 'workshop_id', 'user_id', 'status', 'approve_by', 'start_date', 'end_date', 'instructur', 'position'];
+    protected $appends = ['btn_delete', 'btn_edit', 'btn_show', 'btn_print'];
 
+    public function training()
+    {
+        return $this->belongsTo(Training::class, 'training_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approve_by');
+    }
+
+    public function participants()
+    {
+        return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id');
+    }
+
+    public function workshops()
+    {
+        return $this->hasMany(NeedWorkshop::class, 'training_need_id');
+    }
+
+
+    public function getBtnPrintAttribute()
+    {
+        $html = "<a href='" . url('training-need-pdf') . "?training_id=" . $this->id . "' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
+                <i class='ti ti-file'></i>
+                </a>";
+        return $html;
+    }
 
     public function getBtnDeleteAttribute()
     {
@@ -23,7 +56,7 @@ class TrainingNeed extends Model
 
         return $html;
     }
-    
+
 
     public function getBtnEditAttribute()
     {
@@ -37,12 +70,12 @@ class TrainingNeed extends Model
 
     public function getBtnShowAttribute()
     {
-        $html = "<a href='" . url('training-need-participant') . "?header=" . $this->id . "' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
+        $html = "<a href='" . url('need-workshop') . "?header=" . $this->id . "' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
                 <i class='ti ti-eye'></i>
                 </a>";
         return $html;
     }
-    
+
 
     public function getUpdatedAtAttribute($value)
     {

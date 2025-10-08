@@ -1,513 +1,15 @@
 <?php
-$trainings = [
-    [
-        'divisi' => 'Produksi',
-        'training' => [
-            'workshop' => [
-                'Pelatihan K3' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'PelatihanPenggunaan APD dan APAR' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [1,2,3,4],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Line Clearance' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Sanitasi & Higienitas' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [1,2,3,4],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Lean manufacturing dan Penerapan OEE' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Leadership' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [1,2,3,4],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan CPOB 2024 & Good Documentation Practice' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Verifikasi Timbangan' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Penggunaan Aplikasi Analisa Data' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                '' => [
-                    'personil' => '', 
-                    'schedule' => [
-                        'jan' => [], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-            ],
-
-        ],
-        
-    ],
-    [
-        'divisi' => 'RND-REG',
-        'training' => [
-            'workshop' => [
-                'Pelatihan K3' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'PelatihanPenggunaan APD dan APAR' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [1,2,3,4],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Line Clearance' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Sanitasi & Higienitas' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [1,2,3,4],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Lean manufacturing dan Penerapan OEE' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Leadership' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [1,2,3,4],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan CPOB 2024 & Good Documentation Practice' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Verifikasi Timbangan' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Penggunaan Aplikasi Analisa Data' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-            ],
-
-        ],
-        
-    ],
-    [
-        'divisi' => 'SDM & Umum',
-        'training' => [
-            'workshop' => [
-                'Pelatihan K3' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'PelatihanPenggunaan APD dan APAR' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [1,2,3,4],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Line Clearance' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Sanitasi & Higienitas' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [1,2,3,4],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Lean manufacturing dan Penerapan OEE' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan Leadership' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [1,2,3,4],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Pelatihan CPOB 2024 & Good Documentation Practice' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Verifikasi Timbangan' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-                'Penggunaan Aplikasi Analisa Data' => [
-                    'personil' => '27 Peserta', 
-                    'schedule' => [
-                        'jan' => [1,2,3,4], // minggu yang di-highlight
-                        'feb' => [],
-                        'mar' => [],
-                        'apr' => [],
-                        'may' => [],
-                        'jun' => [],
-                        'jul' => [],
-                        'aug' => [],
-                        'sep' => [],
-                        'oct' => [],
-                        'nov' => [],
-                        'dec' => []
-                    ]
-                ],
-            ],
-
-        ],
-        
-    ],
-    
-];
-
 // Calculate Rowspan
-$totalRows = count($trainings[0]['training']['workshop']);
+$totalRows = 0;
+foreach ($trainings as $training) {
+    if (isset($training['training']['workshop']) && count($training['training']['workshop']) > 0) {
+        $totalRows = max($totalRows, count($training['training']['workshop']));
+    }
+}
+// Set minimum rows if no data
+if ($totalRows == 0) {
+    $totalRows = 1;
+}
 ?>
 
 <!DOCTYPE html>
@@ -539,6 +41,7 @@ $totalRows = count($trainings[0]['training']['workshop']);
             position: absolute;
             width: 40px;
             padding-top: 13px;
+            padding-left: 10px;
             /* border: 1px solid green; */
         }
 
@@ -612,10 +115,10 @@ $totalRows = count($trainings[0]['training']['workshop']);
 <body>
     <div class="letterhead">
             <img src="{{ asset('easyadmin/idev/img/kop-dokumen.png') }}" alt="PT Sampharindo">
-            <h3  style="border: 1px solid black;padding:20px 0 20px 20px;">JADWAL PELATIHAN KARYAWAN</h3>
+            <h3  style="border: 1px solid black;padding:25px 10px 25px 25px;">JADWAL PELATIHAN KARYAWAN</h3>
         </div>
         <div class="info-section">
-            <span>Tahun : 2025</span>
+            <span>Tahun : {{ $year ?? date('Y') }}</span>
         </div>
     <br>
 
@@ -650,28 +153,44 @@ $totalRows = count($trainings[0]['training']['workshop']);
                 </tr>
             </thead>
             <tbody>
-        @foreach($trainings as $training)
-            @php
-                $workshops = $training['training']['workshop'];
-                $rowspan = count($workshops);
-            @endphp
+        @if(empty($trainings))
+            <tr>
+                <td colspan="52" style="text-align: center; padding: 20px;">No data available</td>
+            </tr>
+        @else
+            @foreach($trainings as $training)
+                @php
+                    $workshops = $training['training']['workshop'] ?? [];
+                    $rowspan = count($workshops);
+                    
+                    // If no workshops, show division with empty row
+                    if ($rowspan == 0) {
+                        $rowspan = 1;
+                        $workshops = ['' => ['personil' => '', 'schedule' => [
+                            'jan' => [], 'feb' => [], 'mar' => [], 'apr' => [],
+                            'may' => [], 'jun' => [], 'jul' => [], 'aug' => [],
+                            'sep' => [], 'oct' => [], 'nov' => [], 'dec' => []
+                        ]]];
+                    }
+                @endphp
 
-            @foreach($workshops as $judul => $detail)
-                <tr>
-                    @if($loop->first)
-                        <td rowspan="{{ $rowspan }}">{{ $loop->parent->iteration }}</td>
-                        <td rowspan="{{ $rowspan }}">{{ $training['divisi'] }}</td>
-                    @endif
-                    <td class="text-start">{{ $judul }}</td> <!-- Contoh: 'Pelatihan K3' -->
-                    <td>{{ $detail['personil'] }}</td>
-                    @foreach(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] as $month)
-                        @for($week = 1; $week <= 4; $week++)
-                            <td class="{{ in_array($week, $detail['schedule'][$month]) ? 'highlight' : '' }}"></td>
-                        @endfor
-                    @endforeach
-                </tr>
+                @foreach($workshops as $judul => $detail)
+                    <tr>
+                        @if($loop->first)
+                            <td rowspan="{{ $rowspan }}">{{ $loop->parent->iteration }}</td>
+                            <td rowspan="{{ $rowspan }}">{{ $training['divisi'] }}</td>
+                        @endif
+                        <td class="text-start">{{ $judul }}</td>
+                        <td>{{ $detail['personil'] ?? '' }}</td>
+                        @foreach(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] as $month)
+                            @for($week = 1; $week <= 4; $week++)
+                                <td class="{{ in_array($week, $detail['schedule'][$month] ?? []) ? 'highlight' : '' }}"></td>
+                            @endfor
+                        @endforeach
+                    </tr>
+                @endforeach
             @endforeach
-        @endforeach
+        @endif
                 
             </tbody>
         </table>
@@ -681,9 +200,22 @@ $totalRows = count($trainings[0]['training']['workshop']);
             <td class="no-border text-center"style="width:20%;">
                 Disiapkan Oleh,
                 <br><br>
-                <img width="75" src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="Tanda Tangan">
+                @if($created->status === 'approve')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>Anto Wardana</strong>
+                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <br>
+                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                @elseif($created->status === 'submit')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <br>
+                <strong>{{ $created->user->name ?? '-' }}</strong>
+                @else
+                <div style="height: 50px"></div>
+                <strong>{{ $created->user->name ?? '-' }}</strong>
+                <br>
+                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
@@ -691,9 +223,16 @@ $totalRows = count($trainings[0]['training']['workshop']);
             <td class="no-border text-center"style="width:20%;">
                 Disetujui Oleh,
                 <br><br>
-                <img width="75" src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="Tanda Tangan">
+                @if($created->status === 'approve')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>Ramadhan Reza Akbar</strong>
+                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
+                <br>
+                <span>Manager {{ $created->approver->divisi ?? '-' }}</span>
+                @else
+                <div style="height: 50px"></div>
+                <em>Data belum disiapkan</em>
+                @endif
             </td>
         </tr>
     </table>

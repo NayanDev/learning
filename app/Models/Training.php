@@ -14,13 +14,23 @@ class Training extends Model
     protected $fillable = [];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_multilink'];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approve_by');
+    }
+
     public function getBtnMultilinkAttribute()
     {
         $arrLink = [
             ['label' => 'Training Detail', 'url' => url('training-detail') . "?training_id=" . $this->id, 'icon' => 'ti ti-eye'],
             ['label' => 'Training Analyst', 'url' => url('training-analyst') . "?training_id=" . $this->id, 'icon' => 'ti ti-users'],
             ['label' => 'Training Needs', 'url' => url('training-need') . "?training_id=" . $this->id, 'icon' => 'ti ti-archive'],
-            ['label' => 'Training Schedule', 'url' => url('training-schedule') . "?training_id=" . $this->id, 'icon' => 'ti ti-calendar'],
+            ['label' => 'Training Schedule', 'url' => url('training-schedule') . "?year=" . $this->year, 'icon' => 'ti ti-calendar'],
             ['label' => 'Training Unplanned', 'url' => url('training-unplanned') . "?training_id=" . $this->id, 'icon' => 'ti ti-help'],
         ];
 

@@ -1,153 +1,48 @@
 <?php
-$trainings = [
-    [
-        'nama' => 'Warehouse in Pharmaceutical Industry',
-        'durasi' => '2 Jam',
-        'instruktur' => 'Internal',
-        'personil' => '27 Personil', 
-        'jabatan' => 'SCM',
-        'schedule' => [
-            'jan' => [1,2,3,4], // minggu yang di-highlight
-            'feb' => [],
-            'mar' => [],
-            'apr' => [],
-            'may' => [],
-            'jun' => [],
-            'jul' => [],
-            'aug' => [],
-            'sep' => [],
-            'oct' => [],
-            'nov' => [],
-            'dec' => []
-        ]
-    ],
-    [
-        'nama' => 'Leadership',
-        'durasi' => '2 Jam',
-        'instruktur' => 'Eksternal',
-        'personil' => '7 Personil',
-        'jabatan' => 'SCM',
-        'schedule' => [
-            'jan' => [],
-            'feb' => [1,2],
-            'mar' => [],
-            'apr' => [],
-            'may' => [],
-            'jun' => [],
-            'jul' => [],
-            'aug' => [],
-            'sep' => [],
-            'oct' => [],
-            'nov' => [],
-            'dec' => [2]
-        ]
-],
-[
+$transformedTrainings = [];
+
+foreach ($trainings as $training) {
+    // Hitung durasi dalam jam
+    $start = \Carbon\Carbon::parse($training['header']['start_date']);
+    $end = \Carbon\Carbon::parse($training['header']['end_date']);
+    $durasi = $start->diffInHours($end) . ' Jam';
+
+    // Tentukan minggu mana yang aktif berdasarkan start_date
+    $weekNumber = \Carbon\Carbon::parse($training['header']['start_date'])->weekOfMonth;
+    $month = strtolower(\Carbon\Carbon::parse($training['header']['start_date'])->format('M'));
+    
+    $schedule = [
+        'jan' => [], 'feb' => [], 'mar' => [], 'apr' => [], 
+        'may' => [], 'jun' => [], 'jul' => [], 'aug' => [], 
+        'sep' => [], 'oct' => [], 'nov' => [], 'dec' => []
+    ];
+    
+    // Set minggu yang aktif
+    $schedule[$month] = [$weekNumber];
+
+    $transformedTrainings[] = [
+        'nama' => $training['header']['workshop_name'],
+        'durasi' => $durasi,
+        'instruktur' => ucfirst($training['header']['instructor']),
+        'personil' => count($training['participants']) . ' Personil',
+        'jabatan' => $training['header']['position'],
+        'schedule' => $schedule
+    ];
+}
+
+// Tambahkan baris kosong jika jumlah data kurang dari 10
+while (count($transformedTrainings) < 10) {
+    $transformedTrainings[] = [
         'nama' => '',
         'durasi' => '',
         'instruktur' => '',
         'personil' => '',
         'jabatan' => '',
-        'schedule' => [
-            'jan' => [],
-            'feb' => [],
-            'mar' => [],
-            'apr' => [],
-            'may' => [],
-            'jun' => [],
-            'jul' => [],
-            'aug' => [],
-            'sep' => [],
-            'oct' => [],
-            'nov' => [],
-            'dec' => []
-        ]
-],
-[
-        'nama' => '',
-        'durasi' => '',
-        'instruktur' => '',
-        'personil' => '',
-        'jabatan' => '',
-        'schedule' => [
-            'jan' => [],
-            'feb' => [],
-            'mar' => [],
-            'apr' => [],
-            'may' => [],
-            'jun' => [],
-            'jul' => [],
-            'aug' => [],
-            'sep' => [],
-            'oct' => [],
-            'nov' => [],
-            'dec' => []
-        ]
-],
-[
-        'nama' => '',
-        'durasi' => '',
-        'instruktur' => '',
-        'personil' => '',
-        'jabatan' => '',
-        'schedule' => [
-            'jan' => [],
-            'feb' => [],
-            'mar' => [],
-            'apr' => [],
-            'may' => [],
-            'jun' => [],
-            'jul' => [],
-            'aug' => [],
-            'sep' => [],
-            'oct' => [],
-            'nov' => [],
-            'dec' => []
-        ]
-],
-[
-        'nama' => '',
-        'durasi' => '',
-        'instruktur' => '',
-        'personil' => '',
-        'jabatan' => '',
-        'schedule' => [
-            'jan' => [],
-            'feb' => [],
-            'mar' => [],
-            'apr' => [],
-            'may' => [],
-            'jun' => [],
-            'jul' => [],
-            'aug' => [],
-            'sep' => [],
-            'oct' => [],
-            'nov' => [],
-            'dec' => []
-        ]
-],
-[
-        'nama' => '',
-        'durasi' => '',
-        'instruktur' => '',
-        'personil' => '',
-        'jabatan' => '',
-        'schedule' => [
-            'jan' => [],
-            'feb' => [],
-            'mar' => [],
-            'apr' => [],
-            'may' => [],
-            'jun' => [],
-            'jul' => [],
-            'aug' => [],
-            'sep' => [],
-            'oct' => [],
-            'nov' => [],
-            'dec' => []
-        ]
-],
-];
+        'schedule' => array_fill_keys(['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'], [])
+    ];
+}
+
+$trainings = $transformedTrainings;
 ?>
 
 <!DOCTYPE html>
@@ -171,8 +66,8 @@ $trainings = [
             position: relative;
             margin-bottom: 10px;
             overflow: visible;
-            padding-bottom: 10px;
-            /* border: 2px solid black; */
+            padding-bottom: 40px;
+            border: 1px solid black;
         }
 
         .letterhead img {
@@ -254,9 +149,8 @@ $trainings = [
             <h3>RENCANA USULAN PELATIHAN</h3>
     </div>
     <div class="info-section">
-        <br><br>
-        <span style="float:left;font-size:7px;">Divisi / Bagian / Unit Kerja :  Produksi</span>
-        <span style="float:right;font-size:7px;">Periode 2025</span>
+        <span style="float:left;font-size:7px;">Divisi / Bagian / Unit Kerja :  {{ $created->user->divisi }}</span>
+        <span style="float:right;font-size:7px;">Periode {{ $year->training->year }}</span>
     </div>
     <br>
 
@@ -318,9 +212,24 @@ $trainings = [
             <td class="no-border text-center"style="width:20%;">
                 Disiapkan Oleh,
                 <br><br>
-                <img width="75" src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="Tanda Tangan">
+                @if($created->status === 'approve')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>Anto Wardana</strong>
+                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <br>
+                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                @elseif($created->status === 'submit')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <br>
+                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <br>
+                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                @else
+                <div style="height: 50px"></div>
+                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <br>
+                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
@@ -328,12 +237,19 @@ $trainings = [
             <td class="no-border text-center"style="width:20%;">
                 Disetujui Oleh,
                 <br><br>
-                <img width="75" src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="Tanda Tangan">
+                @if($created->status === 'approve')
+                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
                 <br>
-                <strong>Ramadhan Reza Akbar</strong>
+                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
+                <br>
+                <span>Manager {{ $created->approver->divisi ?? '-' }}</span>
+                @else
+                <div style="height: 50px"></div>
+                <em>Data belum disiapkan</em>
+                @endif
             </td>
         </tr>
     </table>
-    <p style="text-align: right">F.DUP.10.R.00.T.01.07.17</p>
+    <p style="text-align: right">F.DUP.04.R.00.T.01.07.17</p>
 </body>
 </html>
