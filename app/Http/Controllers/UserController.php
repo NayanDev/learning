@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Idev\EasyAdmin\app\Helpers\Validation;
 use Illuminate\Support\Facades\Validator;
 
@@ -395,7 +397,7 @@ class UserController extends BaseUserController
                 'class' => 'col-md-12 my-2',
                 'value' => (isset($edit) && !empty($edit->signature)) ? asset('storage/signature/' . $edit->signature) : null,
                 'required' => false,
-                'accept' => 'image/png,image/jpeg,image/jpg,image/gif',
+                'accept' => 'image/png,image/jpeg,image/jpg,image/gif,image/svg+xml',
             ],
             [
                 'type' => 'select',
@@ -430,7 +432,7 @@ class UserController extends BaseUserController
 
         // Add signature validation rule if file is uploaded
         if ($request->hasFile('signature')) {
-            $rules['signature'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
+            $rules['signature'] = 'required|mimes:jpeg,png,jpg,gif,svg|max:2048';
         }
 
         $name = $request->name;
@@ -549,7 +551,7 @@ class UserController extends BaseUserController
 
         // Add signature validation rule if file is uploaded
         if ($request->hasFile('signature')) {
-            $rules['signature'] = 'required|image|mimes:jpeg,png,jpg,gif|max:2048';
+            $rules['signature'] = 'required|mimes:jpeg,png,jpg,gif,svg|max:2048';
         }
 
         $name = $request->name;
@@ -627,6 +629,211 @@ class UserController extends BaseUserController
                     unlink($filePath);
                 }
             }
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function profile()
+    {
+        $edit = User::where('id', Auth::user()->id)->first();
+
+        $fields = [
+            [
+                'type' => 'onlyview',
+                'label' => 'NIK',
+                'name' => 'nik',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->nik : '',
+                // 'options' => $employeeOptions,
+                'placeholder' => 'Pilih Karyawan',
+                'filter' => true,
+                'autofill' => true // Add this to enable autofill
+            ],
+            [
+                'type' => 'text',
+                'label' => 'Name',
+                'name' => 'name',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->name : ''
+            ],
+            [
+                'type' => 'text',
+                'label' => 'Email',
+                'name' => 'email',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->email : ''
+            ],
+            [
+                'type' => 'onlyview',
+                'label' => 'Gender',
+                'name' => 'jk',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->jk : ''
+            ],
+
+            [
+                'type' => 'text',
+                'label' => 'Phone',
+                'name' => 'telp',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->telp : ''
+            ],
+            [
+                'type' => 'image',
+                'label' => 'Signature',
+                'name' => 'signature',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit) && !empty($edit->signature)) ? asset('storage/signature/' . $edit->signature) : null,
+                'required' => false,
+                'accept' => 'image/png,image/jpeg,image/jpg,image/gif,image/svg+xml',
+            ],
+            [
+                'type' => 'hidden',
+                'label' => 'Role',
+                'name' => 'role_id',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->role_id : '',
+                // 'options' => $arrRole
+            ],
+            [
+                'type' => 'password',
+                'label' => 'Password',
+                'name' => 'password',
+                'class' => 'col-md-12 my-2',
+                'value' => ''
+            ],
+            [
+                'type' => 'hidden',
+                'label' => 'Company',
+                'name' => 'company',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->company : ''
+            ],
+            [
+                'type' => 'hidden',
+                'label' => 'Divisi',
+                'name' => 'divisi',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->divisi : ''
+            ],
+            [
+                'type' => 'hidden',
+                'label' => 'Unit Kerja',
+                'name' => 'unit_kerja',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->unit_kerja : ''
+            ],
+            [
+                'type' => 'hidden',
+                'label' => 'Status',
+                'name' => 'status',
+                'class' => 'col-md-12 my-2',
+                'value' => (isset($edit)) ? $edit->status : ''
+            ],
+        ];
+
+        $data['title'] = $this->title;
+        $data['uri_key'] = $this->generalUri;
+        $data['fields'] = $fields;
+
+        $layout = 'easyadmin::backend.idev.myaccount';
+        if (View::exists('backend.idev.myaccount')) {
+            $layout = 'backend.idev.myaccount';
+        }
+
+        return view($layout, $data);
+    }
+
+
+    public function updateProfile(Request $request)
+    {
+        if ($request->hasFile('signature')) {
+            $rules['signature'] = 'required|mimes:jpeg,png,jpg,gif,svg|max:2048';
+        }
+
+        $name = $request->name;
+        $email = $request->email;
+        $company = $request->company;
+        $divisi = $request->divisi;
+        $unit_kerja = $request->unit_kerja;
+        $status = $request->status;
+        $jk = $request->jk;
+        $telp = $request->telp;
+        $nik = $request->nik;
+        $roleId = $request->role_id;
+        $password = $request->password;
+        $id = Auth::user()->id;
+
+        DB::beginTransaction();
+        $rules = $this->rules($id);
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $messageErrors = (new Validation)->modify($validator, $rules, 'edit_');
+
+            return response()->json([
+                'status' => false,
+                'alert' => 'danger',
+                'message' => 'Required Form',
+                'validation_errors' => $messageErrors,
+            ], 200);
+        }
+
+        try {
+            $user = User::findOrFail($id);
+            $oldSignature = $user->signature;
+
+            // Handle signature file upload
+            $signatureFileName = $oldSignature; // Keep old signature by default
+            if ($request->hasFile('signature')) {
+                $file = $request->file('signature');
+                $signatureFileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+                // Create directory if it doesn't exist
+                $uploadPath = storage_path('app/public/signature');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+
+                // Move the new file to storage
+                $file->move($uploadPath, $signatureFileName);
+
+                // Delete old signature file if it exists
+                if ($oldSignature && file_exists(storage_path('app/public/signature/' . $oldSignature))) {
+                    unlink(storage_path('app/public/signature/' . $oldSignature));
+                }
+            }
+
+            $change = User::where('id', $id)->first();
+            $change->name = $name;
+            $change->email = $email;
+            $change->nik = $nik;
+            $change->company = $company;
+            $change->divisi = $divisi;
+            $change->unit_kerja = $unit_kerja;
+            $change->status = $status;
+            $change->jk = $jk;
+            $change->telp = $telp;
+            $change->signature = $signatureFileName;
+            $change->role_id = $roleId;
+            if ($password) {
+                $change->password = bcrypt($password);
+            }
+            $change->save();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'alert' => 'success',
+                'message' => 'Data Was Updated Successfully',
+            ], 200);
+        } catch (Exception $e) {
+            DB::rollBack();
 
             return response()->json([
                 'status' => false,

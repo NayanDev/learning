@@ -22,20 +22,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     // Route Users
     Route::resource('user', UserController::class);
     Route::get('user-api', [UserController::class, 'indexApi'])->name('user.listapi');
-
-    // Route Department
-    // Route::resource('department', DepartmentController::class);
-    // Route::get('department-api', [DepartmentController::class, 'indexApi'])->name('department.listapi');
-    // Route::get('department-export-pdf-default', [DepartmentController::class, 'exportPdf'])->name('department.export-pdf-default');
-    // Route::get('department-export-excel-default', [DepartmentController::class, 'exportExcel'])->name('department.export-excel-default');
-    // Route::post('department-import-excel-default', [DepartmentController::class, 'importExcel'])->name('department.import-excel-default');
-
-    // Route Employee
-    // Route::resource('employee', EmployeeController::class);
-    // Route::get('employee-api', [EmployeeController::class, 'indexApi'])->name('employee.listapi');
-    // Route::get('employee-export-pdf-default', [EmployeeController::class, 'exportPdf'])->name('employee.export-pdf-default');
-    // Route::get('employee-export-excel-default', [EmployeeController::class, 'exportExcel'])->name('employee.export-excel-default');
-    // Route::post('employee-import-excel-default', [EmployeeController::class, 'importExcel'])->name('employee.import-excel-default');
+    Route::get('my-account', [UserController::class, 'profile']);
+    Route::post('update-profile', [UserController::class, 'updateProfile']);
 
     // Route Workshop
     Route::resource('workshop', WorkshopController::class);
