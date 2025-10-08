@@ -17,6 +17,7 @@ if ($totalRows == 0) {
 <head>
     <meta charset="utf-8">
     <title>Jadwal Training</title>
+    <link rel="icon" href=" {{ config('idev.app_favicon', asset('easyadmin/idev/img/favicon.png')) }}">
     <style>
         body {
             font-size: 6px;

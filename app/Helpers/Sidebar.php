@@ -69,7 +69,7 @@ class Sidebar
         // ],
         [
           'name' => 'Workshop',
-          'icon' => 'ti ti-menu',
+          'icon' => 'ti ti-tools',
           'key' => 'workshop',
           'base_key' => 'workshop',
           'visibility' => true,
@@ -78,7 +78,7 @@ class Sidebar
         ],
         [
           'name' => 'Training',
-          'icon' => 'ti ti-menu',
+          'icon' => 'ti ti-device-analytics',
           'key' => 'training',
           'base_key' => 'training',
           'visibility' => true,
