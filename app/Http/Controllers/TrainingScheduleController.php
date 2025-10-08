@@ -105,7 +105,7 @@ class TrainingScheduleController extends DefaultController
         $data['table_headers'] = $this->tableHeaders;
         $data['title'] = $this->title;
         $data['uri_key'] = $this->generalUri;
-        $data['uri_list_api'] = route($this->generalUri . '.listapi') . $params;
+        $data['uri_list_api'] = route($this->generalUri . '.listapi') . $pdfParams;
         $data['uri_create'] = route($this->generalUri . '.create');
         $data['url_store'] = route($this->generalUri . '.store');
         $data['fields'] = $this->fields();
@@ -229,10 +229,14 @@ class TrainingScheduleController extends DefaultController
             $orderBy = request('order');
             $orderState = request('order_state');
         }
+        if (request('year')) {
+            $filters[] = ['trainings.year', '=', request('year')];
+        }
 
         $dataQueries = NeedWorkshop::join('training_needs', 'training_needs.id', '=', 'training_need_workshops.training_need_id')
-            // ->join('employees', 'employees.id', '=', 'training_needs.nik')
             ->join('workshops', 'workshops.id', '=', 'training_need_workshops.workshop_id')
+            ->join('trainings', 'trainings.id', '=', 'training_needs.training_id')
+            // ->where('trainings.year', request('year'))
             ->where($filters)
             ->where(function ($query) use ($orThose) {
                 $query->where('workshops.name', 'LIKE', '%' . $orThose . '%');
