@@ -751,30 +751,16 @@ class UserController extends BaseUserController
 
     public function updateProfile(Request $request)
     {
-        if ($request->hasFile('signature')) {
-            $rules['signature'] = 'required|mimes:jpeg,png,jpg,gif,svg|max:2048';
-        }
-
-        $name = $request->name;
-        $email = $request->email;
-        $company = $request->company;
-        $divisi = $request->divisi;
-        $unit_kerja = $request->unit_kerja;
-        $status = $request->status;
-        $jk = $request->jk;
-        $telp = $request->telp;
-        $nik = $request->nik;
-        $roleId = $request->role_id;
-        $password = $request->password;
         $id = Auth::user()->id;
-
-        DB::beginTransaction();
         $rules = $this->rules($id);
+        
+        if ($request->hasFile('signature_file')) {
+            $rules['signature_file'] = 'required|mimes:jpeg,png,jpg,gif,svg|max:2048';
+        }
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             $messageErrors = (new Validation)->modify($validator, $rules, 'edit_');
-
             return response()->json([
                 'status' => false,
                 'alert' => 'danger',
@@ -783,61 +769,89 @@ class UserController extends BaseUserController
             ], 200);
         }
 
+        DB::beginTransaction();
         try {
             $user = User::findOrFail($id);
             $oldSignature = $user->signature;
+            $signatureFileName = $oldSignature;
 
-            // Handle signature file upload
-            $signatureFileName = $oldSignature; // Keep old signature by default
-            if ($request->hasFile('signature')) {
-                $file = $request->file('signature');
-                $signatureFileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
-                // Create directory if it doesn't exist
-                $uploadPath = storage_path('app/public/signature');
-                if (!file_exists($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
+            // Handle signature based on method
+            if ($request->input('signature_method') === 'draw' && $request->input('signature_data')) {
+                $signatureData = $request->input('signature_data');
+                
+                if (strpos($signatureData, 'data:image/svg+xml') === 0) {
+                    // Save SVG to storage folder
+                    $svgData = str_replace('data:image/svg+xml;base64,', '', $signatureData);
+                    $svgContent = base64_decode($svgData);
+                    $signatureFileName = 'signature_' . time() . '_' . uniqid() . '.svg';
+                    
+                    $storagePath = storage_path('app/public/signature');
+                    if (!file_exists($storagePath)) {
+                        mkdir($storagePath, 0755, true);
+                    }
+                    
+                    file_put_contents($storagePath . '/' . $signatureFileName, $svgContent);
+                } else {
+                    // Handle PNG fallback
+                    $pngData = str_replace('data:image/png;base64,', '', $signatureData);
+                    $pngContent = base64_decode($pngData);
+                    $signatureFileName = 'signature_' . time() . '_' . uniqid() . '.png';
+                    
+                    $storagePath = storage_path('app/public/signature');
+                    if (!file_exists($storagePath)) {
+                        mkdir($storagePath, 0755, true);
+                    }
+                    
+                    file_put_contents($storagePath . '/' . $signatureFileName, $pngContent);
                 }
+            } elseif ($request->hasFile('signature_file')) {
+                $file = $request->file('signature_file');
+                $signatureFileName = 'upload_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                
+                $storagePath = storage_path('app/public/signature');
+                if (!file_exists($storagePath)) {
+                    mkdir($storagePath, 0755, true);
+                }
+                
+                $file->move($storagePath, $signatureFileName);
+            }
 
-                // Move the new file to storage
-                $file->move($uploadPath, $signatureFileName);
-
-                // Delete old signature file if it exists
-                if ($oldSignature && file_exists(storage_path('app/public/signature/' . $oldSignature))) {
-                    unlink(storage_path('app/public/signature/' . $oldSignature));
+            // Delete old signature if exists and different
+            if ($oldSignature && $oldSignature !== $signatureFileName) {
+                $oldPath = storage_path('app/public/signature/' . $oldSignature);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
                 }
             }
 
-            $change = User::where('id', $id)->first();
-            $change->name = $name;
-            $change->email = $email;
-            $change->nik = $nik;
-            $change->company = $company;
-            $change->divisi = $divisi;
-            $change->unit_kerja = $unit_kerja;
-            $change->status = $status;
-            $change->jk = $jk;
-            $change->telp = $telp;
-            $change->signature = $signatureFileName;
-            $change->role_id = $roleId;
-            if ($password) {
-                $change->password = bcrypt($password);
-            }
-            $change->save();
+            // Update user data
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'nik' => $request->nik,
+                'company' => $request->company,
+                'divisi' => $request->divisi,
+                'unit_kerja' => $request->unit_kerja,
+                'status' => $request->status,
+                'jk' => $request->jk,
+                'telp' => $request->telp,
+                'signature' => $signatureFileName,
+                'role_id' => $request->role_id,
+                'password' => $request->password ? bcrypt($request->password) : $user->password,
+            ]);
 
             DB::commit();
-
             return response()->json([
                 'status' => true,
                 'alert' => 'success',
-                'message' => 'Data Was Updated Successfully',
+                'message' => 'Profile updated successfully!',
             ], 200);
+            
         } catch (Exception $e) {
             DB::rollBack();
-
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Error: ' . $e->getMessage(),
             ], 500);
         }
     }
