@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-    protected $appends = ['btn_destroy', 'btn_edit', 'btn_show', 'signature_display'];
+    protected $appends = ['btn_destroy', 'btn_edit', 'btn_show', 'view_image'];
 
     /**
      * The attributes that are mass assignable.
@@ -80,14 +80,21 @@ class User extends Authenticatable
         return $html;
     }
 
-    public function getSignatureDisplayAttribute()
+    public function getViewImageAttribute()
     {
         if ($this->signature) {
-            $html = "<img src='" . asset('storage/signature/' . $this->signature) . "' alt='Signature' style='max-width: 20px; height: auto;'>";
-        } else {
-            $html = '<span class="text-muted">No signature</span>';
+            return asset('storage/signature/' . $this->signature);
         }
-        return $html;
+        return null;
+    }
+
+    // Method khusus untuk mendapatkan HTML signature
+    public function getSignatureHtmlAttribute()
+    {
+        if ($this->signature) {
+            return "<img src='" . asset('storage/signature/' . $this->signature) . "' alt='Signature' style='max-width: 50px; max-height: 30px; object-fit: contain; border-radius: 4px;'>";
+        }
+        return '<span class="text-muted">No signature</span>';
     }
 
 
