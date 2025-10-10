@@ -67,15 +67,15 @@ $trainings = $transformedTrainings;
             position: relative;
             margin-bottom: 10px;
             overflow: visible;
-            padding-bottom: 40px;
-            border: 1px solid black;
+            padding-bottom: 10px;
+            /* border: 1px solid black; */
         }
 
         .letterhead img {
             position: absolute;
             width: 40px;
-            padding-top: 5px;
-            padding-bottom: 5px;
+            padding-top: 13px;
+            padding-left: 10px;
             /* border: 1px solid green; */
         }
 
@@ -147,7 +147,7 @@ $trainings = $transformedTrainings;
 <body>
     <div class="letterhead">
             <img src="{{ asset('easyadmin/idev/img/kop-dokumen.png') }}" alt="PT Sampharindo">
-            <h3>RENCANA USULAN PELATIHAN</h3>
+            <h3  style="border: 1px solid black;padding:25px 10px 25px 25px;">RENCANA USULAN PELATIHAN</h3>
     </div>
     <div class="info-section">
         <span style="float:left;font-size:7px;">Divisi / Bagian / Unit Kerja :  {{ $created->user->divisi }}</span>
