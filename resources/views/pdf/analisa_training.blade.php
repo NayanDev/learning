@@ -28,7 +28,7 @@ function addLineBreaks($text)
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Analisa Kebutuhan Pelatihan</title>
+    <title>Training Need Analyst</title>
     <link rel="icon" href=" {{ config('idev.app_favicon', asset('easyadmin/idev/img/favicon.png')) }}">
     <style>
         body {

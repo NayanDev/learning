@@ -49,7 +49,7 @@ $trainings = $transformedTrainings;
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Rencana Usulan Pelatihan</title>
+    <title>Training Needs</title>
     <link rel="icon" href=" {{ config('idev.app_favicon', asset('easyadmin/idev/img/favicon.png')) }}">
     <style>
         body {

@@ -13,6 +13,7 @@
                     
                     <!-- Hidden input untuk ID -->
                     <input type="hidden" name="approval_id" id="approval_id">
+                    <input type="hidden" value="{{ auth()->user()->id }}" name="approve_by" id="approve_by">
 
                     <div class="my-2">
                         <label for="apprej">Status</label>
@@ -79,6 +80,7 @@
     function actionApproval() {
         var status = $("#apprej").val();
         var notes = $("#approval_notes").val();
+        var approve_by = $("#approve_by").val();
         var token = $("input[name='_token']").val();
         var id = $("#approval_id").val(); // Ambil ID dari hidden input
 
@@ -97,7 +99,8 @@
             data: {
                 _token: token,
                 status: status,
-                notes: notes
+                notes: notes,
+                approve_by: approve_by,
             },
             success: function (response) {
                 Swal.fire({

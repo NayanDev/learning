@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('approve_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->dateTime('created_date')->nullable();
             $table->timestamps();
         });
     }

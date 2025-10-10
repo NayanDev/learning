@@ -295,6 +295,7 @@ class TrainingController extends DefaultController
     {
         $training = Training::findOrFail($id);
         $training->status = $request->status;
+        $training->approve_by = $request->approve_by;
         $training->notes = $request->notes ?: '-';
         $training->updated_at = now();
         $training->save();

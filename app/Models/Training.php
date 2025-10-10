@@ -51,6 +51,7 @@ class Training extends Model
         ];
 
         $roleName = auth()->user()->role->name;
+        $divisiName = auth()->user()->role->divisi;
 
         $btn = "<button type='button' class='btn btn-outline-primary btn-sm radius-6' style='margin:1px;' 
                 data-bs-toggle='modal'  
@@ -70,7 +71,7 @@ class Training extends Model
             if ($roleName === "admin") {
                 $html = $btnOff;
                 return $html;
-            } else if ($roleName === "manager") {
+            } else if ($roleName === "manager" && $divisiName === "UMUM & SDM") {
                 $html = $btn;
                 return $html;
             }
@@ -78,14 +79,14 @@ class Training extends Model
             if ($roleName === "admin") {
                 $html = $btn;
                 return $html;
-            } else if ($roleName === "manager") {
+            } else if ($roleName === "manager" && $divisiName === "UMUM & SDM") {
                 $html = $btnOff;
                 return $html;
             } else if ($roleName === "direktur") {
                 $html = $btn;
                 return $html;
             }
-        } else if ($this->status === "close") {
+        } else if (($this->status === "close" && $roleName === "admin") || ($this->status === "close" && $roleName === "manager" && $divisiName === "UMUM & SDM") || ($this->status === "close" && $roleName === "direktur")) {
             $html = $pdf;
             return $html;
         }
