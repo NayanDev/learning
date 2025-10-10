@@ -199,40 +199,44 @@ if ($totalRows == 0) {
     <table class="no-border" style="width:100%;">
         <tr>
             <td class="no-border text-center"style="width:20%;">
-                Disiapkan Oleh,
+                Semarang, {{ now()->format('d F Y') }} 
+                <br>
+                Dibuat Oleh,
                 <br><br>
                 @if($created->status === 'close')
                 <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
                 <br>
                 <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ $created->user->divisi ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower($created->user->divisi)) ?? '-' }}</span>
                 @elseif($created->status === 'submit')
                 <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
                 <br>
-                <strong>{{ $created->user->name ?? '-' }}</strong>
+                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <br>
+                <span>Manager {{ ucwords(strtolower($created->user->divisi)) ?? '-' }}</span>
                 @else
                 <div style="height: 50px"></div>
-                <strong>{{ $created->user->name ?? '-' }}</strong>
+                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ $created->user->divisi ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower($created->user->divisi)) ?? '-' }}</span>
                 @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border text-center"style="width:20%;">
-                Disetujui Oleh,
+                Mengetahui,
                 <br><br>
                 @if($created->status === 'close')
                 <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Direktur {{ $created->approver->divisi ?? '-' }}</span>
+                <span>Direktur {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
                 @else
                 <div style="height: 50px"></div>
-                <em>Data belum disiapkan</em>
+                <em>Data belum tersedia</em>
                 @endif
             </td>
         </tr>

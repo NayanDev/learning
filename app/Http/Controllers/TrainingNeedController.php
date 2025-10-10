@@ -317,6 +317,18 @@ class TrainingNeedController extends DefaultController
         return $dataQueries;
     }
 
+    public function approve(Request $request, $id)
+    {
+        $training = TrainingNeed::findOrFail($id);
+        $training->status = $request->status;
+        $training->approve_by = $request->approve_by;
+        $training->notes = $request->notes ?: '-';
+        $training->updated_at = now();
+        $training->save();
+
+        return response()->json(['message' => 'Status updated']);
+    }
+
     public function generatePDF(Request $request)
     {
         try {
