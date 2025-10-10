@@ -51,7 +51,7 @@ class Training extends Model
         ];
 
         $roleName = auth()->user()->role->name;
-        $divisiName = auth()->user()->role->divisi;
+        $divisiName = auth()->user()->divisi;
 
         $btn = "<button type='button' class='btn btn-outline-primary btn-sm radius-6' style='margin:1px;' 
                 data-bs-toggle='modal'  
