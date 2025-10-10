@@ -28,7 +28,7 @@ class TrainingController extends DefaultController
         $this->title = 'Training';
         $this->generalUri = 'training';
         // $this->arrPermissions = [];
-        $this->actionButtons = ['btn_edit', 'btn_multilink', 'btn_delete'];
+        $this->actionButtons = ['btn_edit', 'btn_multilink', 'btn_approval', 'btn_delete'];
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
@@ -51,6 +51,7 @@ class TrainingController extends DefaultController
     {
         $permission = (new Constant)->permissionByMenu($this->generalUri);
         $permission[] = 'multilink';
+        $permission[] = 'approval';
 
         $eb = [];
         $data_columns = [];
@@ -125,6 +126,7 @@ class TrainingController extends DefaultController
             'easyadmin::backend.idev.buttons.show',
             'easyadmin::backend.idev.buttons.import_default',
             'backend.idev.buttons.multilink',
+            'backend.idev.buttons.approval',
         ];
         $data['templateImportExcel'] = "#";
         $data['import_scripts'] = $this->importScripts;
@@ -287,5 +289,16 @@ class TrainingController extends DefaultController
             ->setPaper('A4', 'landscape');
 
         return $pdf->stream($this->title . '.pdf');
+    }
+
+    public function approve(Request $request, $id)
+    {
+        $training = Training::findOrFail($id);
+        $training->status = $request->status;
+        $training->notes = $request->notes ?: '-';
+        $training->updated_at = now();
+        $training->save();
+
+        return response()->json(['message' => 'Status updated']);
     }
 }

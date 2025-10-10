@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('year');
             $table->dateTime('end_date');
-            $table->enum('status', ['open', 'submit', 'approve', 'closed'])->default('open');
+            $table->enum('status', ['open', 'submit', 'approve', 'close', 'reject'])->default('open');
+            $table->text('notes')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('approve_by')->nullable()->constrained('users')->nullOnDelete();

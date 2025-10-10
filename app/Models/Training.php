@@ -11,8 +11,8 @@ class Training extends Model
 
     protected $table = 'trainings';
     protected $primaryKey = 'id';
-    protected $fillable = [];
-    protected $appends = ['btn_delete', 'btn_edit', 'btn_multilink'];
+    protected $fillable = ['year', 'end_date', 'status', 'description', 'user_id', 'notes',];
+    protected $appends = ['btn_delete', 'btn_edit', 'btn_multilink', 'btn_approval'];
 
     public function user()
     {
@@ -39,6 +39,56 @@ class Training extends Model
                 </button>";
 
         return $html;
+    }
+
+    public function getBtnApprovalAttribute()
+    {
+        $data = [
+            'id' => $this->id,
+            'status' => $this->status,
+            'year' => $this->year,
+            'notes' => $this->notes,
+        ];
+
+        $roleName = auth()->user()->role->name;
+
+        $btn = "<button type='button' class='btn btn-outline-primary btn-sm radius-6' style='margin:1px;' 
+                data-bs-toggle='modal'  
+                data-bs-target='#modalApproval' 
+                onclick='setApproval(" . json_encode($data) . ")'>
+                <i class='ti ti-check'></i>
+            </button>";
+        $btnOff = "<button type='button' class='btn btn-outline-success btn-sm radius-6' style='margin:1px;'>
+                <i class='ti ti-check'></i>
+            </button>";
+        $pdf = "<a id='export-pdf' class='btn btn-sm btn-outline-secondary radius-6' target='_blank' href='" . url('training-schedule-pdf') . "?year" . $this->year . "' title='Export PDF'><i class='ti ti-file'></i></a>";
+
+        if (($this->status === "open" || $this->status === "reject") && $roleName === "admin") {
+            $html = $btn;
+            return $html;
+        } else if ($this->status === "submit") {
+            if ($roleName === "admin") {
+                $html = $btnOff;
+                return $html;
+            } else if ($roleName === "manager") {
+                $html = $btn;
+                return $html;
+            }
+        } else if ($this->status === "approve") {
+            if ($roleName === "admin") {
+                $html = $btn;
+                return $html;
+            } else if ($roleName === "manager") {
+                $html = $btnOff;
+                return $html;
+            } else if ($roleName === "direktur") {
+                $html = $btn;
+                return $html;
+            }
+        } else if ($this->status === "close") {
+            $html = $pdf;
+            return $html;
+        }
     }
 
     public function getBtnDeleteAttribute()

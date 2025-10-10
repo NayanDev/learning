@@ -17,7 +17,8 @@ return new class extends Migration
             $table->foreignId('training_id')->constrained()->onDelete('cascade');
             $table->foreignId('workshop_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['open', 'submit', 'approve'])->default('open');
+            $table->enum('status', ['open', 'submit', 'approve', 'close', 'reject'])->default('open');
+            $table->text('notes')->nullable();
             $table->foreignId('approve_by')->nullable()->constrained('users')->nullOnDelete();
             $table->dateTime('start_date');
             $table->dateTime('end_date');

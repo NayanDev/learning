@@ -38,6 +38,16 @@ class DatabaseSeeder extends Seeder
 
         Role::updateOrCreate(
             [
+                'name' => 'Direktur'
+            ],
+            [
+                'name' => 'direktur',
+                'access' => '[{"route":"dashboard","access":["list"]}]',
+            ]
+        );
+
+        Role::updateOrCreate(
+            [
                 'name' => 'Manager'
             ],
             [

@@ -38,6 +38,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-export-pdf-default', [TrainingController::class, 'exportPdf'])->name('training.export-pdf-default');
     Route::get('training-export-excel-default', [TrainingController::class, 'exportExcel'])->name('training.export-excel-default');
     Route::post('training-import-excel-default', [TrainingController::class, 'importExcel'])->name('training.import-excel-default');
+    Route::post('training-approve/{id}', [TrainingController::class, 'approve'])->name('training.approve');
 
     // Route Training Details
     Route::resource('training-detail', TrainingDetailController::class);
