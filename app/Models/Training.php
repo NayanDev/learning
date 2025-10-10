@@ -61,7 +61,7 @@ class Training extends Model
         $btnOff = "<button type='button' class='btn btn-outline-success btn-sm radius-6' style='margin:1px;'>
                 <i class='ti ti-check'></i>
             </button>";
-        $pdf = "<a id='export-pdf' class='btn btn-sm btn-outline-secondary radius-6' target='_blank' href='" . url('training-schedule-pdf') . "?year" . $this->year . "' title='Export PDF'><i class='ti ti-file'></i></a>";
+        $pdf = "<a id='export-pdf' class='btn btn-sm btn-outline-secondary radius-6' target='_blank' href='" . url('training-schedule-pdf') . "?year=" . $this->year . "' title='Export PDF'><i class='ti ti-file'></i></a>";
 
         if (($this->status === "open" || $this->status === "reject") && $roleName === "admin") {
             $html = $btn;
