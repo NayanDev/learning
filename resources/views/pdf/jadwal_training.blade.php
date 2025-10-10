@@ -224,7 +224,7 @@ if ($totalRows == 0) {
             <td class="no-border text-center"style="width:20%;">
                 Disetujui Oleh,
                 <br><br>
-                @if($created->status === 'approve')
+                @if($created->status === 'close')
                 <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
