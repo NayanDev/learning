@@ -38,6 +38,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-export-pdf-default', [TrainingController::class, 'exportPdf'])->name('training.export-pdf-default');
     Route::get('training-export-excel-default', [TrainingController::class, 'exportExcel'])->name('training.export-excel-default');
     Route::post('training-import-excel-default', [TrainingController::class, 'importExcel'])->name('training.import-excel-default');
+    // Route Custome in Training
     Route::post('training-approve/{id}', [TrainingController::class, 'approve'])->name('training.approve');
 
     // Route Training Details
@@ -57,6 +58,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('training-analyst/save-all', [TrainingAnalystController::class, 'saveAll'])->name('training-analyst.saveAll');
     Route::get('training-analyst-pdf', [TrainingAnalystController::class, 'generatePDF'])->name('training-analyst.pdf');
     Route::get('training-analyst-form', [TrainingAnalystController::class, 'trainingForm'])->name('training-analyst.form');
+    Route::post('training-approve/{id}', [TrainingAnalystController::class, 'approve'])->name('training.approve');
 
     // Route Training Needs
     Route::resource('training-need', TrainingNeedController::class);

@@ -206,7 +206,7 @@ if ($totalRows == 0) {
                 <br>
                 <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
-                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                <span>Manager {{ $created->user->divisi ?? '-' }}</span>
                 @elseif($created->status === 'submit')
                 <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
                 <br>
@@ -215,7 +215,7 @@ if ($totalRows == 0) {
                 <div style="height: 50px"></div>
                 <strong>{{ $created->user->name ?? '-' }}</strong>
                 <br>
-                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                <span>Manager {{ $created->user->divisi ?? '-' }}</span>
                 @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
@@ -229,7 +229,7 @@ if ($totalRows == 0) {
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ $created->approver->divisi ?? '-' }}</span>
+                <span>Direktur {{ $created->approver->divisi ?? '-' }}</span>
                 @else
                 <div style="height: 50px"></div>
                 <em>Data belum disiapkan</em>

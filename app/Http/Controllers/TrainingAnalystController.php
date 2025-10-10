@@ -28,7 +28,7 @@ class TrainingAnalystController extends DefaultController
         $this->title = 'Training Analyst';
         $this->generalUri = 'training-analyst';
         // $this->arrPermissions = [];
-        $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
+        $this->actionButtons = ['btn_edit', 'btn_show', 'btn_approval', 'btn_delete'];
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => false],
@@ -197,6 +197,36 @@ class TrainingAnalystController extends DefaultController
         return $rules;
     }
 
+    public function indexApi()
+    {
+        $permission = (new Constant)->permissionByMenu($this->generalUri);
+        $permission[] = 'approval';
+
+        $eb = [];
+        $data_columns = [];
+        foreach ($this->tableHeaders as $key => $col) {
+            if ($key > 0) {
+                $data_columns[] = $col['column'];
+            }
+        }
+
+        foreach ($this->actionButtons as $key => $ab) {
+            if (in_array(str_replace("btn_", "", $ab), $permission)) {
+                $eb[] = $ab;
+            }
+        }
+
+        $dataQueries = $this->defaultDataQuery()->paginate(10);
+
+        $datas['extra_buttons'] = $eb;
+        $datas['data_columns'] = $data_columns;
+        $datas['data_queries'] = $dataQueries;
+        $datas['data_permissions'] = $permission;
+        $datas['uri_key'] = $this->generalUri;
+
+        return $datas;
+    }
+
     public function index()
     {
         $baseUrlExcel = route($this->generalUri . '.export-excel-default');
@@ -244,7 +274,11 @@ class TrainingAnalystController extends DefaultController
         $data['url_store'] = route($this->generalUri . '.store');
         $data['fields'] = $this->fields();
         $data['edit_fields'] = $this->fields('edit');
-        $data['actionButtonViews'] = $this->actionButtonViews;
+        $data['actionButtonViews'] = [
+            'easyadmin::backend.idev.buttons.delete',
+            'easyadmin::backend.idev.buttons.edit',
+            'backend.idev.buttons.approval',
+        ];
         $data['templateImportExcel'] = "#";
         $data['import_scripts'] = $this->importScripts;
         $data['import_styles'] = $this->importStyles;
@@ -462,5 +496,17 @@ class TrainingAnalystController extends DefaultController
         $data['training_body'] = $analystBody;
 
         return view($layout, $data);
+    }
+
+    public function approve(Request $request, $id)
+    {
+        $training = AnalystHeader::findOrFail($id);
+        $training->status = $request->status;
+        $training->approve_by = $request->approve_by;
+        $training->notes = $request->notes ?: '-';
+        $training->updated_at = now();
+        $training->save();
+
+        return response()->json(['message' => 'Status updated']);
     }
 }
