@@ -19,12 +19,20 @@ foreach ($trainings as $training) {
     
     // Set minggu yang aktif
     $schedule[$month] = [$weekNumber];
+    if(count($training['participants']) > 1) {
+        $person = count($training['participants']) . ' Personil';
+    } else if(count($training['participants']) === 1) {
+        $person = ucwords(strtolower($training['participants'][0]['name']));
+    } else {
+        $person = ucwords(strtolower($created->user->divisi)) . ' (TBC)';
+    }
 
     $transformedTrainings[] = [
         'nama' => $training['header']['workshop_name'],
         'durasi' => $durasi,
         'instruktur' => ucfirst($training['header']['instructor']),
-        'personil' => count($training['participants']) . ' Personil',
+        // 'personil' => count($training['participants']) . ' Personil',
+        'personil' => $person,
         'jabatan' => $training['header']['position'],
         'schedule' => $schedule
     ];
