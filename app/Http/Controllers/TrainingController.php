@@ -278,6 +278,10 @@ class TrainingController extends DefaultController
     public function approve(Request $request, $id)
     {
         $training = Training::findOrFail($id);
+
+        if ($request->status === 'approve') {
+            $training->created_date = now();
+        }
         $training->status = $request->status;
         $training->approve_by = $request->approve_by;
         $training->notes = $request->notes ?: '-';

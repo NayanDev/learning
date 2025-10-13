@@ -199,27 +199,27 @@ if ($totalRows == 0) {
     <table class="no-border" style="width:100%;">
         <tr>
             <td class="no-border text-center"style="width:20%;">
-                Semarang, {{ now()->format('d F Y') }} 
+                Semarang, {{ $created->created_date ? \Carbon\Carbon::parse($created->created_date)->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}
                 <br>
                 Dibuat Oleh,
                 <br><br>
                 @if($created->status === 'close')
-                <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
+                <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
                 <br>
-                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ ucwords(strtolower($created->user->divisi)) ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
                 @elseif($created->status === 'submit')
-                <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
+                <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
                 <br>
-                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ ucwords(strtolower($created->user->divisi)) ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
                 @else
                 <div style="height: 50px"></div>
-                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ ucwords(strtolower($created->user->divisi)) ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
                 @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
@@ -229,11 +229,11 @@ if ($totalRows == 0) {
                 Mengetahui,
                 <br><br>
                 @if($created->status === 'close')
-                <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
+                <img src="{{ asset('img/direktur.svg') ?? 'tanda tangan belum diset' }}" alt="Signature" width="100">
                 <br>
-                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
+                <u><strong>MAKMURI YUSIN</strong></u>
                 <br>
-                <span>Direktur {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
+                <span>Direktur Umum & SDM</span>
                 @else
                 <div style="height: 50px"></div>
                 <em>Data belum tersedia</em>

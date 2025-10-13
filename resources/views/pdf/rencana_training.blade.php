@@ -224,7 +224,7 @@ $trainings = $transformedTrainings;
     <table class="no-border" style="width:100%;">
         <tr>
             <td class="no-border text-center"style="width:20%;">
-                Semarang, {{ date('d F Y') }}
+                Semarang, {{ $created->created_date ? \Carbon\Carbon::parse($created->created_date)->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}
                 <br>
                 Dibuat Oleh,
                 <br><br>

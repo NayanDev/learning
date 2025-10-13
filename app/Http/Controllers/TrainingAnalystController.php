@@ -501,6 +501,10 @@ class TrainingAnalystController extends DefaultController
     public function approve(Request $request, $id)
     {
         $training = AnalystHeader::findOrFail($id);
+
+        if ($request->status === 'submit') {
+            $training->created_date = now();
+        }
         $training->status = $request->status;
         $training->approve_by = $request->approve_by;
         $training->notes = $request->notes ?: '-';
