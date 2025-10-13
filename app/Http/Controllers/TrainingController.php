@@ -275,22 +275,6 @@ class TrainingController extends DefaultController
         }
     }
 
-    protected function exporJadwalPdf()
-    {
-        $dataQueries = $this->defaultDataQuery()->take(1000)->get();
-
-        $datas['title'] = $this->title;
-        $datas['enable_number'] = true;
-        $datas['data_headers'] = $this->tableHeaders;
-        $datas['data_queries'] = $dataQueries;
-        $datas['exclude_columns'] = ['id', '#'];
-
-        $pdf = PDF::loadView('pdf.jadwal_training', $datas)
-            ->setPaper('A4', 'landscape');
-
-        return $pdf->stream($this->title . '.pdf');
-    }
-
     public function approve(Request $request, $id)
     {
         $training = Training::findOrFail($id);
