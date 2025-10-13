@@ -54,6 +54,57 @@ class TrainingDetailController extends DefaultController
         return $fields;
     }
 
+    public function index()
+    {
+        $baseUrlExcel = route($this->generalUri . '.export-excel-default');
+        $baseUrlPdf = route($this->generalUri . '.export-pdf-default');
+
+        $params = "";
+        if (request('training_id')) {
+            $params = "?training_id=" . request('training_id');
+        }
+
+        $moreActions = [
+            // [
+            //     'key' => 'export-pdf-default',
+            //     'name' => 'Export Pdf',
+            //     'html_button' => "<a id='export-pdf' data-base-url='".$baseUrlPdf."' class='btn btn-md btn-danger radius-6' target='_blank' href='" . url('training-need-pdf') . "' title='Export PDF'><i class='ti ti-file'></i> Print Data</a>"
+            // ],
+        ];
+
+        $permissions =  $this->arrPermissions;
+        if ($this->dynamicPermission) {
+            $permissions = (new Constant())->permissionByMenu($this->generalUri);
+        }
+        $layout = (request('from_ajax') && request('from_ajax') == true) ? 'easyadmin::backend.idev.list_drawer_ajax' : 'easyadmin::backend.idev.list_drawer';
+        if (isset($this->drawerLayout)) {
+            $layout = $this->drawerLayout;
+        }
+        $data['permissions'] = $permissions;
+        $data['more_actions'] = $moreActions;
+        $data['headerLayout'] = $this->pageHeaderLayout;
+        $data['table_headers'] = $this->tableHeaders;
+        $data['title'] = $this->title;
+        $data['uri_key'] = $this->generalUri;
+        $data['uri_list_api'] = route($this->generalUri . '.listapi') . $params;
+        $data['uri_create'] = route($this->generalUri . '.create');
+        $data['url_store'] = route($this->generalUri . '.store');
+        $data['fields'] = $this->fields();
+        $data['edit_fields'] = $this->fields('edit');
+        $data['actionButtonViews'] = [
+            'easyadmin::backend.idev.buttons.delete',
+            'easyadmin::backend.idev.buttons.edit',
+            'easyadmin::backend.idev.buttons.show',
+            'backend.idev.buttons.approval',
+        ];
+        $data['templateImportExcel'] = "#";
+        $data['import_scripts'] = $this->importScripts;
+        $data['import_styles'] = $this->importStyles;
+        $data['filters'] = $this->filters();
+
+        return view($layout, $data);
+    }
+
     protected function defaultDataQuery()
     {
         $filters = [];
@@ -72,7 +123,6 @@ class TrainingDetailController extends DefaultController
         }
 
         $dataQueries = TrainingNeed::join('trainings', 'trainings.id', '=', 'training_needs.training_id')
-            // ->join('employees', 'employees.id', '=', 'training_needs.nik')
             ->join('users', 'users.id', '=', 'training_needs.user_id')
             ->join('training_need_workshops', 'training_need_workshops.training_need_id', '=', 'training_needs.id')
             ->where($filters)
