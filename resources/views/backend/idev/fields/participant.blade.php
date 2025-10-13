@@ -59,12 +59,12 @@
             var intCurrentData = 0;
         
             // Buat header tabel
-            mHtml += "<tr>";
-            mHtml += "<td><input type='checkbox' class='check-all-{{$field['name']}}'></td>";
-            headers.forEach(function(header) {
-                mHtml += "<td>" + header + "</td>";
-            });
-            mHtml += "</tr>";
+            // mHtml += "<tr>";
+            // mHtml += "<td><input type='checkbox' class='check-all-{{$field['name']}}'></td>";
+            // headers.forEach(function(header) {
+            //     mHtml += "<td>" + header + "</td>";
+            // });
+            // mHtml += "</tr>";
             
             // Buat body tabel
             $.each(bodies.data, function(index, item) {

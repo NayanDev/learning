@@ -5,7 +5,12 @@ foreach ($trainings as $training) {
     // Hitung durasi dalam jam
     $start = \Carbon\Carbon::parse($training['header']['start_date']);
     $end = \Carbon\Carbon::parse($training['header']['end_date']);
-    $durasi = $start->diffInHours($end) . ' Jam';
+    $durasi = $start->diffInHours($end);
+    if($durasi > 8){
+        $durasi = $start->diffInDays($end) . ' Hari';
+    } else {
+        $durasi = $start->diffInHours($end) . ' Jam';
+    }
 
     // Tentukan minggu mana yang aktif berdasarkan start_date
     $weekNumber = \Carbon\Carbon::parse($training['header']['start_date'])->weekOfMonth;
