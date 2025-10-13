@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('jk');
             $table->string('telp');
-            $table->string('nik')->unique();
+            $table->string('nik')->unique()->nullable();
             $table->string('signature')->nullable();
             $table->unsignedBigInteger('role_id');
             $table->string('password');

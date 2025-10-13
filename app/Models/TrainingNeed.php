@@ -58,13 +58,13 @@ class TrainingNeed extends Model
         $btnOff = "<button type='button' class='btn btn-outline-success btn-sm radius-6' style='margin:1px;'>
                 <i class='ti ti-check'></i>
             </button>";
-        $pdf = "<a id='export-pdf' class='btn btn-sm btn-outline-secondary radius-6' target='_blank' href='" . url('training-analyst-pdf') . "?header=" . $this->id . "' title='Export PDF'><i class='ti ti-file'></i></a>";
+        $pdf = "<a id='export-pdf' class='btn btn-sm btn-outline-secondary radius-6' target='_blank' href='" . url('training-need-pdf') . "?training_id=" . $this->id . "' title='Export PDF'><i class='ti ti-file'></i></a>";
 
-        if ($this->status === "open" && $roleName === "staff") {
+        if ($this->status === "open" && ($roleName === "staff" || $roleName === "admin")) {
             $html = $btn;
             return $html;
         } else if ($this->status === "submit") {
-            if ($roleName === "staff") {
+            if ($roleName === "staff" || $roleName === "admin") {
                 $html = $btnOff;
                 return $html;
             } else if ($roleName === "manager") {

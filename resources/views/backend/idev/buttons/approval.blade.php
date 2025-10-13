@@ -78,6 +78,7 @@
     }
 
     function actionApproval() {
+        let uriKey = "{{ $uri_key }}";
         var status = $("#apprej").val();
         var notes = $("#approval_notes").val();
         var approve_by = $("#approve_by").val();
@@ -94,7 +95,7 @@
         }
 
         $.ajax({
-            url: "/training-approve/" + id, // ID dikirim via URL
+            url: "/" + uriKey + "/" + id, // ID dikirim via URL
             type: "POST",
             data: {
                 _token: token,

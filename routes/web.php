@@ -39,7 +39,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-export-excel-default', [TrainingController::class, 'exportExcel'])->name('training.export-excel-default');
     Route::post('training-import-excel-default', [TrainingController::class, 'importExcel'])->name('training.import-excel-default');
     // Route Custome in Training
-    Route::post('training-approve/{id}', [TrainingController::class, 'approve'])->name('training.approve');
+    Route::post('training/{id}', [TrainingController::class, 'approve'])->name('training.approve');
 
     // Route Training Details
     Route::resource('training-detail', TrainingDetailController::class);
@@ -58,7 +58,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('training-analyst/save-all', [TrainingAnalystController::class, 'saveAll'])->name('training-analyst.saveAll');
     Route::get('training-analyst-pdf', [TrainingAnalystController::class, 'generatePDF'])->name('training-analyst.pdf');
     Route::get('training-analyst-form', [TrainingAnalystController::class, 'trainingForm'])->name('training-analyst.form');
-    Route::post('training-analyst-approve/{id}', [TrainingAnalystController::class, 'approve'])->name('training.approve');
+    Route::post('training-analyst/{id}', [TrainingAnalystController::class, 'approve'])->name('training.approve');
 
     // Route Training Needs
     Route::resource('training-need', TrainingNeedController::class);
@@ -69,7 +69,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     // Custome Route Training Needs
     Route::get('participant-ajax', [TrainingNeedController::class, 'participantAjax']);
     Route::get('training-need-pdf', [TrainingNeedController::class, 'generatePDF'])->name('training-need.pdf');
-    Route::post('training-need-approve/{id}', [TrainingNeedController::class, 'approve'])->name('training.approve');
+    Route::post('training-need/{id}', [TrainingNeedController::class, 'approve'])->name('training.approve');
 
     // Route Training Need Workshops
     Route::resource('need-workshop', NeedWorkshopController::class);
