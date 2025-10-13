@@ -11,7 +11,7 @@ class TrainingNeed extends Model
 
     protected $table = 'training_needs';
     protected $primaryKey = 'id';
-    protected $fillable = ['nik', 'training_id', 'workshop_id', 'user_id', 'status', 'approve_by', 'start_date', 'end_date', 'instructur', 'position'];
+    protected $fillable = ['training_id', 'workshop_id', 'user_id', 'status', 'approve_by', 'start_date', 'end_date', 'instructur', 'position'];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show', 'btn_approval'];
 
     public function training()
