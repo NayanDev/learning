@@ -19,8 +19,31 @@ class Event extends Model
         'position',
         'divisi'
     ];
-    protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
+    protected $appends = ['btn_delete', 'btn_edit', 'btn_multilink', 'btn_show'];
 
+    public function participants()
+    {
+        return $this->hasMany(Participant::class);
+    }
+
+    public function getBtnMultilinkAttribute()
+    {
+        $arrLink = [
+            ['label' => 'Participant', 'url' => url('participant') . "?event_id=" . $this->id, 'icon' => 'ti ti-users'],
+            ['label' => 'Documentation', 'url' => url('documentation') . "?event_id=" . $this->id, 'icon' => 'ti ti-photo'],
+            ['label' => 'Materi', 'url' => url('materi') . "?event_id=" . $this->id, 'icon' => 'ti ti-book fw-bold'],
+            ['label' => 'Question', 'url' => url('question') . "?year=" . $this->year, 'icon' => 'ti ti-question-mark fw-bold'],
+            ['label' => 'Evaluation', 'url' => url('evaluation') . "?event_id=" . $this->id, 'icon' => 'ti ti-pencil'],
+            ['label' => 'Certification', 'url' => url('certification') . "?event_id=" . $this->id, 'icon' => 'ti ti-certificate'],
+            ['label' => 'Training Report', 'url' => url('training-report') . "?event_id=" . $this->id, 'icon' => 'ti ti-clipboard'],
+        ];
+
+        $html = "<button type='button' data-links='" . json_encode($arrLink) . "' onclick='setMM(this)' title='Navigation' class='btn btn-outline-warning btn-sm radius-6' style='margin:1px;' data-bs-toggle='modal' data-bs-target='#modalMultiLink'>
+                    <i class='ti ti-list'></i>
+                </button>";
+
+        return $html;
+    }
 
     public function getBtnDeleteAttribute()
     {

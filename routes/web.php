@@ -8,6 +8,7 @@ use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NeedWorkshopController;
+use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\TrainingAnalystController;
 use App\Http\Controllers\TrainingDetailController;
 use App\Http\Controllers\TrainingNeedController;
@@ -108,4 +109,11 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('event-export-pdf-default', [EventController::class, 'exportPdf'])->name('event.export-pdf-default');
     Route::get('event-export-excel-default', [EventController::class, 'exportExcel'])->name('event.export-excel-default');
     Route::post('event-import-excel-default', [EventController::class, 'importExcel'])->name('event.import-excel-default');
+
+    // Route Participants
+    Route::resource('participant', ParticipantController::class);
+    Route::get('participant-api', [ParticipantController::class, 'indexApi'])->name('participant.listapi');
+    Route::get('participant-export-pdf-default', [ParticipantController::class, 'exportPdf'])->name('participant.export-pdf-default');
+    Route::get('participant-export-excel-default', [ParticipantController::class, 'exportExcel'])->name('participant.export-excel-default');
+    Route::post('participant-import-excel-default', [ParticipantController::class, 'importExcel'])->name('participant.import-excel-default');
 });

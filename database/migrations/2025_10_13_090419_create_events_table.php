@@ -14,13 +14,18 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('workshop_id')->constrained()->onDelete('cascade');
-            $table->foreignId('organizer')->nullable()->constrained('users')->onDelete('cascade');
+            $table->string('letter_number')->nullable();
+            $table->string('organizer')->nullable();
             $table->string('speaker')->nullable();
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->string('divisi');
             $table->enum('instructor', ['internal', 'external']);
             $table->string('location')->nullable();
+            $table->foreignId('approve_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->dateTime('created_date')->nullable();
+            $table->enum('status', ['open', 'submit', 'approve', 'close', 'reject'])->default('open');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
