@@ -16,9 +16,35 @@ use App\Http\Controllers\TrainingNeedParticipantController;
 use App\Http\Controllers\TrainingScheduleController;
 use App\Http\Controllers\TrainingUnplannedController;
 use Illuminate\Support\Facades\Route;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 Route::post('login', [AuthController::class, 'authenticate'])->middleware('web');
 Route::get('/', [AuthController::class, 'login'])->name('login')->middleware('web');
+
+Route::get('/nayy', function () {
+    $data = [
+        'nama' => 'Nayantaka',
+        'tanggal' => now()->format('d M Y'),
+    ];
+
+    $pdf = Pdf::loadView('pdf.surat_perintah_pelatihan', $data)
+        ->setPaper('A4', 'portrait');
+
+    return $pdf->stream('surat-perintah-pelatihan.pdf');
+});
+
+Route::get('/taa', function () {
+    $data = [
+        'nama' => 'Nayantaka',
+        'tanggal' => now()->format('d M Y'),
+    ];
+
+    $pdf = Pdf::loadView('pdf.daftar_hadir_pelatihan', $data)
+        ->setPaper('A4', 'portrait');
+
+    return $pdf->stream('daftar-hadir-pelatihan.pdf');
+});
+
 
 Route::group(['middleware' => ['web', 'auth']], function () {
     // Route Users
