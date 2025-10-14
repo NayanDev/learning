@@ -70,12 +70,20 @@
             $.each(bodies.data, function(index, item) {
                 mHtml += "<tr>";
                 mHtml += "<td><input type='checkbox' class='check-{{$field['name']}}' " +
-                         "data-nama='" + item.nama + "' " +
-                         "value='" + item.nama + "'></td>";
-                mHtml += "<td>" + item.nama + "</td>";
-                mHtml += "<td>" + item.divisi + "</td>";
-                mHtml += "<td>" + item.unit_kerja + "</td>";
-                mHtml += "<td>" + item.nik + "</td>";
+                         "data-company='" + (item.company || '') + "' " +
+                         "data-nik='" + (item.nik || '') + "' " +
+                         "data-nama='" + (item.nama || '') + "' " +
+                         "data-divisi='" + (item.divisi || '') + "' " +
+                         "data-unit_kerja='" + (item.unit_kerja || '') + "' " +
+                         "data-status='" + (item.status || '') + "' " +
+                         "data-jk='" + (item.jk || '') + "' " +
+                         "data-email='" + (item.email || '') + "' " +
+                         "data-telp='" + (item.telp || '') + "' " +
+                         "value='" + (item.nama || '') + "'></td>";
+                mHtml += "<td>" + (item.nama || '') + "</td>";
+                mHtml += "<td>" + (item.divisi || '') + "</td>";
+                mHtml += "<td>" + (item.unit_kerja || '') + "</td>";
+                mHtml += "<td>" + (item.nik || '') + "</td>";
                 mHtml += "</tr>";
                 intCurrentData++;
             });
@@ -99,23 +107,29 @@
 
             // Event handler untuk checkbox
             $(".check-{{$field['name']}}").change(function() {
-                var namaValue = $(this).data('nama');
-                var divisiValue = $(this).closest('tr').find('td:nth-child(3)').text(); // Ambil divisi dari kolom ke-3
+                var checkbox = $(this);
                 var participantData = {
-                    nama: namaValue,
-                    divisi: divisiValue
+                    company: checkbox.data('company') || '',
+                    nik: checkbox.data('nik') || '',
+                    nama: checkbox.data('nama') || '',
+                    divisi: checkbox.data('divisi') || '',
+                    unit_kerja: checkbox.data('unit_kerja') || '',
+                    status: checkbox.data('status') || '',
+                    jk: checkbox.data('jk') || '',
+                    email: checkbox.data('email') || '',
+                    telp: checkbox.data('telp') || ''
                 };
                 
                 console.log('Checkbox changed, Participant:', participantData); // Debug
 
                 if ($(this).prop('checked')) {
-                    // Cek apakah participant sudah ada berdasarkan nama
-                    var exists = stateKey.some(item => item.nama === namaValue);
+                    // Cek apakah participant sudah ada berdasarkan nik
+                    var exists = stateKey.some(item => item.nik === participantData.nik);
                     if (!exists) {
                         stateKey.push(participantData);
                     }
                 } else {
-                    stateKey = stateKey.filter(item => item.nama !== namaValue);
+                    stateKey = stateKey.filter(item => item.nik !== participantData.nik);
                 }
 
                 console.log('Current stateKey:', stateKey); // Debug
@@ -130,15 +144,21 @@
                 
                 if (isChecked) {
                     $(".check-{{$field['name']}}").each(function() {
-                        var nama = $(this).data('nama');
-                        var divisi = $(this).closest('tr').find('td:nth-child(3)').text(); // Ambil divisi dari kolom ke-3
+                        var checkbox = $(this);
                         var participantData = {
-                            nama: nama,
-                            divisi: divisi
+                            company: checkbox.data('company') || '',
+                            nik: checkbox.data('nik') || '',
+                            nama: checkbox.data('nama') || '',
+                            divisi: checkbox.data('divisi') || '',
+                            unit_kerja: checkbox.data('unit_kerja') || '',
+                            status: checkbox.data('status') || '',
+                            jk: checkbox.data('jk') || '',
+                            email: checkbox.data('email') || '',
+                            telp: checkbox.data('telp') || ''
                         };
                         
-                        // Cek apakah participant sudah ada berdasarkan nama
-                        var exists = stateKey.some(item => item.nama === nama);
+                        // Cek apakah participant sudah ada berdasarkan nik
+                        var exists = stateKey.some(item => item.nik === participantData.nik);
                         if (!exists) {
                             stateKey.push(participantData);
                         }

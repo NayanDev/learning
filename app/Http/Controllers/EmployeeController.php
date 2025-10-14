@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
-use Illuminate\Support\Facades\Log;
-use Idev\EasyAdmin\app\Helpers\Constant;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
-use Illuminate\Support\Facades\Http;
 
 class EmployeeController extends DefaultController
 {
@@ -23,150 +20,42 @@ class EmployeeController extends DefaultController
         $this->title = 'Employee';
         $this->generalUri = 'employee';
         // $this->arrPermissions = [];
-        $this->actionButtons = ['btn_delete'];
+        $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
 
         $this->tableHeaders = [
                     ['name' => 'No', 'column' => '#', 'order' => true],
-                    ['name' => 'name', 'column' => 'nama', 'order' => true],
-                    ['name' => 'department', 'column' => 'divisi', 'order' => true],
-                    ['name' => 'work unit', 'column' => 'unit_kerja', 'order' => true],
-                    ['name' => 'status', 'column' => 'status', 'order' => true],
-                    ['name' => 'Gender', 'column' => 'jk', 'order' => true],
-                    ['name' => 'email', 'column' => 'email', 'order' => true],
-                    ['name' => 'phone', 'column' => 'telp', 'order' => true],
-                    ['name' => 'company', 'column' => 'company', 'order' => true],
-                    ['name' => 'signature', 'column' => 'signature', 'order' => true],
-                    ['name' => 'NIK', 'column' => 'nik', 'order' => true],
+                    ['name' => 'Nik', 'column' => 'nik', 'order' => true],
+                    ['name' => 'Company', 'column' => 'company', 'order' => true],
+                    ['name' => 'Nama', 'column' => 'nama', 'order' => true],
+                    ['name' => 'Divisi', 'column' => 'divisi', 'order' => true],
+                    ['name' => 'Unit kerja', 'column' => 'unit_kerja', 'order' => true],
+                    ['name' => 'Status', 'column' => 'status', 'order' => true],
+                    ['name' => 'Jk', 'column' => 'jk', 'order' => true],
+                    ['name' => 'Email', 'column' => 'email', 'order' => true],
+                    ['name' => 'Telp', 'column' => 'telp', 'order' => true],
+                    ['name' => 'Last synced', 'column' => 'last_synced', 'order' => true], 
+                    ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
+                    ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
 
+
         $this->importExcelConfig = [ 
-            'primaryKeys' => ['signature'],
+            'primaryKeys' => ['nik'],
             'headers' => [
-                    ['name' => 'Signature', 'column' => 'signature'],
-                    ['name' => 'Employee id', 'column' => 'employee_id'], 
+                    ['name' => 'Nik', 'column' => 'nik'],
+                    ['name' => 'Company', 'column' => 'company'],
+                    ['name' => 'Nama', 'column' => 'nama'],
+                    ['name' => 'Divisi', 'column' => 'divisi'],
+                    ['name' => 'Unit kerja', 'column' => 'unit_kerja'],
+                    ['name' => 'Status', 'column' => 'status'],
+                    ['name' => 'Jk', 'column' => 'jk'],
+                    ['name' => 'Email', 'column' => 'email'],
+                    ['name' => 'Telp', 'column' => 'telp'],
+                    ['name' => 'Last synced', 'column' => 'last_synced'], 
             ]
         ];
     }
 
-    protected function getEmployeeOptions()
-    {
-        try {
-            $response = Http::acceptJson()->get('https://simco.sampharindogroup.com/api/pegawai');
-
-            if ($response->successful()) {
-                // Langsung ambil body JSON karena responsnya adalah array
-                $employees = $response->json(); 
-                $options = [];
-
-                if (is_array($employees)) {
-                    foreach ($employees as $employee) {
-                        // PERBAIKAN: Gunakan 'nik' sebagai value dan 'nama' sebagai text
-                        if (isset($employee['nik']) && isset($employee['nama'])) {
-                            $options[] = [
-                                'value' => $employee['nik'],
-                                'text'  => $employee['nama'] . ' (' . $employee['nik'] . ')' // Menambahkan NIK di teks agar lebih unik
-                            ];
-                        }
-                    }
-                }
-                return $options;
-            }
-        } catch (\Exception $e) {
-            Log::error("Gagal mengambil data pegawai untuk options: " . $e->getMessage());
-        }
-
-        return []; // Kembalikan array kosong jika gagal
-    }
-
-    protected function getFilteredApiData()
-    {
-        try {
-            // Langkah 1: Ambil SEMUA NIK dari database lokal. Ini akan menjadi filter kita.
-            $localNiks = $this->modelClass::pluck('nik')->all();
-
-            // Jika tidak ada NIK di database lokal, tidak ada yang perlu ditampilkan.
-            if (empty($localNiks)) {
-                return ['data' => [], 'total' => 0]; // Kembalikan struktur kosong
-            }
-
-            // Langkah 2: Ambil SEMUA data dari API.
-            $response = Http::acceptJson()->get('https://simco.sampharindogroup.com/api/pegawai');
-
-            if ($response->successful()) {
-                $apiEmployees = $response->json();
-                $filteredData = [];
-
-                // Langkah 3: Saring data API.
-                // Simpan hanya pegawai API yang NIK-nya ada di dalam $localNiks.
-                if (is_array($apiEmployees)) {
-                    foreach ($apiEmployees as $apiEmployee) {
-                        if (in_array($apiEmployee['nik'], $localNiks)) {
-                            $filteredData[] = $apiEmployee;
-                        }
-                    }
-                }
-                
-                // Langkah 4: Lakukan Paginasi Manual terhadap data yang sudah disaring.
-                $limit = (int) request()->get('length', 10);
-                $start = (int) request()->get('start', 0);
-                $page = ($start / $limit) + 1;
-                
-                $totalRecords = count($filteredData);
-                
-                // Ambil "potongan" data untuk halaman saat ini menggunakan array_slice.
-                $paginatedData = array_slice($filteredData, $start, $limit);
-                
-                // Langkah 5: Susun ulang menjadi format yang mirip dengan respons API asli.
-                return [
-                    'data' => $paginatedData,
-                    'total' => $totalRecords,
-                    'per_page' => $limit,
-                    'current_page' => $page
-                ];
-            }
-        } catch (\Exception $e) {
-            Log::error("Gagal mengambil atau memfilter data API: " . $e->getMessage());
-        }
-
-        return ['data' => [], 'total' => 0]; // Kembalikan struktur kosong jika gagal
-    }
-
-    public function indexApi()
-    {
-        $permission = (new Constant)->permissionByMenu($this->generalUri);
-        
-        $eb = [];
-        $data_columns = [];
-        foreach ($this->tableHeaders as $key => $col) {
-            if ($key > 0) {
-                $data_columns[] = $col['column'];
-            }
-        }
-
-        foreach ($this->actionButtons as $key => $ab) {
-            if (in_array(str_replace("btn_", "", $ab), $permission)) {
-                $eb[] = $ab;
-            }
-        }
-
-        // --- CUKUP UBAH BARIS INI ---
-        $dataQueries = $this->getFilteredApiData();
-        // ---------------------------
-
-        // Kode di bawah ini tidak perlu diubah sama sekali.
-        if (!is_array($dataQueries)) {
-            $dataQueries = json_decode($dataQueries, true);
-        }
-        
-        // ... (sisa kode Anda tetap sama) ...
-        $datas['extra_buttons'] = $eb;
-        $datas['data_columns'] = $data_columns;
-        $datas['data_queries'] = $dataQueries;
-        $datas['data_permissions'] = $permission;
-        $datas['uri_key'] = $this->generalUri;
-
-        return $datas;
-    }
 
     protected function fields($mode = "create", $id = '-')
     {
@@ -175,40 +64,106 @@ class EmployeeController extends DefaultController
             $edit = $this->modelClass::where('id', $id)->first();
         }
 
-        $employeeOptions = $this->getEmployeeOptions();
-
         $fields = [
                     [
                         'type' => 'text',
-                        'label' => 'Signature',
-                        'name' =>  'signature',
-                        'class' => 'col-md-12 my-2',
-                        'required' => $this->flagRules('signature', $id),
-                        'value' => (isset($edit)) ? $edit->signature : ''
-                    ],
-                    [
-                        'type' => 'select2',
-                        'label' => 'Employee', // Label bisa diubah agar lebih deskriptif
-                        'name' => 'nik',
+                        'label' => 'Nik',
+                        'name' =>  'nik',
                         'class' => 'col-md-12 my-2',
                         'required' => $this->flagRules('nik', $id),
-                        'value' => (isset($edit)) ? $edit->nik : '',
-                        
-                        // Tambahkan key 'options' dengan data yang sudah diformat
-                        'options' => $employeeOptions,
-                        
-                        // (Optional) Tambahkan placeholder untuk UX yang lebih baik
-                        'placeholder' => 'Pilih Karyawan'
+                        'value' => (isset($edit)) ? $edit->nik : ''
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => 'Company',
+                        'name' =>  'company',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('company', $id),
+                        'value' => (isset($edit)) ? $edit->company : ''
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => 'Nama',
+                        'name' =>  'nama',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('nama', $id),
+                        'value' => (isset($edit)) ? $edit->nama : ''
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => 'Divisi',
+                        'name' =>  'divisi',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('divisi', $id),
+                        'value' => (isset($edit)) ? $edit->divisi : ''
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => 'Unit kerja',
+                        'name' =>  'unit_kerja',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('unit_kerja', $id),
+                        'value' => (isset($edit)) ? $edit->unit_kerja : ''
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => 'Status',
+                        'name' =>  'status',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('status', $id),
+                        'value' => (isset($edit)) ? $edit->status : ''
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => 'Jk',
+                        'name' =>  'jk',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('jk', $id),
+                        'value' => (isset($edit)) ? $edit->jk : ''
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => 'Email',
+                        'name' =>  'email',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('email', $id),
+                        'value' => (isset($edit)) ? $edit->email : ''
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => 'Telp',
+                        'name' =>  'telp',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('telp', $id),
+                        'value' => (isset($edit)) ? $edit->telp : ''
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => 'Last synced',
+                        'name' =>  'last_synced',
+                        'class' => 'col-md-12 my-2',
+                        'required' => $this->flagRules('last_synced', $id),
+                        'value' => (isset($edit)) ? $edit->last_synced : ''
                     ],
         ];
         
         return $fields;
     }
 
+
     protected function rules($id = null)
     {
         $rules = [
                     'nik' => 'required|string',
+                    'company' => 'required|string',
+                    'nama' => 'required|string',
+                    'divisi' => 'required|string',
+                    'unit_kerja' => 'required|string',
+                    'status' => 'required|string',
+                    'jk' => 'required|string',
+                    'email' => 'required|string',
+                    'telp' => 'required|string',
+                    'last_synced' => 'required|string',
         ];
 
         return $rules;

@@ -53,6 +53,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('my-account', [UserController::class, 'profile']);
     Route::post('update-profile', [UserController::class, 'updateProfile']);
 
+    // Route Employee (API)
+    Route::resource('employee', EmployeeController::class);
+    Route::get('employee-api', [EmployeeController::class, 'indexApi'])->name('employee.listapi');
+    Route::get('employee-export-pdf-default', [EmployeeController::class, 'exportPdf'])->name('employee.export-pdf-default');
+    Route::get('employee-export-excel-default', [EmployeeController::class, 'exportExcel'])->name('employee.export-excel-default');
+    Route::post('employee-import-excel-default', [EmployeeController::class, 'importExcel'])->name('employee.import-excel-default');
+
     // Route Workshop
     Route::resource('workshop', WorkshopController::class);
     Route::get('workshop-api', [WorkshopController::class, 'indexApi'])->name('workshop.listapi');

@@ -11,7 +11,18 @@ class TrainingNeedParticipant extends Model
 
     protected $table = 'need_participants';
     protected $primaryKey = 'id';
-    protected $fillable = [];
+    protected $fillable = [
+        'company',
+        'nik',
+        'name',
+        'divisi',
+        'unit_kerja',
+        'status',
+        'jk',
+        'email',
+        'telp',
+        'need_head_id'
+    ];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
     public function participants()

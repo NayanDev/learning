@@ -31,8 +31,12 @@ class TrainingNeedParticipantController extends DefaultController
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
+            ['name' => 'NIK', 'column' => 'nik', 'order' => true],
             ['name' => 'Name', 'column' => 'name', 'order' => true],
             ['name' => 'Divisi', 'column' => 'divisi', 'order' => true],
+            ['name' => 'Unit Kerja', 'column' => 'unit_kerja', 'order' => true],
+            ['name' => 'Email', 'column' => 'email', 'order' => true],
+            ['name' => 'Telp', 'column' => 'telp', 'order' => true],
             // ['name' => 'Need head id', 'column' => 'need_head_id', 'order' => true], 
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
@@ -152,18 +156,32 @@ class TrainingNeedParticipantController extends DefaultController
             // Debug log
             Log::info('Selected Participants:', ['participants' => $selectedParticipants]);
 
-            // Simpan data participant dengan nama dan divisi
+            // Simpan data participant dengan semua field
             foreach ($selectedParticipants as $participant) {
                 $insert = new TrainingNeedParticipant();
 
                 if (is_array($participant)) {
                     // Jika sudah berupa array dengan data lengkap
+                    $insert->company = $participant['company'] ?? '';
+                    $insert->nik = $participant['nik'] ?? '';
                     $insert->name = $participant['nama'] ?? $participant['name'] ?? '';
                     $insert->divisi = $participant['divisi'] ?? '';
+                    $insert->unit_kerja = $participant['unit_kerja'] ?? '';
+                    $insert->status = $participant['status'] ?? '';
+                    $insert->jk = $participant['jk'] ?? '';
+                    $insert->email = $participant['email'] ?? '';
+                    $insert->telp = $participant['telp'] ?? '';
                 } else {
                     // Jika hanya string nama (fallback untuk kompatibilitas)
+                    $insert->company = '';
+                    $insert->nik = '';
                     $insert->name = $participant;
                     $insert->divisi = '';
+                    $insert->unit_kerja = '';
+                    $insert->status = '';
+                    $insert->jk = '';
+                    $insert->email = '';
+                    $insert->telp = '';
                 }
 
                 $insert->need_head_id = $request->need_head_id;

@@ -279,7 +279,7 @@ class TrainingController extends DefaultController
     {
         try {
             DB::beginTransaction();
-            
+
             $training = Training::findOrFail($id);
 
             if ($request->status === 'approve') {
@@ -289,7 +289,7 @@ class TrainingController extends DefaultController
                 // Input Event / Copy data from training need workshop
                 $this->copyTrainingDataToEvents($id);
             }
-            
+
             $training->status = $request->status;
             $training->approve_by = $request->approve_by;
             $training->notes = $request->notes ?: '-';
@@ -301,7 +301,6 @@ class TrainingController extends DefaultController
                 'status' => true,
                 'message' => 'Status updated successfully'
             ]);
-            
         } catch (Exception $e) {
             DB::rollback();
             return response()->json([
@@ -338,7 +337,7 @@ class TrainingController extends DefaultController
                     $workshopExists = DB::table('workshops')
                         ->where('id', $workshop->workshop_id)
                         ->exists();
-                    
+
                     if (!$workshopExists) {
                         continue; // Skip jika workshop tidak ada
                     }
@@ -366,8 +365,19 @@ class TrainingController extends DefaultController
                         DB::table('participants')->insert([
                             'name' => $participant->name ?? '',
                             'divisi' => $participant->divisi ?? '',
-                            'signature' => null,
-                            'note' => null,
+                            'company' => $participant->company ?? '',
+                            'nik' => $participant->nik ?? '',
+                            'unit_kerja' => $participant->unit_kerja ?? '',
+                            'status' => $participant->status ?? '',
+                            'jk' => $participant->jk ?? '',
+                            'email' => $participant->email ?? '',
+                            'telp' => $participant->telp ?? '',
+                            'sign_ready' => null,
+                            'sign_present' => null,
+                            'time_ready' => null,
+                            'time_present' => null,
+                            'token' => null,
+                            'token_expired' => null,
                             'event_id' => $eventId,
                             'created_at' => now(),
                             'updated_at' => now(),

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Console\Scheduling\Schedule;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->app->booted(function () {
+            $schedule = app(Schedule::class);
+
+            // Menjadwalkan command tiap Senin jam 2 pagi
+            $schedule->command('sync:employees-from-api')
+                ->weeklyOn(1, '2:00')
+                ->withoutOverlapping()
+                ->runInBackground();
+        });
     }
 }

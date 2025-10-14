@@ -33,8 +33,8 @@ class ParticipantController extends DefaultController
             ['name' => 'No', 'column' => '#', 'order' => true],
             ['name' => 'Name', 'column' => 'name', 'order' => true],
             ['name' => 'Divisi', 'column' => 'divisi', 'order' => true],
-            ['name' => 'Signature', 'column' => 'signature', 'order' => true],
-            ['name' => 'Note', 'column' => 'note', 'order' => true],
+            ['name' => 'Sign Ready', 'column' => 'sign_ready', 'order' => true],
+            ['name' => 'Sign Present', 'column' => 'sign_present', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];

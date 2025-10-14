@@ -13,8 +13,15 @@ return new class extends Migration
     {
         Schema::create('need_participants', function (Blueprint $table) {
             $table->id();
+            $table->string('company');
+            $table->string('nik');
             $table->string('name');
             $table->string('divisi');
+            $table->string('unit_kerja');
+            $table->string('status');
+            $table->string('jk');
+            $table->string('email');
+            $table->string('telp');
             $table->foreignId('need_head_id')->constrained('training_need_workshops')->onDelete('cascade');
             $table->timestamps();
         });

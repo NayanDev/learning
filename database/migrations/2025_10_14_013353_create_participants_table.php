@@ -13,10 +13,21 @@ return new class extends Migration
     {
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
+            $table->string('company');
+            $table->string('nik');
             $table->string('name');
             $table->string('divisi');
-            $table->string('signature')->nullable();
-            $table->string('note')->nullable();
+            $table->string('unit_kerja');
+            $table->string('status');
+            $table->string('jk');
+            $table->string('email');
+            $table->string('telp');
+            $table->string('sign_ready')->nullable();
+            $table->string('sign_present')->nullable();
+            $table->string('time_ready')->nullable();
+            $table->string('time_present')->nullable();
+            $table->string('token')->nullable();
+            $table->string('token_expired')->nullable();
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

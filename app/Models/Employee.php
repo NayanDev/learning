@@ -11,7 +11,7 @@ class Employee extends Model
 
     protected $table = 'employees';
     protected $primaryKey = 'id';
-    protected $fillable = ["signature","employee_id"];
+    protected $fillable = ["nik","company","nama","divisi","unit_kerja","status","jk","email","telp","last_synced"];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
 
