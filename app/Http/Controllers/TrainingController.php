@@ -277,20 +277,106 @@ class TrainingController extends DefaultController
 
     public function approve(Request $request, $id)
     {
-        $training = Training::findOrFail($id);
+        try {
+            DB::beginTransaction();
+            
+            $training = Training::findOrFail($id);
 
-        if ($request->status === 'approve') {
-            $training->created_date = now();
-        }
-        if ($request->status === 'close') {
-            // Input Event / Copy data from training need workshop
-        }
-        $training->status = $request->status;
-        $training->approve_by = $request->approve_by;
-        $training->notes = $request->notes ?: '-';
-        $training->updated_at = now();
-        $training->save();
+            if ($request->status === 'approve') {
+                $training->created_date = now();
+            }
+            if ($request->status === 'close') {
+                // Input Event / Copy data from training need workshop
+                $this->copyTrainingDataToEvents($id);
+            }
+            
+            $training->status = $request->status;
+            $training->approve_by = $request->approve_by;
+            $training->notes = $request->notes ?: '-';
+            $training->updated_at = now();
+            $training->save();
 
-        return response()->json(['message' => 'Status updated']);
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Status updated successfully'
+            ]);
+            
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Copy data dari training need workshops ke events
+     * dan copy data dari need participants ke participants
+     */
+    private function copyTrainingDataToEvents($trainingId)
+    {
+        try {
+            // Ambil data training need workshops berdasarkan training_id
+            $trainingNeeds = DB::table('training_needs')
+                ->where('training_id', $trainingId)
+                ->get();
+
+            if ($trainingNeeds->isEmpty()) {
+                return; // Tidak ada data training needs, skip
+            }
+
+            foreach ($trainingNeeds as $trainingNeed) {
+                // Ambil workshop data dari training_need_workshops
+                $workshops = DB::table('training_need_workshops')
+                    ->where('training_need_id', $trainingNeed->id)
+                    ->get();
+
+                foreach ($workshops as $workshop) {
+                    // Cek apakah workshop_id valid
+                    $workshopExists = DB::table('workshops')
+                        ->where('id', $workshop->workshop_id)
+                        ->exists();
+                    
+                    if (!$workshopExists) {
+                        continue; // Skip jika workshop tidak ada
+                    }
+
+                    // Copy data ke tabel events
+                    $eventId = DB::table('events')->insertGetId([
+                        'workshop_id' => $workshop->workshop_id,
+                        'organizer' => null,
+                        'speaker' => null,
+                        'start_date' => $workshop->start_date,
+                        'end_date' => $workshop->end_date,
+                        'divisi' => $workshop->divisi ?? '',
+                        'instructor' => $workshop->instructor,
+                        'location' => null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    // Copy participants dari need_participants ke participants
+                    $needParticipants = DB::table('need_participants')
+                        ->where('need_head_id', $workshop->id)
+                        ->get();
+
+                    foreach ($needParticipants as $participant) {
+                        DB::table('participants')->insert([
+                            'name' => $participant->name ?? '',
+                            'divisi' => $participant->divisi ?? '',
+                            'signature' => null,
+                            'note' => null,
+                            'event_id' => $eventId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            throw new Exception('Error copying training data: ' . $e->getMessage());
+        }
     }
 }

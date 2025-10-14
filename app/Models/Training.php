@@ -24,6 +24,11 @@ class Training extends Model
         return $this->belongsTo(User::class, 'approve_by');
     }
 
+    public function trainingNeed()
+    {
+        return $this->belongsTo(TrainingNeed::class);
+    }
+
     public function getBtnMultilinkAttribute()
     {
         $arrLink = [

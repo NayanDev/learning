@@ -104,19 +104,31 @@
                 approve_by: approve_by,
             },
             success: function (response) {
-                Swal.fire({
-                icon: 'success',
-                title: 'Sukses',
-                text: 'Sukses ' + status + ' data.'
-            });
-            $("#modalApproval").modal("hide");
-            location.reload();
+                if (response.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses',
+                        text: response.message || 'Sukses ' + status + ' data.'
+                    });
+                    $("#modalApproval").modal("hide");
+                    location.reload();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: response.message || 'Terjadi kesalahan saat memproses data.'
+                    });
+                }
             },
             error: function (xhr) {
+                var errorMessage = 'Terjadi kesalahan. Silakan coba lagi.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal',
-                    text: 'Terjadi kesalahan. Silakan coba lagi.'
+                    text: errorMessage
                 });
             }
         });

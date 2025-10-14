@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('workshop_id')->constrained()->onDelete('cascade');
-            $table->foreignId('organizer')->constrained('users')->onDelete('cascade');
+            $table->foreignId('organizer')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('speaker')->nullable();
             $table->dateTime('start_date');
             $table->dateTime('end_date');

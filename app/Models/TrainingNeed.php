@@ -14,6 +14,11 @@ class TrainingNeed extends Model
     protected $fillable = ['training_id', 'workshop_id', 'user_id', 'status', 'approve_by', 'start_date', 'end_date', 'instructur', 'position'];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show', 'btn_approval'];
 
+    public function trainingNeedWorkshop()
+    {
+        return $this->hasOne(NeedWorkshop::class);
+    }
+
     public function training()
     {
         return $this->belongsTo(Training::class, 'training_id');
