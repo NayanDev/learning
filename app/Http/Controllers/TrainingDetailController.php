@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Training;
 use App\Models\TrainingDetail;
 use App\Models\TrainingNeed;
+use Idev\EasyAdmin\app\Helpers\Constant;
 use Illuminate\Support\Facades\Auth;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
 use Illuminate\Support\Facades\DB;

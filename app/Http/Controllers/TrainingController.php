@@ -282,6 +282,9 @@ class TrainingController extends DefaultController
         if ($request->status === 'approve') {
             $training->created_date = now();
         }
+        if ($request->status === 'close') {
+            // Input Event / Copy data from training need workshop
+        }
         $training->status = $request->status;
         $training->approve_by = $request->approve_by;
         $training->notes = $request->notes ?: '-';

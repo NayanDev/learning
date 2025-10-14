@@ -100,14 +100,22 @@
             // Event handler untuk checkbox
             $(".check-{{$field['name']}}").change(function() {
                 var namaValue = $(this).data('nama');
-                console.log('Checkbox changed, Nama:', namaValue); // Debug
+                var divisiValue = $(this).closest('tr').find('td:nth-child(3)').text(); // Ambil divisi dari kolom ke-3
+                var participantData = {
+                    nama: namaValue,
+                    divisi: divisiValue
+                };
+                
+                console.log('Checkbox changed, Participant:', participantData); // Debug
 
                 if ($(this).prop('checked')) {
-                    if (!stateKey.includes(namaValue)) {
-                        stateKey.push(namaValue);
+                    // Cek apakah participant sudah ada berdasarkan nama
+                    var exists = stateKey.some(item => item.nama === namaValue);
+                    if (!exists) {
+                        stateKey.push(participantData);
                     }
                 } else {
-                    stateKey = stateKey.filter(item => item !== namaValue);
+                    stateKey = stateKey.filter(item => item.nama !== namaValue);
                 }
 
                 console.log('Current stateKey:', stateKey); // Debug
@@ -123,8 +131,16 @@
                 if (isChecked) {
                     $(".check-{{$field['name']}}").each(function() {
                         var nama = $(this).data('nama');
-                        if (!stateKey.includes(nama)) {
-                            stateKey.push(nama);
+                        var divisi = $(this).closest('tr').find('td:nth-child(3)').text(); // Ambil divisi dari kolom ke-3
+                        var participantData = {
+                            nama: nama,
+                            divisi: divisi
+                        };
+                        
+                        // Cek apakah participant sudah ada berdasarkan nama
+                        var exists = stateKey.some(item => item.nama === nama);
+                        if (!exists) {
+                            stateKey.push(participantData);
                         }
                         $(this).prop('checked', true);
                     });

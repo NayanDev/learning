@@ -149,6 +149,15 @@ class Sidebar
           'childrens' => []
         ],
         [
+          'name' => 'Event',
+          'icon' => 'ti ti-layout-grid',
+          'key' => 'event',
+          'base_key' => 'event',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
           'name' => 'Role',
           'icon' => 'ti ti-key',
           'key' => 'role',

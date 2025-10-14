@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\NeedWorkshopController;
 use App\Http\Controllers\TrainingAnalystController;
 use App\Http\Controllers\TrainingDetailController;
@@ -100,4 +101,11 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-unplanned-export-pdf-default', [TrainingUnplannedController::class, 'exportPdf'])->name('training-unplanned.export-pdf-default');
     Route::get('training-unplanned-export-excel-default', [TrainingUnplannedController::class, 'exportExcel'])->name('training-unplanned.export-excel-default');
     Route::post('training-unplanned-import-excel-default', [TrainingUnplannedController::class, 'importExcel'])->name('training-unplanned.import-excel-default');
+
+    // Route Training Events
+    Route::resource('event', EventController::class);
+    Route::get('event-api', [EventController::class, 'indexApi'])->name('event.listapi');
+    Route::get('event-export-pdf-default', [EventController::class, 'exportPdf'])->name('event.export-pdf-default');
+    Route::get('event-export-excel-default', [EventController::class, 'exportExcel'])->name('event.export-excel-default');
+    Route::post('event-import-excel-default', [EventController::class, 'importExcel'])->name('event.import-excel-default');
 });

@@ -32,6 +32,7 @@ class TrainingNeedParticipantController extends DefaultController
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
             ['name' => 'Name', 'column' => 'name', 'order' => true],
+            ['name' => 'Divisi', 'column' => 'divisi', 'order' => true],
             // ['name' => 'Need head id', 'column' => 'need_head_id', 'order' => true], 
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
@@ -142,18 +143,29 @@ class TrainingNeedParticipantController extends DefaultController
             DB::beginTransaction();
 
             // Decode JSON string dari input hidden
-            $selectedNames = json_decode($request->name, true);
+            $selectedParticipants = json_decode($request->name, true);
 
-            if (empty($selectedNames)) {
+            if (empty($selectedParticipants)) {
                 throw new Exception('Tidak ada peserta yang dipilih');
             }
 
             // Debug log
-            Log::info('Selected Names:', ['names' => $selectedNames]);
+            Log::info('Selected Participants:', ['participants' => $selectedParticipants]);
 
-            foreach ($selectedNames as $nama) {
+            // Simpan data participant dengan nama dan divisi
+            foreach ($selectedParticipants as $participant) {
                 $insert = new TrainingNeedParticipant();
-                $insert->name = $nama; // Now storing nama instead of NIK
+
+                if (is_array($participant)) {
+                    // Jika sudah berupa array dengan data lengkap
+                    $insert->name = $participant['nama'] ?? $participant['name'] ?? '';
+                    $insert->divisi = $participant['divisi'] ?? '';
+                } else {
+                    // Jika hanya string nama (fallback untuk kompatibilitas)
+                    $insert->name = $participant;
+                    $insert->divisi = '';
+                }
+
                 $insert->need_head_id = $request->need_head_id;
                 $insert->save();
             }
