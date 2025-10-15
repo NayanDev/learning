@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use Exception;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Participant;
+use App\Models\User;
 use Idev\EasyAdmin\app\Helpers\Constant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -33,8 +36,8 @@ class ParticipantController extends DefaultController
             ['name' => 'No', 'column' => '#', 'order' => true],
             ['name' => 'Name', 'column' => 'name', 'order' => true],
             ['name' => 'Divisi', 'column' => 'divisi', 'order' => true],
-            ['name' => 'Sign Ready', 'column' => 'sign_ready', 'order' => true],
-            ['name' => 'Sign Present', 'column' => 'sign_present', 'order' => true],
+            ['name' => 'Sign Ready', 'column' => 'time_ready', 'order' => true],
+            ['name' => 'Sign Present', 'column' => 'time_present', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
@@ -132,6 +135,12 @@ class ParticipantController extends DefaultController
             $params = "?event_id=" . request('event_id');
         }
 
+        $status = "open";
+        if (request('event_id')) {
+            $data = Event::findOrfail(request('event_id'));
+            $status = $data->status;
+        }
+
         $permissions = (new Constant())->permissionByMenu($this->generalUri);
         $data['permissions'] = $permissions;
         $data['more_actions'] = $moreActions;
@@ -147,8 +156,9 @@ class ParticipantController extends DefaultController
         $data['templateImportExcel'] = "#";
         $data['filters'] = $this->filters();
         $data['drawerExtraClass'] = 'w-50';
+        $data['status'] = $status;
 
-        $layout = (request('from_ajax') && request('from_ajax') == true) ? 'easyadmin::backend.idev.list_drawer_ajax' : 'easyadmin::backend.idev.list_drawer';
+        $layout = (request('from_ajax') && request('from_ajax') == true) ? 'easyadmin::backend.idev.list_drawer_ajax' : 'backend.idev.list_drawer_participant';
 
         return view($layout, $data);
     }
@@ -220,18 +230,32 @@ class ParticipantController extends DefaultController
             // Debug log
             Log::info('Selected Participants:', ['participants' => $selectedParticipants]);
 
-            // Simpan data participant dengan nama dan divisi
+            // Simpan data participant dengan semua field
             foreach ($selectedParticipants as $participant) {
                 $insert = new Participant();
 
                 if (is_array($participant)) {
                     // Jika sudah berupa array dengan data lengkap
+                    $insert->company = $participant['company'] ?? '';
+                    $insert->nik = $participant['nik'] ?? '';
                     $insert->name = $participant['nama'] ?? $participant['name'] ?? '';
                     $insert->divisi = $participant['divisi'] ?? '';
+                    $insert->unit_kerja = $participant['unit_kerja'] ?? '';
+                    $insert->status = $participant['status'] ?? '';
+                    $insert->jk = $participant['jk'] ?? '';
+                    $insert->email = $participant['email'] ?? '';
+                    $insert->telp = $participant['telp'] ?? '';
                 } else {
                     // Jika hanya string nama (fallback untuk kompatibilitas)
+                    $insert->company = '';
+                    $insert->nik = '';
                     $insert->name = $participant;
                     $insert->divisi = '';
+                    $insert->unit_kerja = '';
+                    $insert->status = '';
+                    $insert->jk = '';
+                    $insert->email = '';
+                    $insert->telp = '';
                 }
 
                 $insert->event_id = $request->event_id;
@@ -254,5 +278,106 @@ class ParticipantController extends DefaultController
                 'message' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function generateUser($event_id)
+    {
+        try {
+            // Ambil data event & peserta
+            $participants = Participant::where('event_id', $event_id)->get();
+            $event = Event::findOrFail($event_id);
+
+            $created = 0;
+            $skipped = 0;
+
+            foreach ($participants as $p) {
+                // Cek jika email kosong, langsung skip
+                if (!$p->email) {
+                    $skipped++;
+                    continue;
+                }
+
+                // Cek apakah email sudah terdaftar
+                $exists = User::where('email', $p->email)->exists();
+
+                if ($exists) {
+                    $skipped++;
+                    continue;
+                }
+
+                // Buat user baru
+                User::create([
+                    'name'       => $p->name,
+                    'email'      => $p->email,
+                    'company'    => $p->company,
+                    'divisi'     => $p->divisi,
+                    'unit_kerja' => $p->unit_kerja,
+                    'status'     => $p->status,
+                    'jk'         => $p->jk,
+                    'telp'       => $p->telp,
+                    'nik'        => $p->nik,
+                    'role_id'    => 4,
+                    'password'   => bcrypt('pelatihan' . $event->year),
+                ]);
+
+                $created++;
+            }
+
+            // Jika dipanggil dari fetch(), kembalikan JSON
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'created' => $created,
+                    'skipped' => $skipped,
+                ]);
+            }
+
+            // Jika dipanggil dari form biasa
+            return back()->with('success', "✅ User berhasil dibuat: $created | ⏩ Dilewati: $skipped");
+        } catch (\Exception $e) {
+            // Log error ke laravel.log
+            Log::error('Generate User Error: ' . $e->getMessage());
+
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+
+            return back()->with('error', '❌ Gagal generate user: ' . $e->getMessage());
+        }
+    }
+
+    public function splpdf(Request $request)
+    {
+        $data = [
+            'title' => 'Surat Perintah Lembaga',
+            'date' => now()->format('d M Y'),
+            'created' => Event::with(['user', 'approver'])
+                ->where('id', $request->event_id)
+                ->firstOrFail(),
+        ];
+
+        $pdf = Pdf::loadView('pdf.surat_perintah_pelatihan', $data)
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->stream('surat_perintah_pelatihan.pdf');
+    }
+
+    public function presentpdf(Request $request)
+    {
+        $data = [
+            'title' => 'Presentasi Peserta',
+            'date' => now()->format('d M Y'),
+            'created' => Event::with(['user', 'approver'])
+                ->where('id', $request->event_id)
+                ->firstOrFail(),
+        ];
+
+        $pdf = Pdf::loadView('pdf.daftar_hadir_pelatihan', $data)
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->stream('daftar_hadir_pelatihan.pdf');
     }
 }

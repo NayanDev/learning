@@ -29,6 +29,7 @@ class EventController extends DefaultController
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
             ['name' => 'Workshop', 'column' => 'workshop', 'order' => true],
+            ['name' => 'Year', 'column' => 'year', 'order' => true],
             ['name' => 'Participant', 'column' => 'participant_count', 'order' => true],
             ['name' => 'Organizer', 'column' => 'organizer', 'order' => true],
             ['name' => 'Start Date', 'column' => 'start_date', 'order' => true],

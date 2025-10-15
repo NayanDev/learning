@@ -51,7 +51,6 @@
 
         .info-section {
             font-size: 10px;
-            font-weight: bold
         }
         
         table {
@@ -66,6 +65,7 @@
             padding: 4px;
             text-align: center;
         }
+        
         .no-border {
             border: none !important;
         }
@@ -107,14 +107,14 @@
         <div class="info-section">
             <table class="no-border" style="width:40%;">
                 <tr>
-                    <td class="text-start">No.</td>
-                    <td width="5%">:</td>
-                    <td class="text-start">108/SP/DUP/IV/2023</td>
+                    <td class="text-start no-border">No.</td>
+                    <td width="5%" class="no-border">:</td>
+                    <td class="text-start no-border">108/SP/DUP/IV/2023</td>
                 </tr>
                 <tr>
-                    <td class="text-start">Perihal</td>
-                    <td width="5%">:</td>
-                    <td class="text-start">Perintah Pelatihan</td>
+                    <td class="text-start no-border">Perihal</td>
+                    <td width="5%" class="no-border">:</td>
+                    <td class="text-start no-border">Perintah Pelatihan</td>
                 </tr>
             </table>
         </div>
@@ -135,14 +135,14 @@
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
-                    <td style="text-align: left">1.</td>    
+                    <td style="text-align: left;position: relative;">1.<img src="{{ asset('storage/signature/signature_1760069963_68e8894b41d02.png') }}" style="position: absolute;top:0;left:0;" alt="Signature" width="100"></td>    
                     <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
-                    <td style="text-align: center">2.</td>    
+                    <td style="text-align: center;position: relative;">2.<img src="{{ asset('storage/signature/1759899342_68e5eecee2021.svg') }}" style="position: absolute;top:0;left:70;" alt="Signature" width="100"></td>    
                     <td></td>    
                 </tr>
                 <tr>
@@ -256,45 +256,17 @@
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
                     <td></td>    
-                </tr>
-                <tr>
-                    <td>1</td>    
-                    <td class="text-start">Nayantaka</td>    
-                    <td>Umum & SDM</td>    
-                    <td style="text-align: left">1.</td>    
-                    <td></td>    
-                </tr>
-                <tr>
-                    <td>2</td>    
-                    <td class="text-start">Nayy</td>    
-                    <td>Umum & SDM</td>    
-                    <td style="text-align: center">2.</td>    
-                    <td></td>    
-                </tr>
-                <tr>
-                    <td>1</td>    
-                    <td class="text-start">Nayantaka</td>    
-                    <td>Umum & SDM</td>    
-                    <td style="text-align: left">1.</td>    
-                    <td></td>    
-                </tr>
-                <tr>
-                    <td>2</td>    
-                    <td class="text-start">Nayy</td>    
-                    <td>Umum & SDM</td>    
-                    <td style="text-align: center">2.</td>    
-                    <td></td>    
-                </tr>                                
+                </tr>                    
             </tbody>
         </table>
         <p>
             Untuk mengikuti "Pelatihan Creativity in Time Of VUCA" pada hari rabu, 12 April 2023, Pukul 15.30 WIB - Selesai, bertempat di R.Meeting lt.2 PT.Sampharindo Perdana <br>
             Demikian Surat Perintah Pelatihan ini dibuat agar dilaksanakan dengan penuh tanggung jawab. Atas perhatiannya kami ucapkan terima kasih.
         </p>
-    <br><br>
+    <br>
     <table class="no-border" style="width:100%;">
-        {{-- <tr>
-            <td class="no-border text-center"style="width:20%;">
+        <tr>
+            <td class="no-border text-center"style="width:25%;">
                 Semarang, {{ $created->created_date ? \Carbon\Carbon::parse($created->created_date)->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}
                 <br>
                 Dibuat Oleh,
@@ -304,24 +276,23 @@
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower(optional($created->approver)->divisi ?? '-')) }}</span>
                 @elseif($created->status === 'submit')
                 <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower(optional($created->approver)->divisi ?? '-')) }}</span>
                 @else
                 <div style="height: 50px"></div>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower(optional($created->approver)->divisi ?? '-')) }}</span>
                 @endif
             </td>
-            <td class="no-border" style="width:20%;"></td>
-            <td class="no-border" style="width:20%;"></td>
-            <td class="no-border" style="width:20%;"></td>
-            <td class="no-border text-center"style="width:20%;">
+            <td class="no-border" style="width:25%;"></td>
+            <td class="no-border" style="width:25%;"></td>
+            <td class="no-border text-center"style="width:25%;">
                 Mengetahui,
                 <br><br>
                 @if($created->status === 'close')
@@ -335,7 +306,7 @@
                 <em>Data belum tersedia</em>
                 @endif
             </td>
-        </tr> --}}
+        </tr>
     </table>
     <p style="text-align: right">F.DUP.05.R.00.T.090217</p>
 </body>

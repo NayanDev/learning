@@ -30,6 +30,7 @@ class User extends Authenticatable
         'status',
         'jk',
         'telp',
+        'role_id'
     ];
 
     /**

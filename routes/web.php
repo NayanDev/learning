@@ -21,6 +21,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 Route::post('login', [AuthController::class, 'authenticate'])->middleware('web');
 Route::get('/', [AuthController::class, 'login'])->name('login')->middleware('web');
 
+// Test generate PDF
 Route::get('/nayy', function () {
     $data = [
         'nama' => 'Nayantaka',
@@ -32,19 +33,6 @@ Route::get('/nayy', function () {
 
     return $pdf->stream('surat-perintah-pelatihan.pdf');
 });
-
-Route::get('/taa', function () {
-    $data = [
-        'nama' => 'Nayantaka',
-        'tanggal' => now()->format('d M Y'),
-    ];
-
-    $pdf = Pdf::loadView('pdf.daftar_hadir_pelatihan', $data)
-        ->setPaper('A4', 'portrait');
-
-    return $pdf->stream('daftar-hadir-pelatihan.pdf');
-});
-
 
 Route::group(['middleware' => ['web', 'auth']], function () {
     // Route Users
@@ -149,4 +137,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('participant-export-pdf-default', [ParticipantController::class, 'exportPdf'])->name('participant.export-pdf-default');
     Route::get('participant-export-excel-default', [ParticipantController::class, 'exportExcel'])->name('participant.export-excel-default');
     Route::post('participant-import-excel-default', [ParticipantController::class, 'importExcel'])->name('participant.import-excel-default');
+    // Custom Route Participant
+    Route::post('participant-generate-user/{event_id}', [ParticipantController::class, 'generateUser'])->name('participant.generate.user');
+    Route::get('participant-spl-pdf', [ParticipantController::class, 'splpdf'])->name('participant.spl.pdf');
+    Route::get('participant-present-pdf', [ParticipantController::class, 'presentpdf'])->name('participant.present.pdf');
 });

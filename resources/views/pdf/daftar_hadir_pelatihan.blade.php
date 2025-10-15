@@ -51,7 +51,6 @@
 
         .info-section {
             font-size: 10px;
-            font-weight: bold
         }
         
         table {
@@ -102,36 +101,35 @@
 <body>
     <div class="letterhead">
             <img src="{{ asset('easyadmin/idev/img/kop-dokumen.png') }}" alt="PT Sampharindo">
-            <h3  style="border: 1px solid black;padding:25px 10px 25px 25px;">SURAT PERINTAH PELATIHAN</h3>
+            <h3  style="border: 1px solid black;padding:25px 10px 25px 25px;">DAFTAR HADIR PELATIHAN</h3>
         </div>
         <div class="info-section">
             <table class="no-border" style="width:100%;">
                 <tr>
-                    <td class="text-start" width="25%">Nomor</td>
-                    <td width="5%">:</td>
-                    <td class="text-start">108/SP/DUP/IV/2023</td>
+                    <td class="text-start no-border" width="10%">Nomor</td>
+                    <td width="3%" class="no-border">:</td>
+                    <td class="text-start no-border">108/SP/DUP/IV/2023</td>
                 </tr>
                 <tr>
-                    <td class="text-start">Hari / Tgl</td>
-                    <td width="5%">:</td>
-                    <td class="text-start">Rabu, 12 April 2023 <span>Jam : 15.30 WIB - Selesai</span></td>
+                    <td class="text-start no-border">Hari / Tgl</td>
+                    <td width="3%" class="no-border">:</td>
+                    <td class="text-start no-border">Rabu, 12 April 2023 <span style="float: right">Jam : 15.30 WIB - Selesai</span></td>
                 </tr>
                 <tr>
-                    <td class="text-start">Tempat</td>
-                    <td width="5%">:</td>
-                    <td class="text-start">R. Meeting lt.2 PT.Sampharindo Perdana</td>
+                    <td class="text-start no-border">Tempat</td>
+                    <td width="3%" class="no-border">:</td>
+                    <td class="text-start no-border">R. Meeting lt.2 PT.Sampharindo Perdana</td>
                 </tr>
                 <tr>
-                    <td class="text-start" style="vertical-align: top">Pembicara</td>
-                    <td width="5%" style="vertical-align: top">:</td>
-                    <td class="text-start">
+                    <td class="text-start no-border" style="vertical-align: top">Pembicara</td>
+                    <td width="3%" style="vertical-align: top" class="no-border">:</td>
+                    <td class="text-start no-border no-border">
                         1. Cahyanti Fitri Hafidha <br>
                         2. Rizal Roffada Hanif
                     </td>
                 </tr>
             </table>
         </div>
-        <br>
         <p>Pokok Bahasan: Pelatihan Creativity in Time of VUCA</p>
 
         <table>
@@ -141,7 +139,6 @@
                     <th width="25%">Nama</th>
                     <th  width="20%">Divisi / Bagian</th>
                     <th>Tanda Tangan</th>
-                    <th width="20%">Keterangan</th>
                 </tr>
             </thead>
             <tbody>
@@ -149,161 +146,139 @@
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
-                    <td style="text-align: left">1.</td>    
-                    <td></td>    
+                    <td style="text-align: left;position: relative;">1.<img src="{{ asset('storage/signature/signature_1760069963_68e8894b41d02.png') }}" style="position: absolute;top:0;left:0;" alt="Signature" width="100"></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
-                    <td style="text-align: center">2.</td>    
-                    <td></td>    
+                    <td style="text-align: center;position: relative;">2.<img src="{{ asset('storage/signature/1759899342_68e5eecee2021.svg') }}" style="position: absolute;top:0;left:115;" alt="Signature" width="100"></td>    
                 </tr>
                 <tr>
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: left">1.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: left">1.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: left">1.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: left">1.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: left">1.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: left">1.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: left">1.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: left">1.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: left">1.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>1</td>    
                     <td class="text-start">Nayantaka</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: left">1.</td>    
-                    <td></td>    
                 </tr>
                 <tr>
                     <td>2</td>    
                     <td class="text-start">Nayy</td>    
                     <td>Umum & SDM</td>    
                     <td style="text-align: center">2.</td>    
-                    <td></td>    
                 </tr>                                
             </tbody>
         </table>
     <br>
     <table class="no-border" style="width:100%;">
-        {{-- <tr>
+        <tr>
             <td class="no-border text-center"style="width:20%;">
                 Semarang, {{ $created->created_date ? \Carbon\Carbon::parse($created->created_date)->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}
                 <br>
@@ -314,18 +289,18 @@
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower(optional($created->approver)->divisi ?? '-')) }}</span>
                 @elseif($created->status === 'submit')
                 <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower(optional($created->approver)->divisi ?? '-')) }}</span>
                 @else
                 <div style="height: 50px"></div>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower(optional($created->approver)->divisi ?? '-')) }}</span>
                 @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
@@ -345,8 +320,8 @@
                 <em>Data belum tersedia</em>
                 @endif
             </td>
-        </tr> --}}
+        </tr>
     </table>
-    <p style="text-align: right">F.DUP.05.R.00.T.090217</p>
+    <p style="text-align: right">F.DUP.06.R.00.T.090217</p>
 </body>
 </html>

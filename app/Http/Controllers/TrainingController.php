@@ -321,6 +321,7 @@ class TrainingController extends DefaultController
             $trainingNeeds = DB::table('training_needs')
                 ->where('training_id', $trainingId)
                 ->get();
+            $training = Training::findOrFail($trainingId);
 
             if ($trainingNeeds->isEmpty()) {
                 return; // Tidak ada data training needs, skip
@@ -345,6 +346,8 @@ class TrainingController extends DefaultController
                     // Copy data ke tabel events
                     $eventId = DB::table('events')->insertGetId([
                         'workshop_id' => $workshop->workshop_id,
+                        'year' => $training->year,
+                        'letter_number' => null,
                         'organizer' => null,
                         'speaker' => null,
                         'start_date' => $workshop->start_date,

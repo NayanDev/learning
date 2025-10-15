@@ -175,10 +175,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initializeSignaturePad() {
     const canvas = document.getElementById('signature-pad');
+    canvas.width = 400;
+    canvas.height = 200;
     if (!canvas) return;
     
     signaturePad = new SignaturePad(canvas, {
-        backgroundColor: 'rgb(255, 255, 255)',
+        backgroundColor: null,
         penColor: 'rgb(0, 0, 0)',
         velocityFilterWeight: 0.7,
         minWidth: 0.5,
@@ -257,7 +259,7 @@ function previewSignature() {
         `;
     } catch (error) {
         // Fallback to PNG preview
-        const dataURL = signaturePad.toDataURL('image/png');
+        const dataURL = signaturePad.toDataURL('image/svg+xml');
         previewDiv.innerHTML = `
             <div class="mt-3">
                 <small class="text-muted">PNG Preview:</small><br>
@@ -286,7 +288,7 @@ function saveSignature() {
     } catch (error) {
         // Fallback to PNG if SVG fails
         console.warn('SVG generation failed, using PNG fallback:', error);
-        const dataURL = signaturePad.toDataURL('image/png');
+        const dataURL = signaturePad.toDataURL('image/svg+xml');
         document.getElementById('signature-data').value = dataURL;
         isSignatureSaved = true;
         
