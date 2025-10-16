@@ -324,7 +324,6 @@ class TrainingController extends DefaultController
                 ->where('training_id', $trainingId)
                 ->get();
             $training = Training::findOrFail($trainingId);
-            $token = Str::random(32);
 
             if ($trainingNeeds->isEmpty()) {
                 return; // Tidak ada data training needs, skip
@@ -382,7 +381,7 @@ class TrainingController extends DefaultController
                             'sign_present' => null,
                             'time_ready' => null,
                             'time_present' => null,
-                            'token' => $token,
+                            'token' => Str::random(32),
                             'token_expired' => Carbon::parse($workshop->start_date)->addHour(12),
                             'event_id' => $eventId,
                             'created_at' => now(),
