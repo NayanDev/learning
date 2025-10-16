@@ -2,48 +2,74 @@
 $transformedTrainings = [];
 
 foreach ($trainings as $training) {
-    // Hitung durasi dalam jam
     $start = \Carbon\Carbon::parse($training['header']['start_date']);
     $end = \Carbon\Carbon::parse($training['header']['end_date']);
-    $durasi = $start->diffInHours($end);
-    if($durasi > 8){
-        $durasi = $start->diffInDays($end) . ' Hari';
-    } else {
-        $durasi = $start->diffInHours($end) . ' Jam';
-    }
 
-    // Tentukan minggu mana yang aktif berdasarkan start_date
-    $weekNumber = \Carbon\Carbon::parse($training['header']['start_date'])->weekOfMonth;
-    $month = strtolower(\Carbon\Carbon::parse($training['header']['start_date'])->format('M'));
+    $hours = $start->diffInHours($end);
+    $startDate = $start->format('Y-m-d');
+    $endDate = $end->format('Y-m-d');
+
+    if ($hours <= 8) {
+        // Durasi dalam jam
+        $durasi = $hours . ' Jam';
+    } else {
+        if ($startDate === $endDate) {
+            // Masih di hari yang sama, tapi > 8 jam → 1 hari
+            $durasi = '1 Hari';
+        } else {
+            // Lintas hari
+            // Hitung hari sebenarnya (integer)
+            $days = $start->diffInDays($end);
+
+            // Jika ada sisa jam lebih dari 0, berarti tambah 1 hari lagi
+            $remainingHours = $hours - ($days * 24);
+            if ($remainingHours > 0) {
+                $days += 1;
+            }
+
+            // Minimal 2 hari kalau lintas tanggal
+            if ($days < 2) {
+                $days = 2;
+            }
+
+            $durasi = $days . ' Hari';
+        }
+    }
     
+    // Tentukan minggu aktif (maksimum minggu ke-4)
+    $date = \Carbon\Carbon::parse($training['header']['start_date']);
+    $weekNumber = min(4, ceil($date->day / 7));
+    $month = strtolower($date->format('M'));
+
+    // Buat struktur bulan
     $schedule = [
         'jan' => [], 'feb' => [], 'mar' => [], 'apr' => [], 
         'may' => [], 'jun' => [], 'jul' => [], 'aug' => [], 
         'sep' => [], 'oct' => [], 'nov' => [], 'dec' => []
     ];
-    
-    // Set minggu yang aktif
+
     $schedule[$month] = [$weekNumber];
-    if(count($training['participants']) > 1) {
+
+    // Tentukan nama personil
+    if (count($training['participants']) > 1) {
         $person = count($training['participants']) . ' Personil';
-    } else if(count($training['participants']) === 1) {
+    } elseif (count($training['participants']) === 1) {
         $person = ucwords(strtolower($training['participants'][0]['name']));
     } else {
-        $person = ucwords(strtolower($created->user->divisi)) . ' (TBC)';
+        $person = ucwords(strtolower($created->user->divisi ?? '')) . ' (TBC)';
     }
 
     $transformedTrainings[] = [
         'nama' => $training['header']['workshop_name'],
         'durasi' => $durasi,
         'instruktur' => ucfirst($training['header']['instructor']),
-        // 'personil' => count($training['participants']) . ' Personil',
         'personil' => $person,
         'jabatan' => $training['header']['position'],
         'schedule' => $schedule
     ];
 }
 
-// Tambahkan baris kosong jika jumlah data kurang dari 10
+// Tambahkan baris kosong hingga 10 item
 while (count($transformedTrainings) < 10) {
     $transformedTrainings[] = [
         'nama' => '',
@@ -51,7 +77,9 @@ while (count($transformedTrainings) < 10) {
         'instruktur' => '',
         'personil' => '',
         'jabatan' => '',
-        'schedule' => array_fill_keys(['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'], [])
+        'schedule' => array_fill_keys(
+            ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'], []
+        ),
     ];
 }
 
