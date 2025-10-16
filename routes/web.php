@@ -139,6 +139,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('participant-import-excel-default', [ParticipantController::class, 'importExcel'])->name('participant.import-excel-default');
     // Custom Route Participant
     Route::post('participant-generate-user/{event_id}', [ParticipantController::class, 'generateUser'])->name('participant.generate.user');
+    Route::get('participant-attendance', [ParticipantController::class, 'attendance'])->name('participant.attendance');
     Route::get('participant-spl-pdf', [ParticipantController::class, 'splpdf'])->name('participant.spl.pdf');
     Route::get('participant-present-pdf', [ParticipantController::class, 'presentpdf'])->name('participant.present.pdf');
 });

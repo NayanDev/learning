@@ -14,6 +14,10 @@ class Participant extends Model
     protected $fillable = ["name", "divisi", "signature", "note", "event_id"];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
 
     public function getBtnDeleteAttribute()
     {

@@ -246,9 +246,9 @@ class EventController extends DefaultController
                 $query->where('workshops.name', 'LIKE', '%' . $orThose . '%');
             });
 
-        if (Auth::user()->role->name !== 'admin') {
-            $dataQueries = $dataQueries->where('events.divisi', Auth::user()->divisi);
-        }
+        // if (Auth::user()->role->name !== 'admin') {
+        //     $dataQueries = $dataQueries->where('events.divisi', Auth::user()->divisi);
+        // }
 
         $dataQueries = $dataQueries
             ->orderBy($orderBy, $orderState)

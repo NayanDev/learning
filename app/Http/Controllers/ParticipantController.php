@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Exception;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Participant;
 use App\Models\User;
@@ -14,6 +16,7 @@ use Idev\EasyAdmin\app\Helpers\Validation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
+use Illuminate\Support\Facades\Auth;
 
 class ParticipantController extends DefaultController
 {
@@ -222,6 +225,7 @@ class ParticipantController extends DefaultController
 
             // Decode JSON string dari input hidden
             $selectedParticipants = json_decode($request->name, true);
+            $token = Str::random(32);
 
             if (empty($selectedParticipants)) {
                 throw new Exception('Tidak ada peserta yang dipilih');
@@ -259,6 +263,8 @@ class ParticipantController extends DefaultController
                 }
 
                 $insert->event_id = $request->event_id;
+                $insert->token = $token;
+                // $insert->token_expired = Carbon::parse($workshop->start_date)->addHour(12);
                 $insert->save();
             }
 
@@ -347,6 +353,61 @@ class ParticipantController extends DefaultController
 
             return back()->with('error', '❌ Gagal generate user: ' . $e->getMessage());
         }
+    }
+
+    public function attendance()
+    {
+        $moreActions = [
+            [
+                'key' => 'import-excel-default',
+                'name' => 'Import Excel',
+                'html_button' => "<button id='import-excel' type='button' class='btn btn-sm btn-info radius-6' href='#' data-bs-toggle='modal' data-bs-target='#modalImportDefault' title='Import Excel' ><i class='ti ti-upload'></i></button>"
+            ],
+            [
+                'key' => 'export-excel-default',
+                'name' => 'Export Excel',
+                'html_button' => "<a id='export-excel' class='btn btn-sm btn-success radius-6' target='_blank' href='" . url($this->generalUri . '-export-excel-default') . "'  title='Export Excel'><i class='ti ti-cloud-download'></i></a>"
+            ],
+            [
+                'key' => 'export-pdf-default',
+                'name' => 'Export Pdf',
+                'html_button' => "<a id='export-pdf' class='btn btn-sm btn-danger radius-6' target='_blank' href='" . url($this->generalUri . '-export-pdf-default') . "' title='Export PDF'><i class='ti ti-file'></i></a>"
+            ],
+        ];
+
+        $token = request('token');
+
+        $user = Auth::user();
+
+        $participant = Participant::with('event')
+            ->where('nik', $user->nik)
+            ->where('token', $token)
+            ->first();
+
+        if (! $participant) {
+            abort(403, 'token tidak valid');
+        }
+
+        $permissions = (new Constant())->permissionByMenu($this->generalUri);
+        $data['permissions'] = $permissions;
+        $data['more_actions'] = $moreActions;
+        $data['table_headers'] = $this->tableHeaders;
+        $data['title'] = $this->title;
+        $data['uri_key'] = $this->generalUri;
+        $data['uri_list_api'] = route($this->generalUri . '.listapi');
+        $data['uri_create'] = route($this->generalUri . '.create');
+        $data['url_store'] = route($this->generalUri . '.store');
+        $data['fields'] = $this->fields();
+        $data['edit_fields'] = $this->fields();
+        $data['actionButtonViews'] = $this->actionButtonViews;
+        $data['templateImportExcel'] = "#";
+        $data['filters'] = $this->filters();
+        $data['drawerExtraClass'] = 'w-50';
+        $data['data_query'] = $participant;
+
+        $layout = (request('from_ajax') && request('from_ajax') == true) ? 'easyadmin::backend.idev.list_drawer_ajax' : 'backend.idev.attendance_form';
+
+        return view($layout, $data);
     }
 
     public function splpdf(Request $request)
