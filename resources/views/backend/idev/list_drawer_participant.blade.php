@@ -17,8 +17,7 @@
                         </div>
                         @if (in_array('create', $permissions))
                         
-
-                            <a class="btn btn-info float-end text-white mx-1" href="{{ url('participant-spl-pdf') }}?event_id={{ request('event_id') }}">
+                                <a class="btn btn-info float-end text-white mx-1" href="{{ url('participant-spl-pdf') }}?event_id={{ request('event_id') }}">
                                     <i class="ti ti-file"></i> SPL
                                 </a>
                                 <a class="btn btn-success float-end text-white mx-1" href="{{ url('participant-present-pdf') }}?event_id={{ request('event_id') }}">
