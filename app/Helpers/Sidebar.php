@@ -149,6 +149,24 @@ class Sidebar
           'childrens' => []
         ],
         [
+          'name' => 'Unplane_workshop',
+          'icon' => 'ti ti-menu',
+          'key' => 'unplane_workshop',
+          'base_key' => 'unplane_workshop',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Unplane_participant',
+          'icon' => 'ti ti-menu',
+          'key' => 'unplane_participant',
+          'base_key' => 'unplane_participant',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
           'name' => 'Event',
           'icon' => 'ti ti-layout-grid',
           'key' => 'event',
