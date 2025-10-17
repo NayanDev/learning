@@ -18,16 +18,7 @@
                         @if (in_array('create', $permissions))
                         
 
-                            @if($status == 'open')
-                                <a class="btn btn-secondary float-end text-white mx-1" data-bs-toggle="offcanvas" data-bs-target="#createForm-{{$uri_key}}">
-                                    Create
-                                </a>
-                            @elseif($status == 'submit')
-                                <a class="btn btn-info float-end text-white mx-1" href="{{ url('participant-spl-pdf') }}?event_id={{ request('event_id') }}">
-                                    <i class="ti ti-file"></i> SPL
-                                </a>
-                            @elseif($status == 'approve')
-                                <a class="btn btn-info float-end text-white mx-1" href="{{ url('participant-spl-pdf') }}?event_id={{ request('event_id') }}">
+                            <a class="btn btn-info float-end text-white mx-1" href="{{ url('participant-spl-pdf') }}?event_id={{ request('event_id') }}">
                                     <i class="ti ti-file"></i> SPL
                                 </a>
                                 <a class="btn btn-success float-end text-white mx-1" href="{{ url('participant-present-pdf') }}?event_id={{ request('event_id') }}">
@@ -36,11 +27,9 @@
                                 <button class="btn btn-danger float-end text-white mx-1" onclick="generateUser()">
                                     <i class="ti ti-settings"></i>  Generate User
                                 </button>
-                            @else
                                 <a class="btn btn-secondary float-end text-white mx-1" data-bs-toggle="offcanvas" data-bs-target="#createForm-{{$uri_key}}">
                                     Create
                                 </a>
-                            @endif
                         
                         @endif
                     </div>
