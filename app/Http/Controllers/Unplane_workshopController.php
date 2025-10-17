@@ -24,6 +24,11 @@ class Unplane_workshopController extends DefaultController
 
         $this->tableHeaders = [
                     ['name' => 'No', 'column' => '#', 'order' => true], 
+                    ['name' => 'Training', 'column' => 'workshop', 'order' => true],
+                    ['name' => 'Start Date', 'column' => 'start_date', 'order' => true],
+                    ['name' => 'End Date', 'column' => 'end_date', 'order' => true],
+                    ['name' => 'Instructor', 'column' => 'instructor', 'order' => true],
+                    ['name' => 'Position', 'column' => 'position', 'order' => true],
                     ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
                     ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];

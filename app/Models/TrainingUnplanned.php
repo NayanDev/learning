@@ -14,6 +14,35 @@ class TrainingUnplanned extends Model
     protected $fillable = [];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
+    public function trainingNeedWorkshop()
+    {
+        return $this->hasOne(NeedWorkshop::class);
+    }
+
+    public function training()
+    {
+        return $this->belongsTo(Training::class, 'training_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approve_by');
+    }
+
+    public function participants()
+    {
+        return $this->hasMany(TrainingNeedParticipant::class, 'need_head_id');
+    }
+
+    public function workshops()
+    {
+        return $this->hasMany(NeedWorkshop::class, 'training_need_id');
+    }
 
     public function getBtnDeleteAttribute()
     {
