@@ -68,12 +68,12 @@ class Event extends Model
         } else {
             $arrLink = [
                 ['label' => 'Participant', 'url' => url('participant') . "?event_id=" . $this->id, 'icon' => 'ti ti-users'],
-                ['label' => 'Documentation', 'url' => url('documentation') . "?event_id=" . $this->id, 'icon' => 'ti ti-photo'],
+                ['label' => 'QR Code', 'url' => url('qrcode') . "?event_id=" . $this->id, 'icon' => 'ti ti-qrcode'],
                 ['label' => 'Materi', 'url' => url('materi') . "?event_id=" . $this->id, 'icon' => 'ti ti-book fw-bold'],
                 ['label' => 'Question', 'url' => url('question') . "?event_id=" . $this->id, 'icon' => 'ti ti-question-mark fw-bold'],
                 ['label' => 'Evaluation', 'url' => url('evaluation') . "?event_id=" . $this->id, 'icon' => 'ti ti-pencil'],
                 ['label' => 'Certification', 'url' => url('certification') . "?event_id=" . $this->id, 'icon' => 'ti ti-certificate'],
-                ['label' => 'QR Code', 'url' => url('qrcode') . "?event_id=" . $this->id, 'icon' => 'ti ti-qrcode'],
+                ['label' => 'Documentation', 'url' => url('documentation') . "?event_id=" . $this->id, 'icon' => 'ti ti-photo'],
                 ['label' => 'Training Report', 'url' => url('training-report') . "?event_id=" . $this->id, 'icon' => 'ti ti-clipboard'],
             ];
         }

@@ -196,13 +196,12 @@ class EventController extends DefaultController
                 'options' => $instructor
             ],
             [
-                'type' => 'select2',
+                'type' => 'text',
                 'label' => 'Speaker',
                 'name' =>  'speaker',
                 'class' => 'col-md-12 my-2',
                 'required' => $this->flagRules('name', $id),
                 'value' => (isset($edit)) ? $edit->speaker : '-',
-                'options' => $instructor
             ],
             [
                 'type' => 'text',
