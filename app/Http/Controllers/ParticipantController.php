@@ -263,8 +263,6 @@ class ParticipantController extends DefaultController
                 }
 
                 $insert->event_id = $request->event_id;
-                $insert->token = $token;
-                // $insert->token_expired = Carbon::parse($workshop->start_date)->addHour(12);
                 $insert->save();
             }
 
@@ -304,7 +302,9 @@ class ParticipantController extends DefaultController
                 }
 
                 // Cek apakah email sudah terdaftar
-                $exists = User::where('email', $p->email)->exists();
+                $exists = User::where('nik', $p->nik)
+                    ->orWhere('email', $p->email)
+                    ->exists();
 
                 if ($exists) {
                     $skipped++;
@@ -379,9 +379,11 @@ class ParticipantController extends DefaultController
 
         $user = Auth::user();
 
-        $participant = Participant::with('event')
-            ->where('nik', $user->nik)
-            ->where('token', $token)
+        $participant = Participant::where('nik', $user->nik)
+            ->whereHas('event', function ($query) use ($token) {
+                $query->where('token', $token);
+            })
+            ->with('event') // kalau kamu ingin data event juga
             ->first();
 
         if (! $participant) {
@@ -410,14 +412,58 @@ class ParticipantController extends DefaultController
         return view($layout, $data);
     }
 
+    public function attendanceForm(Request $request, $token)
+    {
+        try {
+            $token = request('token');
+            $user = Auth::user();
+
+            $participant = Participant::with('event')
+                ->where('nik', $user->nik)
+                ->whereHas('event', function ($query) use ($token) {
+                    $query->where('token', $token);
+                })
+                ->first();
+
+            if (!$participant) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Peserta tidak ditemukan atau token tidak valid.'
+                ], 404);
+            }
+
+            DB::beginTransaction();
+
+            $participant->sign_ready = $user->id;
+            $participant->sign_present = $user->id;
+            $participant->time_ready = now();
+            $participant->time_present = now();
+            $participant->updated_at = now();
+            $participant->save();
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Status updated successfully'
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function splpdf(Request $request)
     {
         $data = [
             'title' => 'Surat Perintah Lembaga',
             'date' => now()->format('d M Y'),
-            'created' => Event::with(['user', 'approver'])
+            'participant' => Event::with(['user', 'approver', 'participants', 'signpresent', 'signready'])
                 ->where('id', $request->event_id)
-                ->firstOrFail(),
+                ->first(),
+            'event' => Event::find($request->event_id)
         ];
 
         $pdf = Pdf::loadView('pdf.surat_perintah_pelatihan', $data)
@@ -431,9 +477,10 @@ class ParticipantController extends DefaultController
         $data = [
             'title' => 'Presentasi Peserta',
             'date' => now()->format('d M Y'),
-            'created' => Event::with(['user', 'approver'])
+            'participant' => Event::with(['user', 'approver', 'participants', 'signpresent', 'signready'])
                 ->where('id', $request->event_id)
-                ->firstOrFail(),
+                ->first(),
+            'event' => Event::find($request->event_id)
         ];
 
         $pdf = Pdf::loadView('pdf.daftar_hadir_pelatihan', $data)

@@ -140,6 +140,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     // Custom Route Participant
     Route::post('participant-generate-user/{event_id}', [ParticipantController::class, 'generateUser'])->name('participant.generate.user');
     Route::get('participant-attendance', [ParticipantController::class, 'attendance'])->name('participant.attendance');
+    Route::post('participant-attendance/{token}', [ParticipantController::class, 'attendanceForm'])->name('participant.attendance.form');
     Route::get('participant-spl-pdf', [ParticipantController::class, 'splpdf'])->name('participant.spl.pdf');
     Route::get('participant-present-pdf', [ParticipantController::class, 'presentpdf'])->name('participant.present.pdf');
 });

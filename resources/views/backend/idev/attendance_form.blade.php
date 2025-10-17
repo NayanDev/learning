@@ -5,6 +5,7 @@
     $date = \Carbon\Carbon::parse($data_query->event->start_date)->translatedFormat('d F Y') ?? '-';
     $speaker = $data_query->event->speaker ?? '-';
     $category = request('cat') ?? '-';
+    $instructor = $data_query->event->instructor ?? '-';
 @endphp
 
 @extends("easyadmin::backend.parent")
@@ -38,24 +39,12 @@
                     
                     <!-- Judul Kartu -->
                     <div class="d-flex justify-content-between align-items-center">
-                          @if($category === 'ready')
-                            <h3 class="fw-bold text-dark">Konfirmasi Kehadiran Pelatihan</h3>
-                            @if($data_query->sign_ready)
-                              <span class="badge text-bg-success text-dark fs-6">Sudah Konfirmasi</span>
-                            @else
-                              <span class="badge text-bg-warning text-dark fs-6">Menunggu Konfirmasi</span>
-                            @endif
-                          @elseif($category === 'present')
-                            <h3 class="fw-bold text-dark">Daftar Hadir Pelatihan</h3>
-                            @if($data_query->sign_present)
-                              <span class="badge text-bg-success text-dark fs-6">Sudah Konfirmasi</span>
-                            @else
-                              <span class="badge text-bg-warning text-dark fs-6">Menunggu Konfirmasi</span>
-                            @endif
-                          @else
-                              <h3 class="fw-bold text-dark">Data tidak ditemukan</h3> 
-                              <span class="badge text-bg-danger text-dark fs-6">Data tidak ditemukan</span>
-                          @endif
+                      <h3 class="fw-bold text-dark">Konfirmasi Kehadiran Pelatihan</h3>
+                        @if($data_query->sign_ready && $data_query->sign_present)
+                          <span class="badge text-bg-success text-dark fs-6">Sudah Konfirmasi</span>
+                        @else
+                          <span class="badge text-bg-warning text-dark fs-6">Menunggu Konfirmasi</span>
+                        @endif
                     </div>
                     <p class="mt-2 text-muted">Anda diundang untuk mengikuti pelatihan berikut. Mohon konfirmasi kehadiran Anda.</p>
                     <hr class="my-4">
@@ -80,7 +69,7 @@
                             </div>
                             <div class="ms-3">
                                 <p class="text-muted mb-0">Instruktur</p>
-                                <p class="fw-semibold text-dark mb-0">{{ $speaker }} <span class="fw-normal text-muted small">({{ $data_query->event->instructor }})</span></p>
+                                <p class="fw-semibold text-dark mb-0">{{ $speaker }} <span class="fw-normal text-muted small">({{ $instructor }})</span></p>
                             </div>
                         </div>
                         
@@ -134,30 +123,18 @@
                         </div>
 
                         <div class="d-grid">
-                          @if($category === 'ready')
-                            @if($data_query->sign_ready)
-                              <button class="btn btn-success btn-lg fw-bold py-3">
-                                <i class="ti ti-circle-check me-2"></i> Sudah Konfirmasi
-                              </button>
-                            @else
-                              <button id="confirmButton" class="btn btn-info btn-lg fw-bold py-3">
-                                <i class="ti ti-circle-check me-2"></i> Saya Hadir
-                              </button>
-                            @endif
-                          @elseif($category === 'present')
-                            @if($data_query->sign_present)
-                              <button class="btn btn-success btn-lg fw-bold py-3">
-                                <i class="ti ti-circle-check me-2"></i> Sudah Konfirmasi
-                              </button>
-                            @else
-                              <button id="confirmButton" class="btn btn-info btn-lg fw-bold py-3">
-                                <i class="ti ti-circle-check me-2"></i> Saya Hadir
-                              </button>
-                            @endif
+                          @if($data_query->sign_ready && $data_query->sign_present)
+                            <button class="btn btn-success btn-lg fw-bold py-3">
+                              <i class="ti ti-circle-check me-2"></i> Sudah Konfirmasi
+                            </button>
+                          @elseif(!$data_query->sign_ready && !$data_query->sign_present)
+                            <button id="confirmButton" class="btn btn-info btn-lg fw-bold py-3" onclick="confirmAttendance()">
+                              <i class="ti ti-circle-check me-2"></i> Saya Hadir
+                            </button>
                           @else
-                              <button class="btn btn-warning btn-lg fw-bold py-3" disabled>
-                                <i class="ti ti-circle-check me-2"></i> Data tidak ditemukan
-                              </button>
+                            <button class="btn btn-warning btn-lg fw-bold py-3" disabled>
+                              <i class="ti ti-circle-check me-2"></i> Data tidak ditemukan
+                            </button>
                           @endif
                         </div>
                     </div>
@@ -169,4 +146,43 @@
     </div>
   </div>
 </div>
+
+<script>
+  function confirmAttendance() {
+    // Simple attendance confirm: POST token + CSRF to attendanceForm route
+    var token = "{{ $data_query->token ?? request('token') }}";
+    var url = "/participant-attendance/" + token;
+    var csrf = $('meta[name="csrf-token"]').attr('content') || "{{ csrf_token() }}";
+
+    // UI feedback
+    $('#confirmButton').attr('disabled', true).text('Processing...');
+
+    $.ajax({
+      url: url,
+      type: 'POST',
+      data: {
+        _token: csrf,
+        token: token // attendanceForm currently reads token from request('token')
+      },
+      success: function (response) {
+        if (response.status) {
+          // show confirmation area and disable the button
+          $('#confirmationMessage').removeClass('d-none');
+          $('#confirmButton').remove();
+          // update badge if present
+          $('.badge').removeClass('text-bg-warning').addClass('text-bg-success').text('Sudah Konfirmasi');
+        } else {
+          $('#confirmButton').removeAttr('disabled').html('<i class="ti ti-circle-check me-2"></i> Saya Hadir');
+          Swal.fire('Gagal', response.message || 'Gagal memproses konfirmasi', 'error');
+        }
+      },
+      error: function (xhr) {
+        $('#confirmButton').removeAttr('disabled').html('<i class="ti ti-circle-check me-2"></i> Saya Hadir');
+        var msg = 'Terjadi kesalahan. Silakan coba lagi.';
+        if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
+        Swal.fire('Gagal', msg, 'error');
+      }
+    });
+  }
+</script>
 @endsection

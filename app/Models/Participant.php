@@ -19,6 +19,21 @@ class Participant extends Model
         return $this->belongsTo(Event::class);
     }
 
+    public function signpresent()
+    {
+        return $this->belongsTo(User::class, 'sign_present');
+    }
+
+    public function signready()
+    {
+        return $this->belongsTo(User::class, 'sign_ready');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function getBtnDeleteAttribute()
     {
         $html = "<button type='button' class='btn btn-outline-danger btn-sm radius-6' style='margin:1px;' data-bs-toggle='modal' data-bs-target='#modalDelete' onclick='setDelete(" . json_encode($this->id) . ")'>

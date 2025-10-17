@@ -41,6 +41,16 @@ class Event extends Model
         return $this->belongsTo(Workshop::class);
     }
 
+    public function signpresent()
+    {
+        return $this->belongsTo(User::class, 'sign_present');
+    }
+
+    public function signready()
+    {
+        return $this->belongsTo(User::class, 'sign_ready');
+    }
+
     public function getBtnMultilinkAttribute()
     {
         $roleName = auth()->user()->role->name;

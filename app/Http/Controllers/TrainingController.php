@@ -357,6 +357,8 @@ class TrainingController extends DefaultController
                         'divisi' => $workshop->divisi ?? '',
                         'instructor' => $workshop->instructor,
                         'location' => null,
+                        'token' => Str::random(32),
+                        'token_expired' => Carbon::parse($workshop->start_date)->addHour(12),
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
@@ -381,8 +383,6 @@ class TrainingController extends DefaultController
                             'sign_present' => null,
                             'time_ready' => null,
                             'time_present' => null,
-                            'token' => Str::random(32),
-                            'token_expired' => Carbon::parse($workshop->start_date)->addHour(12),
                             'event_id' => $eventId,
                             'created_at' => now(),
                             'updated_at' => now(),

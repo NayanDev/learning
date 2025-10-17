@@ -26,8 +26,6 @@ return new class extends Migration
             $table->string('sign_present')->nullable();
             $table->string('time_ready')->nullable();
             $table->string('time_present')->nullable();
-            $table->string('token')->nullable();
-            $table->string('token_expired')->nullable();
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
