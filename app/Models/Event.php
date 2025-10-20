@@ -68,7 +68,7 @@ class Event extends Model
         } else {
             $arrLink = [
                 ['label' => 'Participant', 'url' => url('participant') . "?event_id=" . $this->id, 'icon' => 'ti ti-users'],
-                ['label' => 'QR Code', 'url' => url('qrcode') . "?event_id=" . $this->id, 'icon' => 'ti ti-qrcode'],
+                ['label' => 'QR Code', 'url' => route('set.event', ['id' => $this->id]), 'icon' => 'ti ti-qrcode'],
                 ['label' => 'Materi', 'url' => url('materi') . "?event_id=" . $this->id, 'icon' => 'ti ti-book fw-bold'],
                 ['label' => 'Question', 'url' => url('question') . "?event_id=" . $this->id, 'icon' => 'ti ti-question-mark fw-bold'],
                 ['label' => 'Evaluation', 'url' => url('evaluation') . "?event_id=" . $this->id, 'icon' => 'ti ti-pencil'],

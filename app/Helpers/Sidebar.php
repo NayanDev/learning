@@ -185,6 +185,24 @@ class Sidebar
           'childrens' => []
         ],
         [
+          'name' => 'Materi',
+          'icon' => 'ti ti-book',
+          'key' => 'materi',
+          'base_key' => 'materi',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Materi Log',
+          'icon' => 'ti ti-menu',
+          'key' => 'materi-log',
+          'base_key' => 'materi-log',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
           'name' => 'Role',
           'icon' => 'ti ti-key',
           'key' => 'role',

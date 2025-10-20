@@ -19,6 +19,9 @@ use App\Http\Controllers\Unplane_participantController;
 use App\Http\Controllers\Unplane_workshopController;
 use Illuminate\Support\Facades\Route;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Controllers\BarcodeController;
+use App\Http\Controllers\MateriController;
+use App\Http\Controllers\MateriLogController;
 
 Route::post('login', [AuthController::class, 'authenticate'])->middleware('web');
 Route::get('/', [AuthController::class, 'login'])->name('login')->middleware('web');
@@ -159,4 +162,27 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('participant-attendance/{token}', [ParticipantController::class, 'attendanceForm'])->name('participant.attendance.form');
     Route::get('participant-spl-pdf', [ParticipantController::class, 'splpdf'])->name('participant.spl.pdf');
     Route::get('participant-present-pdf', [ParticipantController::class, 'presentpdf'])->name('participant.present.pdf');
+
+    // Route Barcode Generator
+    Route::get('/set-event/{id}', function ($id) {
+    session(['event_id' => $id]);
+    return redirect('/barcode');
+    })->name('set.event');
+    Route::get('/barcode', [BarcodeController::class, 'index']);
+
+    // Route Materi
+    Route::resource('materi', MateriController::class);
+    Route::get('materi-api', [MateriController::class, 'indexApi'])->name('materi.listapi');
+    Route::get('materi-export-pdf-default', [MateriController::class, 'exportPdf'])->name('materi.export-pdf-default');
+    Route::get('materi-export-excel-default', [MateriController::class, 'exportExcel'])->name('materi.export-excel-default');
+    Route::post('materi-import-excel-default', [MateriController::class, 'importExcel'])->name('materi.import-excel-default');
+
+    // Route Materi Logs
+    Route::resource('materi-log', MateriLogController::class);
+    Route::get('materi-log-api', [MateriLogController::class, 'indexApi'])->name('materi-log.listapi');
+    Route::get('materi-log-export-pdf-default', [MateriLogController::class, 'exportPdf'])->name('materi-log.export-pdf-default');
+    Route::get('materi-log-export-excel-default', [MateriLogController::class, 'exportExcel'])->name('materi-log.export-excel-default');
+    Route::post('materi-log-import-excel-default', [MateriLogController::class, 'importExcel'])->name('materi-log.import-excel-default');
+    Route::post('/api/materi-log', [MateriLogController::class, 'store']);
+
 });
