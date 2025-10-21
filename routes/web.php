@@ -176,6 +176,12 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('materi-export-pdf-default', [MateriController::class, 'exportPdf'])->name('materi.export-pdf-default');
     Route::get('materi-export-excel-default', [MateriController::class, 'exportExcel'])->name('materi.export-excel-default');
     Route::post('materi-import-excel-default', [MateriController::class, 'importExcel'])->name('materi.import-excel-default');
+    // Custom Route Materi
+    Route::get('/set-materi/{id}', function ($id) {
+        session(['materi_id' => $id]);
+        return redirect('/materi-view');
+    })->name('set.materi');
+    Route::get('materi-view', [MateriController::class, 'viewMateri'])->name('materi.view');
 
     // Route Materi Logs
     Route::resource('materi-log', MateriLogController::class);
@@ -183,6 +189,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('materi-log-export-pdf-default', [MateriLogController::class, 'exportPdf'])->name('materi-log.export-pdf-default');
     Route::get('materi-log-export-excel-default', [MateriLogController::class, 'exportExcel'])->name('materi-log.export-excel-default');
     Route::post('materi-log-import-excel-default', [MateriLogController::class, 'importExcel'])->name('materi-log.import-excel-default');
-    Route::post('/api/materi-log', [MateriLogController::class, 'store']);
+    // Custom Route Materi Logs
+    Route::post('/api/materi-log', [MateriLogController::class, 'countLog']);
 
 });

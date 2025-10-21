@@ -7,6 +7,7 @@ use Exception;
 use Idev\EasyAdmin\app\Helpers\Constant;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -263,6 +264,22 @@ class MateriController extends DefaultController
                 'message' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function viewMateri(Request $request)
+    {
+        $materiId = session('materi_id');
+        
+        if (!$materiId) {
+            return redirect('/')->with('error', 'Materi ID tidak ditemukan.');
+        }
+
+        $materi = Materi::findOrFail($materiId);
+
+        $data['filters'] = $this->filters();
+        $layout = 'backend.idev.materi_view';
+
+        return view($layout, $data);
     }
 
 }

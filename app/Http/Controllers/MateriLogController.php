@@ -105,10 +105,10 @@ class MateriLogController extends DefaultController
         return $rules;
     }
 
-    public function store(Request $request)
+    public function countLog(Request $request)
     {
         $request->validate([
-            'materi_id' => 'required|exists:materis,id',
+            'materi_id' => 'required|exists:materi_logs,id',
             'action' => 'required|string'
         ]);
 

@@ -45,9 +45,9 @@ class Materi extends Model
 
     public function getBtnShowAttribute()
     {
-        $html = "<button type='button' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;' onclick='setShowPreview(" . json_encode($this->id) . ")'>
+        $html = "<a href='" . route('set.materi', ['id' => $this->id]) . "' type='button' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
                 <i class='ti ti-eye'></i>
-                </button>";
+                </a>";
         return $html;
     }
     
