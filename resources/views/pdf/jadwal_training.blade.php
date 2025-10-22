@@ -23,7 +23,7 @@ if ($totalRows == 0) {
             font-size: 6px;
             margin: 0;
             padding: 0;
-            font-family: 'DejaVu Sans', sans-serif;
+            font-family: 'Tahoma', Geneva, sans-serif;
         }
 
         .text-start {
@@ -110,7 +110,8 @@ if ($totalRows == 0) {
 
     .highlight {
         background-color: gray; /* Warna kuning */
-        }
+    }
+
     </style>
 </head>
 <body>
@@ -204,13 +205,21 @@ if ($totalRows == 0) {
                 Dibuat Oleh,
                 <br><br>
                 @if($created->status === 'close')
-                <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->approver->name . "\n" . 'Manager ' . $created->approver->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
                 <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
                 @elseif($created->status === 'submit')
-                <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->approver->name . "\n" . 'Manager ' . $created->approver->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
@@ -229,7 +238,11 @@ if ($totalRows == 0) {
                 Mengetahui,
                 <br><br>
                 @if($created->status === 'close')
-                <img src="{{ asset('img/direktur.svg') ?? 'tanda tangan belum diset' }}" alt="Signature" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML("MAKMURI YUSIN\nDirektur Umum & SDM\n(ini adalah dokumen resmi dan sah)", 'QRCODE', 1, 1) !!}
+                    </div>
+                </div>
                 <br>
                 <u><strong>MAKMURI YUSIN</strong></u>
                 <br>

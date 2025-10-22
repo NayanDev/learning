@@ -348,6 +348,7 @@ class TrainingController extends DefaultController
                     // Copy data ke tabel events
                     $eventId = DB::table('events')->insertGetId([
                         'workshop_id' => $workshop->workshop_id,
+                        'user_id' => $trainingNeed->user_id,
                         'year' => $training->year,
                         'letter_number' => null,
                         'organizer' => null,

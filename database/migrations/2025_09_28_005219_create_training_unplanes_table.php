@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('training_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('approve_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->enum('status', ['open', 'submit', 'approve', 'close', 'reject'])->default('open');
-            $table->text('notes')->nullable();
-            $table->dateTime('created_date')->nullable();
+            $table->string('workshop');
+            $table->string('organizer');
+            $table->string('speaker');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->string('divisi');
+            $table->enum('instructor', ['internal', 'external']);
+            $table->string('location');
             $table->timestamps();
         });
     }

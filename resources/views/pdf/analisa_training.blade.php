@@ -32,10 +32,15 @@ function addLineBreaks($text)
     <link rel="icon" href=" {{ config('idev.app_favicon', asset('easyadmin/idev/img/favicon.png')) }}">
     <style>
         body {
-            font-size: 6px;
+            font-size: 10px;
             margin: 0;
             padding: 0;
+            font-family: 'Tahoma', Geneva, sans-serif;
+        }
+
+        .checklist {
             font-family: 'DejaVu Sans', sans-serif;
+            font-size: 13px;
         }
 
         .text-start {
@@ -77,7 +82,7 @@ function addLineBreaks($text)
 
         .info-section {
             margin-bottom: 15px;
-            font-size: 14px;
+            font-size: 12px;
         }
         
         table {
@@ -95,13 +100,12 @@ function addLineBreaks($text)
 
     .th {
         border: 1px solid black;
-        font-size: 6px;
         margin: 0;
         padding: 0;
         text-align: center;
         vertical-align: middle;
-        height: 100px;
-        width: 25px;
+        height: 120px;
+        width: 30px;
         position: relative; /* Tambahkan ini */
     }
 
@@ -140,8 +144,8 @@ function addLineBreaks($text)
         <p><em>Training Needs Analysis</em></p>
     </div>
     <div class="info-section">
-        <span style="float:left;font-size:6px;">Divisi / Bagian / Unit Kerja :  {{ $created->user->divisi }}</span>
-        <span style="float:right;font-size:6px;">Periode {{ $year->training->year }}</span>
+        <span style="float:left;">Divisi / Bagian / Unit Kerja :  {{ $created->user->divisi }}</span>
+        <span style="float:right;">Periode {{ $year->training->year }}</span>
     </div>
     <br>
     <table>
@@ -190,17 +194,17 @@ function addLineBreaks($text)
 
                     {{-- Qualifications --}}
                     @foreach($qualification as $qual)
-                        <td class="text-center" style="font-size: 9px">{!! $qual === "true" ? '&#10003;' : '' !!}</td>
+                        <td class="text-center checklist">{!! $qual === "true" ? '&#10003;' : '' !!}</td>
                     @endforeach
                                                                         
                     {{-- Qualifications --}}
                     @foreach($general as $gen)
-                        <td class="text-center" style="font-size: 9px">{!! $gen === "true" ? '&#10003;' : '' !!}</td>
+                        <td class="text-center checklist">{!! $gen === "true" ? '&#10003;' : '' !!}</td>
                     @endforeach
 
                     {{-- Qualifications --}}
                     @foreach($technical as $tech)
-                        <td class="text-center" style="font-size: 9px">{!! $tech === "true" ? '&#10003;' : '' !!}</td>
+                        <td class="text-center checklist">{!! $tech === "true" ? '&#10003;' : '' !!}</td>
                     @endforeach
                 </tr>
             @endforeach
@@ -208,7 +212,7 @@ function addLineBreaks($text)
     </table>
 
     <br>
-    <p><i>Catatan: berilah tanda &#10003; pada kolom yang sesuai</i></p>
+    <p><i>Catatan: berilah tanda <span class="checklist">"&#10003;"</span> pada kolom yang sesuai</i></p>
     <br>
 
     <table class="no-border" style="width:100%;">
@@ -216,13 +220,21 @@ function addLineBreaks($text)
             <td class="no-border text-center"style="width:20%;">
                 Dibuat Oleh,<br><br>
                 @if($created->status === 'approve')
-                <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->user->name . "\n" . 'Staff ' . $created->user->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <strong><u>{{ $created->user->name ?? '-' }}</u></strong>
                 <br>
                 <span>Staff {{ ucwords(strtolower($created->user->divisi)) }}</span>
                 @elseif($created->status === 'submit')
-                <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->user->name . "\n" . 'Staff ' . $created->user->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <strong><u>{{ $created->user->name ?? '-' }}</u></strong>
                 <br>
@@ -240,7 +252,11 @@ function addLineBreaks($text)
             <td class="no-border text-center"style="width:20%;">
                 Disetujui Oleh,<br><br>
                 @if($created->status === 'approve')
-                <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->approver->name . "\n" . 'Manager ' . $created->approver->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <strong><u>{{ $created->approver->name ?? '-' }}</u></strong>
                 <br>

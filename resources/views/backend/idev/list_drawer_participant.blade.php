@@ -17,6 +17,7 @@
                         </div>
                         @if (in_array('create', $permissions))
                         
+                            @if(request('event_id'))
                                 <a class="btn btn-info float-end text-white mx-1" href="{{ url('participant-spl-pdf') }}?event_id={{ request('event_id') }}">
                                     <i class="ti ti-file"></i> SPL
                                 </a>
@@ -29,6 +30,7 @@
                                 <a class="btn btn-secondary float-end text-white mx-1" data-bs-toggle="offcanvas" data-bs-target="#createForm-{{$uri_key}}">
                                     Create
                                 </a>
+                            @endif
                         
                         @endif
                     </div>

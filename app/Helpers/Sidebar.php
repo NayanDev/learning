@@ -58,15 +58,15 @@ class Sidebar
         //   'ajax_load' => false,
         //   'childrens' => []
         // ],
-        [
-          'name' => 'Employee',
-          'icon' => 'ti ti-database',
-          'key' => 'employee',
-          'base_key' => 'employee',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
+        // [
+        //   'name' => 'Employee',
+        //   'icon' => 'ti ti-database',
+        //   'key' => 'employee',
+        //   'base_key' => 'employee',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
         [
           'name' => 'Workshop',
           'icon' => 'ti ti-tools',
@@ -85,87 +85,78 @@ class Sidebar
           'ajax_load' => false,
           'childrens' => []
         ],
-        [
-          'name' => 'Training Detail',
-          'icon' => 'ti ti-menu',
-          'key' => 'training-detail',
-          'base_key' => 'training-detail',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
-        [
-          'name' => 'Training Analyst',
-          'icon' => 'ti ti-menu',
-          'key' => 'training-analyst',
-          'base_key' => 'training-analyst',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
-        [
-          'name' => 'Training Need',
-          'icon' => 'ti ti-menu',
-          'key' => 'training-need',
-          'base_key' => 'training-need',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
-        [
-          'name' => 'Need Workshop',
-          'icon' => 'ti ti-menu',
-          'key' => 'need-workshop',
-          'base_key' => 'need-workshop',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
-        [
-          'name' => 'Need Participant',
-          'icon' => 'ti ti-menu',
-          'key' => 'training-need-participant',
-          'base_key' => 'training-need-participant',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
-        [
-          'name' => 'Training Schedule',
-          'icon' => 'ti ti-menu',
-          'key' => 'training-schedule',
-          'base_key' => 'training-schedule',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
-        [
-          'name' => 'Training Unplanned',
-          'icon' => 'ti ti-menu',
-          'key' => 'training-unplanned',
-          'base_key' => 'training-unplanned',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
-        [
-          'name' => 'Unplane_workshop',
-          'icon' => 'ti ti-menu',
-          'key' => 'unplane_workshop',
-          'base_key' => 'unplane_workshop',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
-        [
-          'name' => 'Unplane_participant',
-          'icon' => 'ti ti-menu',
-          'key' => 'unplane_participant',
-          'base_key' => 'unplane_participant',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
+        // [
+        //   'name' => 'Training Detail',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'training-detail',
+        //   'base_key' => 'training-detail',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        // [
+        //   'name' => 'Training Analyst',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'training-analyst',
+        //   'base_key' => 'training-analyst',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        // [
+        //   'name' => 'Training Need',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'training-need',
+        //   'base_key' => 'training-need',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        // [
+        //   'name' => 'Need Workshop',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'need-workshop',
+        //   'base_key' => 'need-workshop',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        // [
+        //   'name' => 'Need Participant',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'training-need-participant',
+        //   'base_key' => 'training-need-participant',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        // [
+        //   'name' => 'Training Schedule',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'training-schedule',
+        //   'base_key' => 'training-schedule',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        // [
+        //   'name' => 'Training Unplanned',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'training-unplanned',
+        //   'base_key' => 'training-unplanned',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        // [
+        //   'name' => 'Unplan Participant',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'training-unplan-participant',
+        //   'base_key' => 'training-unplan-participant',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
         [
           'name' => 'Event',
           'icon' => 'ti ti-layout-grid',
@@ -193,15 +184,15 @@ class Sidebar
           'ajax_load' => false,
           'childrens' => []
         ],
-        [
-          'name' => 'Materi Log',
-          'icon' => 'ti ti-menu',
-          'key' => 'materi-log',
-          'base_key' => 'materi-log',
-          'visibility' => true,
-          'ajax_load' => false,
-          'childrens' => []
-        ],
+        // [
+        //   'name' => 'Materi Log',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'materi-log',
+        //   'base_key' => 'materi-log',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
         [
           'name' => 'Role',
           'icon' => 'ti ti-key',

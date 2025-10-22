@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Unplane_workshop;
+use App\Models\TrainingUnplanParticipant;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
 
-class Unplane_workshopController extends DefaultController
+class TrainingUnplanParticipantController extends DefaultController
 {
-    protected $modelClass = Unplane_workshop::class;
+    protected $modelClass = TrainingUnplanParticipant::class;
     protected $title;
     protected $generalUri;
     protected $tableHeaders;
@@ -17,18 +17,13 @@ class Unplane_workshopController extends DefaultController
 
     public function __construct()
     {
-        $this->title = 'Unplane_workshop';
-        $this->generalUri = 'unplane_workshop';
+        $this->title = 'Training Unplan Participant';
+        $this->generalUri = 'training-unplan-participant';
         // $this->arrPermissions = [];
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
 
         $this->tableHeaders = [
                     ['name' => 'No', 'column' => '#', 'order' => true], 
-                    ['name' => 'Training', 'column' => 'workshop', 'order' => true],
-                    ['name' => 'Start Date', 'column' => 'start_date', 'order' => true],
-                    ['name' => 'End Date', 'column' => 'end_date', 'order' => true],
-                    ['name' => 'Instructor', 'column' => 'instructor', 'order' => true],
-                    ['name' => 'Position', 'column' => 'position', 'order' => true],
                     ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
                     ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];

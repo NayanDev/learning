@@ -29,6 +29,7 @@ class EventController extends DefaultController
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
             ['name' => 'Workshop', 'column' => 'workshop', 'order' => true],
+            ['name' => 'User', 'column' => 'user', 'order' => true],
             ['name' => 'Year', 'column' => 'year', 'order' => true],
             ['name' => 'Participant', 'column' => 'participant_count', 'order' => true],
             ['name' => 'Organizer', 'column' => 'organizer', 'order' => true],
@@ -240,20 +241,18 @@ class EventController extends DefaultController
 
         $dataQueries = Event::leftJoin('participants', 'participants.event_id', '=', 'events.id')
             ->join('workshops', 'workshops.id', '=', 'events.workshop_id')
+            ->join('users', 'users.id', '=', 'events.user_id')
             ->where($filters)
             ->where(function ($query) use ($orThose) {
                 $query->where('workshops.name', 'LIKE', '%' . $orThose . '%');
             });
-
-        // if (Auth::user()->role->name !== 'admin') {
-        //     $dataQueries = $dataQueries->where('events.divisi', Auth::user()->divisi);
-        // }
 
         $dataQueries = $dataQueries
             ->orderBy($orderBy, $orderState)
             ->select(
                 'events.*',
                 'workshops.name as workshop',
+                'users.name as user',
                 DB::raw("
                     CASE
                         WHEN COUNT(participants.id) = 0 THEN 'TBC'

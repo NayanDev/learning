@@ -22,6 +22,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\MateriController;
 use App\Http\Controllers\MateriLogController;
+use App\Http\Controllers\TrainingUnplanParticipantController;
 
 Route::post('login', [AuthController::class, 'authenticate'])->middleware('web');
 Route::get('/', [AuthController::class, 'login'])->name('login')->middleware('web');
@@ -129,19 +130,12 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-unplanned-export-excel-default', [TrainingUnplannedController::class, 'exportExcel'])->name('training-unplanned.export-excel-default');
     Route::post('training-unplanned-import-excel-default', [TrainingUnplannedController::class, 'importExcel'])->name('training-unplanned.import-excel-default');
 
-    // Route Training Unplanned Workshops
-    Route::resource('unplane_workshop', Unplane_workshopController::class);
-    Route::get('unplane_workshop-api', [Unplane_workshopController::class, 'indexApi'])->name('unplane_workshop.listapi');
-    Route::get('unplane_workshop-export-pdf-default', [Unplane_workshopController::class, 'exportPdf'])->name('unplane_workshop.export-pdf-default');
-    Route::get('unplane_workshop-export-excel-default', [Unplane_workshopController::class, 'exportExcel'])->name('unplane_workshop.export-excel-default');
-    Route::post('unplane_workshop-import-excel-default', [Unplane_workshopController::class, 'importExcel'])->name('unplane_workshop.import-excel-default');
-
     // Route Training Unplanned Participants
-    Route::resource('unplane_participant', Unplane_participantController::class);
-    Route::get('unplane_participant-api', [Unplane_participantController::class, 'indexApi'])->name('unplane_participant.listapi');
-    Route::get('unplane_participant-export-pdf-default', [Unplane_participantController::class, 'exportPdf'])->name('unplane_participant.export-pdf-default');
-    Route::get('unplane_participant-export-excel-default', [Unplane_participantController::class, 'exportExcel'])->name('unplane_participant.export-excel-default');
-    Route::post('unplane_participant-import-excel-default', [Unplane_participantController::class, 'importExcel'])->name('unplane_participant.import-excel-default');
+    Route::resource('training-unplan-participant', TrainingUnplanParticipantController::class);
+    Route::get('training-unplan-participant-api', [TrainingUnplanParticipantController::class, 'indexApi'])->name('training-unplan-participant.listapi');
+    Route::get('training-unplan-participant-export-pdf-default', [TrainingUnplanParticipantController::class, 'exportPdf'])->name('training-unplan-participant.export-pdf-default');
+    Route::get('training-unplan-participant-export-excel-default', [TrainingUnplanParticipantController::class, 'exportExcel'])->name('training-unplan-participant.export-excel-default');
+    Route::post('training-unplan-participant-import-excel-default', [TrainingUnplanParticipantController::class, 'importExcel'])->name('training-unplan-participant.import-excel-default');
 
     // Route Events
     Route::resource('event', EventController::class);

@@ -36,12 +36,12 @@ class UserController extends BaseUserController
         $this->arrPermission = [];
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_destroy'];
         $this->importScripts = [
-            ['source' => asset('vendor/select2/select2.min.js')],
-            ['source' => asset('vendor/select2/select2-initialize.js')]
+            ['source' => asset('easyadmin/idev/select2.js')],
+            // ['source' => asset('vendor/select2/select2-initialize.js')]
         ];
         $this->importStyles = [
-            ['source' => asset('vendor/select2/select2.min.css')],
-            ['source' => asset('vendor/select2/select2-style.css')]
+            ['source' => asset('easyadmin/idev/select2.css')],
+            // ['source' => asset('vendor/select2/select2-style.css')]
         ];
 
         $this->tableHeaders = [

@@ -39,8 +39,9 @@ class ParticipantController extends DefaultController
             ['name' => 'No', 'column' => '#', 'order' => true],
             ['name' => 'Name', 'column' => 'name', 'order' => true],
             ['name' => 'Divisi', 'column' => 'divisi', 'order' => true],
-            ['name' => 'Sign Ready', 'column' => 'time_ready', 'order' => true],
-            ['name' => 'Sign Present', 'column' => 'time_present', 'order' => true],
+            ['name' => 'Sign Ready', 'column' => 'in_ready', 'order' => true],
+            ['name' => 'Sign Present', 'column' => 'in_present', 'order' => true],
+            ['name' => 'Out Present', 'column' => 'out_present', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
@@ -436,8 +437,8 @@ class ParticipantController extends DefaultController
 
             $participant->sign_ready = $user->id;
             $participant->sign_present = $user->id;
-            $participant->time_ready = now();
-            $participant->time_present = now();
+            $participant->in_ready = now();
+            $participant->in_present = now();
             $participant->updated_at = now();
             $participant->save();
 

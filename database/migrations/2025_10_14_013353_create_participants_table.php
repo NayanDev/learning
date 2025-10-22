@@ -24,8 +24,9 @@ return new class extends Migration
             $table->string('telp');
             $table->string('sign_ready')->nullable();
             $table->string('sign_present')->nullable();
-            $table->string('time_ready')->nullable();
-            $table->string('time_present')->nullable();
+            $table->string('in_ready')->nullable();
+            $table->string('in_present')->nullable();
+            $table->string('out_present')->nullable();
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

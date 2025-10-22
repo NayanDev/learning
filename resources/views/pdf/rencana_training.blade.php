@@ -97,7 +97,7 @@ $trainings = $transformedTrainings;
             font-size: 7px;
             margin: 0;
             padding: 0;
-            font-family: 'DejaVu Sans', sans-serif;
+            font-family: 'Tahoma', Geneva, sans-serif;
         }
 
         .text-start {
@@ -257,13 +257,21 @@ $trainings = $transformedTrainings;
                 Dibuat Oleh,
                 <br><br>
                 @if($created->status === 'approve')
-                <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->user->name . "\n" . 'Staff ' . $created->user->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
                 <span>Staff {{ ucwords(strtolower($created->user->divisi)) ?? '-' }}</span>
                 @elseif($created->status === 'submit')
-                <img src="{{ asset('storage/signature/' . $created->user->signature) }}" alt="Signature" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->user->name . "\n" . 'Staff ' . $created->user->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
@@ -282,7 +290,11 @@ $trainings = $transformedTrainings;
                 Mengetahui,
                 <br><br>
                 @if($created->status === 'approve')
-                <img src="{{ asset('storage/signature/' . $created->approver->signature) }}" alt="Signature" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->approver->name . "\n" . 'Manager ' . $created->approver->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
