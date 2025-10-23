@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('training_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('workshop');
+            $table->foreignId('workshop_id')->constrained()->onDelete('cascade');
             $table->string('organizer');
             $table->string('speaker');
             $table->dateTime('start_date');

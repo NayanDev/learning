@@ -20,6 +20,7 @@ use App\Http\Controllers\Unplane_workshopController;
 use Illuminate\Support\Facades\Route;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\BarcodeController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MateriController;
 use App\Http\Controllers\MateriLogController;
 use App\Http\Controllers\TrainingUnplanParticipantController;
@@ -46,6 +47,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('user-api', [UserController::class, 'indexApi'])->name('user.listapi');
     Route::get('my-account', [UserController::class, 'profile']);
     Route::post('update-profile', [UserController::class, 'updateProfile']);
+
+    // Route Dashboard
+    Route::resource('dashboard', DashboardController::class);
+    Route::get('dashboard-api', [DashboardController::class, 'indexApi'])->name('dashboard.listapi');
+    Route::get('dashboard-export-pdf-default', [DashboardController::class, 'exportPdf'])->name('dashboard.export-pdf-default');
+    Route::get('dashboard-export-excel-default', [DashboardController::class, 'exportExcel'])->name('dashboard.export-excel-default');
+    Route::post('dashboard-import-excel-default', [DashboardController::class, 'importExcel'])->name('dashboard.import-excel-default');
 
     // Route Employee (API)
     Route::resource('employee', EmployeeController::class);
@@ -154,6 +162,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('participant-generate-user/{event_id}', [ParticipantController::class, 'generateUser'])->name('participant.generate.user');
     Route::get('participant-attendance', [ParticipantController::class, 'attendance'])->name('participant.attendance');
     Route::post('participant-attendance/{token}', [ParticipantController::class, 'attendanceForm'])->name('participant.attendance.form');
+    Route::post('participant-attendance-ready/', [ParticipantController::class, 'attendanceFormReady'])->name('participant.attendance.form.ready');
     Route::get('participant-spl-pdf', [ParticipantController::class, 'splpdf'])->name('participant.spl.pdf');
     Route::get('participant-present-pdf', [ParticipantController::class, 'presentpdf'])->name('participant.present.pdf');
 

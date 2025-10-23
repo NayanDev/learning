@@ -413,6 +413,45 @@ class ParticipantController extends DefaultController
         return view($layout, $data);
     }
 
+    public function attendanceFormReady(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            $participant = Participant::with('event')
+                ->where('nik', $user->nik)
+                ->first();
+
+            if (!$participant) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Peserta tidak ditemukan atau token tidak valid.'
+                ], 404);
+            }
+
+            DB::beginTransaction();
+
+            $participant->sign_ready = $user->id;
+            // $participant->sign_present = $user->id;
+            $participant->in_ready = now();
+            // $participant->in_present = now();
+            $participant->updated_at = now();
+            $participant->save();
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Status updated successfully'
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function attendanceForm(Request $request, $token)
     {
         try {
@@ -435,9 +474,9 @@ class ParticipantController extends DefaultController
 
             DB::beginTransaction();
 
-            $participant->sign_ready = $user->id;
+            // $participant->sign_ready = $user->id;
             $participant->sign_present = $user->id;
-            $participant->in_ready = now();
+            // $participant->in_ready = now();
             $participant->in_present = now();
             $participant->updated_at = now();
             $participant->save();

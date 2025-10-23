@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Training;
 use App\Models\TrainingUnplanned;
+use App\Models\Workshop;
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -68,14 +69,17 @@ class TrainingUnplannedController extends DefaultController
             ['value' => 'external', 'text' => 'External'],
         ];
 
+        $workshop = Workshop::select(['id as value', 'name as text'])->get();
+
         $fields = [
             [
-                'type' => 'text',
-                'label' => 'Training Name',
-                'name' =>  'workshop',
+                'type' => 'select2',
+                'label' => 'Workshop',
+                'name' =>  'workshop_id',
                 'class' => 'col-md-12 my-2',
                 'required' => $this->flagRules('name', $id),
-                'value' => (isset($edit)) ? $edit->workshop : '',
+                'value' => (isset($edit)) ? $edit->workshop_id : '',
+                'options' => $workshop
             ],
             [
                 'type' => 'datetime',
@@ -179,9 +183,10 @@ class TrainingUnplannedController extends DefaultController
         }
 
         $dataQueries = TrainingUnplanned::join('users', 'users.id', '=', 'training_unplanes.user_id')
+            ->join('workshops', 'workshops.id', '=', 'training_unplanes.workshop_id')
             ->where($filters)
             ->where(function ($query) use ($orThose) {
-                $query->where('training_unplanes.workshop', 'LIKE', '%' . $orThose . '%');
+                $query->where('training_unplanes.workshop_id', 'LIKE', '%' . $orThose . '%');
                 $query->where('training_unplanes.organizer', 'LIKE', '%' . $orThose . '%');
                 $query->where('training_unplanes.speaker', 'LIKE', '%' . $orThose . '%');
                 $query->where('training_unplanes.start_date', 'LIKE', '%' . $orThose . '%');
@@ -190,9 +195,10 @@ class TrainingUnplannedController extends DefaultController
                 $query->where('training_unplanes.instructor', 'LIKE', '%' . $orThose . '%');
                 $query->where('training_unplanes.location', 'LIKE', '%' . $orThose . '%');
                 $query->where('users.name', 'LIKE', '%' . $orThose . '%');
+                $query->where('workshops.name', 'LIKE', '%' . $orThose . '%');
             })
             ->orderBy($orderBy, $orderState)
-            ->select('training_unplanes.*', 'users.name as user');
+            ->select('training_unplanes.*', 'users.name as user', 'workshops.name as workshop');
 
         return $dataQueries;
     }
@@ -219,7 +225,7 @@ class TrainingUnplannedController extends DefaultController
             $insert = new TrainingUnplanned();
             $insert->training_id = $request->training_id;
             $insert->user_id = $request->user_id;
-            $insert->workshop = $request->workshop;
+            $insert->workshop_id = $request->workshop_id;
             $insert->organizer = $request->organizer;
             $insert->speaker = $request->speaker;
             $insert->start_date = $request->start_date;
@@ -232,7 +238,7 @@ class TrainingUnplannedController extends DefaultController
             $event = New Event();
             $event->user_id = $request->user_id;
             $event->year = $training->year;
-            $event->workshop_id = $request->workshop;
+            $event->workshop_id = $request->workshop_id;
             $event->organizer = $request->organizer;
             $event->speaker = $request->speaker;
             $event->start_date = $request->start_date;
