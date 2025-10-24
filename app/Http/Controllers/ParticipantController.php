@@ -417,9 +417,13 @@ class ParticipantController extends DefaultController
     {
         try {
             $user = Auth::user();
+            $token = $request->token;
 
             $participant = Participant::with('event')
                 ->where('nik', $user->nik)
+                ->whereHas('event', function ($query) use ($token) {
+                    $query->where('token', $token);
+                })
                 ->first();
 
             if (!$participant) {

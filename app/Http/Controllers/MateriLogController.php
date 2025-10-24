@@ -105,6 +105,43 @@ class MateriLogController extends DefaultController
         return $rules;
     }
 
+    public function countDownload(Request $request)
+    {
+        $request->validate([
+            'materi_id' => 'required|integer|exists:materies,id',
+        ]);
+
+        $userId = Auth::id();
+        $materiId = $request->materi_id;
+
+        // Cari apakah user sudah pernah download materi ini
+        $log = MateriLog::where('materi_id', $materiId)
+                        ->where('user_id', $userId)
+                        ->where('action', 'download')
+                        ->first();
+
+        if ($log) {
+            // Sudah pernah download → tambah count
+            $log->increment('count');
+            $message = "Download ke-{$log->count} untuk materi ini.";
+        } else {
+            // Belum pernah download → buat baru
+            $log = MateriLog::create([
+                'materi_id' => $materiId,
+                'user_id'   => $userId,
+                'action'    => 'download',
+                'count'     => 1,
+            ]);
+            $message = "Download pertama untuk materi ini.";
+        }
+
+        return response()->json([
+            'status'  => true,
+            'message' => $message,
+            'count'   => $log->count,
+        ]);
+    }
+
     public function countLog(Request $request)
     {
         $request->validate([

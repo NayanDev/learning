@@ -110,7 +110,7 @@
                             <hr class="my-3">
 
                             <div class="token-area d-flex justify-content-center align-items-center ">
-                                <button class="btn btn-sm btn-info" onclick="confirmAttendance()">
+                                <button class="btn btn-sm btn-info" onclick="confirmAttendance('{{ $event->event->token }}')">
                                     <i class="ti ti-check me-1"></i> Attendance
                                 </button>
                             </div>
@@ -179,39 +179,83 @@
 </div>
 
 <script>
-    function confirmAttendance() {
-    // Simple attendance confirm: POST token + CSRF to attendanceForm route
-    var url = "{{ route('participant.attendance.form.ready') }}";
-    var csrf = $('meta[name="csrf-token"]').attr('content') || "{{ csrf_token() }}";
+    function confirmAttendance(token) {
+  var url = "{{ route('participant.attendance.form.ready') }}";
+  var csrf = $('meta[name="csrf-token"]').attr('content') || "{{ csrf_token() }}";
 
-    // UI feedback
-    $('#confirmButton').attr('disabled', true).text('Processing...');
+  // Tampilkan konfirmasi dulu
+  Swal.fire({
+    title: 'Konfirmasi Kehadiran',
+    text: 'Apakah kamu yakin ingin mengonfirmasi kehadiran?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, Saya Hadir',
+    cancelButtonText: 'Batal',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Ubah UI tombol
+      $('#confirmButton')
+        .attr('disabled', true)
+        .html('<i class="ti ti-loader ti-spin me-2"></i> Memproses...');
 
-    $.ajax({
-      url: url,
-      type: 'POST',
-      data: {
-        _token: csrf,
-      },
-      success: function (response) {
-        if (response.status) {
-          // show confirmation area and disable the button
-          $('#confirmationMessage').removeClass('d-none');
-          $('#confirmButton').remove();
-          // update badge if present
-          $('.badge').removeClass('text-bg-warning').addClass('text-bg-success').text('Sudah Konfirmasi');
-        } else {
-          $('#confirmButton').removeAttr('disabled').html('<i class="ti ti-circle-check me-2"></i> Saya Hadir');
-          Swal.fire('Gagal', response.message || 'Gagal memproses konfirmasi', 'error');
+      // Kirim request AJAX
+      $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+          _token: csrf,
+          token: token
+        },
+        success: function (response) {
+          if (response.status) {
+            // Notifikasi sukses
+            Swal.fire({
+              title: 'Berhasil!',
+              text: response.message || 'Kehadiran kamu berhasil dikonfirmasi.',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            });
+
+            // Update tampilan halaman
+            $('#confirmationMessage').removeClass('d-none');
+            $('#confirmButton').remove();
+            $('.badge')
+              .removeClass('text-bg-warning')
+              .addClass('text-bg-success')
+              .text('Sudah Konfirmasi');
+          } else {
+            // Gagal dari server
+            $('#confirmButton').removeAttr('disabled')
+              .html('<i class="ti ti-circle-check me-2"></i> Saya Hadir');
+
+            Swal.fire('Gagal', response.message || 'Gagal memproses konfirmasi.', 'error');
+          }
+        },
+        error: function (xhr) {
+          $('#confirmButton').removeAttr('disabled')
+            .html('<i class="ti ti-circle-check me-2"></i> Saya Hadir');
+
+          var msg = 'Terjadi kesalahan. Silakan coba lagi.';
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            msg = xhr.responseJSON.message;
+          }
+
+          Swal.fire('Gagal', msg, 'error');
         }
-      },
-      error: function (xhr) {
-        $('#confirmButton').removeAttr('disabled').html('<i class="ti ti-circle-check me-2"></i> Saya Hadir');
-        var msg = 'Terjadi kesalahan. Silakan coba lagi.';
-        if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
-        Swal.fire('Gagal', msg, 'error');
-      }
-    });
-  }
+      });
+    } else {
+      // Jika user menekan "Batal"
+      Swal.fire({
+        title: 'Dibatalkan',
+        text: 'Konfirmasi kehadiran dibatalkan.',
+        icon: 'info',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    }
+  });
+}
 </script>
 @endsection

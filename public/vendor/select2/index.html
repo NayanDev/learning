@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <!-- ✅ CSS Select2 -->
+  <link href="select2.min.css" rel="stylesheet" />
+  <link href="select2-style.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div style="width: 300px; margin: 50px auto;">
+    <label for="exampleSelect">Pilih Opsi:</label>
+    <select id="exampleSelect" class="select2" style="width: 100%;">
+      <option value="1">Laravel</option>
+      <option value="2">Vue.js</option>
+      <option value="3">React</option>
+      <option value="4">TailwindCSS</option>
+    </select>
+  </div>
+
+  <!-- ✅ jQuery harus duluan -->
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+
+  <!-- ✅ Select2 JS -->
+  <script src="select2.min.js"></script>
+
+  <!-- ✅ Inisialisasi Select2 -->
+  <script>
+    $(document).ready(function() {
+      if ($.fn.select2) {
+        $('.select2').select2({
+          placeholder: "Pilih opsi...",
+          allowClear: true
+        });
+      } else {
+        console.error("❌ Select2 tidak ditemukan. Pastikan file select2.min.js sudah dimuat dengan benar.");
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -149,40 +149,83 @@
 
 <script>
   function confirmAttendance() {
-    // Simple attendance confirm: POST token + CSRF to attendanceForm route
-    var token = "{{ $data_query->token ?? request('token') }}";
-    var url = "/participant-attendance/" + token;
-    var csrf = $('meta[name="csrf-token"]').attr('content') || "{{ csrf_token() }}";
+  var token = "{{ $data_query->token ?? request('token') }}";
+  var url = "/participant-attendance/" + token;
+  var csrf = $('meta[name="csrf-token"]').attr('content') || "{{ csrf_token() }}";
 
-    // UI feedback
-    $('#confirmButton').attr('disabled', true).text('Processing...');
+  // Tampilkan konfirmasi dulu
+  Swal.fire({
+    title: 'Konfirmasi Kehadiran',
+    text: 'Apakah kamu yakin ingin mengonfirmasi kehadiran?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, Saya Hadir',
+    cancelButtonText: 'Batal',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
 
-    $.ajax({
-      url: url,
-      type: 'POST',
-      data: {
-        _token: csrf,
-        token: token // attendanceForm currently reads token from request('token')
-      },
-      success: function (response) {
-        if (response.status) {
-          // show confirmation area and disable the button
-          $('#confirmationMessage').removeClass('d-none');
-          $('#confirmButton').remove();
-          // update badge if present
-          $('.badge').removeClass('text-bg-warning').addClass('text-bg-success').text('Sudah Konfirmasi');
-        } else {
-          $('#confirmButton').removeAttr('disabled').html('<i class="ti ti-circle-check me-2"></i> Saya Hadir');
-          Swal.fire('Gagal', response.message || 'Gagal memproses konfirmasi', 'error');
+      // UI feedback
+      $('#confirmButton')
+        .attr('disabled', true)
+        .html('<i class="ti ti-loader ti-spin me-2"></i> Memproses...');
+
+      // Kirim AJAX request
+      $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+          _token: csrf,
+          token: token
+        },
+        success: function (response) {
+          if (response.status) {
+            // Tampilkan notifikasi sukses
+            Swal.fire({
+              title: 'Berhasil!',
+              text: response.message || 'Kehadiran kamu berhasil dikonfirmasi.',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            });
+
+            // Update UI
+            $('#confirmationMessage').removeClass('d-none');
+            $('#confirmButton').remove();
+            $('.badge')
+              .removeClass('text-bg-warning')
+              .addClass('text-bg-success')
+              .text('Sudah Konfirmasi');
+          } else {
+            // Jika gagal dari server
+            $('#confirmButton').removeAttr('disabled')
+              .html('<i class="ti ti-circle-check me-2"></i> Saya Hadir');
+
+            Swal.fire('Gagal', response.message || 'Gagal memproses konfirmasi.', 'error');
+          }
+        },
+        error: function (xhr) {
+          $('#confirmButton').removeAttr('disabled')
+            .html('<i class="ti ti-circle-check me-2"></i> Saya Hadir');
+
+          let msg = 'Terjadi kesalahan. Silakan coba lagi.';
+          if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
+
+          Swal.fire('Gagal', msg, 'error');
         }
-      },
-      error: function (xhr) {
-        $('#confirmButton').removeAttr('disabled').html('<i class="ti ti-circle-check me-2"></i> Saya Hadir');
-        var msg = 'Terjadi kesalahan. Silakan coba lagi.';
-        if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
-        Swal.fire('Gagal', msg, 'error');
-      }
-    });
-  }
+      });
+
+    } else {
+      // Jika user batal
+      Swal.fire({
+        title: 'Dibatalkan',
+        text: 'Konfirmasi kehadiran dibatalkan.',
+        icon: 'info',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    }
+  });
+}
 </script>
 @endsection

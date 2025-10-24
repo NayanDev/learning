@@ -193,6 +193,8 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('materi-log-export-excel-default', [MateriLogController::class, 'exportExcel'])->name('materi-log.export-excel-default');
     Route::post('materi-log-import-excel-default', [MateriLogController::class, 'importExcel'])->name('materi-log.import-excel-default');
     // Custom Route Materi Logs
+    Route::post('/materi/download/count', [MateriLogController::class, 'countDownload'])
+    ->name('materi.download.count');
     Route::post('/api/materi-log', [MateriLogController::class, 'countLog']);
 
 });
