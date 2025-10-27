@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TrainingNewParticipant extends Model
+class EventAnswer extends Model
 {
     use HasFactory;
 
-    protected $table = 'training_new_participants';
+    protected $table = 'event_answers';
     protected $primaryKey = 'id';
-    protected $fillable = ["test_employee_id","type","name","email","position","score"];
+    protected $fillable = ["user_id","question_id","answer_id","point"];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
 

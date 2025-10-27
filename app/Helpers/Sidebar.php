@@ -86,6 +86,24 @@ class Sidebar
           'childrens' => []
         ],
         // [
+        //     'name' => 'Employee Test',
+        //     'icon' => 'ti ti-menu',
+        //     'key' => 'employee-test',
+        //     'base_key' => 'employee-test',
+        //     'visibility' => true,
+        //     'ajax_load' => false,
+        //     'childrens' => []
+        //   ],
+          [
+            'name' => 'User Answer',
+            'icon' => 'ti ti-flask',
+            'key' => 'user-answer',
+            'base_key' => 'user-answer',
+            'visibility' => true,
+            'ajax_load' => false,
+            'childrens' => []
+          ],
+        // [
         //   'name' => 'Training New Participant',
         //   'icon' => 'ti ti-menu',
         //   'key' => 'training-new-participant',
@@ -103,78 +121,78 @@ class Sidebar
           'ajax_load' => false,
           'childrens' => []
         ],
-        // [
-        //   'name' => 'Training Detail',
-        //   'icon' => 'ti ti-menu',
-        //   'key' => 'training-detail',
-        //   'base_key' => 'training-detail',
-        //   'visibility' => true,
-        //   'ajax_load' => false,
-        //   'childrens' => []
-        // ],
-        // [
-        //   'name' => 'Training Analyst',
-        //   'icon' => 'ti ti-menu',
-        //   'key' => 'training-analyst',
-        //   'base_key' => 'training-analyst',
-        //   'visibility' => true,
-        //   'ajax_load' => false,
-        //   'childrens' => []
-        // ],
-        // [
-        //   'name' => 'Training Need',
-        //   'icon' => 'ti ti-menu',
-        //   'key' => 'training-need',
-        //   'base_key' => 'training-need',
-        //   'visibility' => true,
-        //   'ajax_load' => false,
-        //   'childrens' => []
-        // ],
-        // [
-        //   'name' => 'Need Workshop',
-        //   'icon' => 'ti ti-menu',
-        //   'key' => 'need-workshop',
-        //   'base_key' => 'need-workshop',
-        //   'visibility' => true,
-        //   'ajax_load' => false,
-        //   'childrens' => []
-        // ],
-        // [
-        //   'name' => 'Need Participant',
-        //   'icon' => 'ti ti-menu',
-        //   'key' => 'training-need-participant',
-        //   'base_key' => 'training-need-participant',
-        //   'visibility' => true,
-        //   'ajax_load' => false,
-        //   'childrens' => []
-        // ],
-        // [
-        //   'name' => 'Training Schedule',
-        //   'icon' => 'ti ti-menu',
-        //   'key' => 'training-schedule',
-        //   'base_key' => 'training-schedule',
-        //   'visibility' => true,
-        //   'ajax_load' => false,
-        //   'childrens' => []
-        // ],
-        // [
-        //   'name' => 'Training Unplanned',
-        //   'icon' => 'ti ti-menu',
-        //   'key' => 'training-unplanned',
-        //   'base_key' => 'training-unplanned',
-        //   'visibility' => true,
-        //   'ajax_load' => false,
-        //   'childrens' => []
-        // ],
-        // [
-        //   'name' => 'Unplan Participant',
-        //   'icon' => 'ti ti-menu',
-        //   'key' => 'training-unplan-participant',
-        //   'base_key' => 'training-unplan-participant',
-        //   'visibility' => true,
-        //   'ajax_load' => false,
-        //   'childrens' => []
-        // ],
+        [
+          'name' => 'Training Detail',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-detail',
+          'base_key' => 'training-detail',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Training Analyst',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-analyst',
+          'base_key' => 'training-analyst',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Training Need',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-need',
+          'base_key' => 'training-need',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Need Workshop',
+          'icon' => 'ti ti-menu',
+          'key' => 'need-workshop',
+          'base_key' => 'need-workshop',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Need Participant',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-need-participant',
+          'base_key' => 'training-need-participant',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Training Schedule',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-schedule',
+          'base_key' => 'training-schedule',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Training Unplanned',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-unplanned',
+          'base_key' => 'training-unplanned',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Unplan Participant',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-unplan-participant',
+          'base_key' => 'training-unplan-participant',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
         [
           'name' => 'Event',
           'icon' => 'ti ti-layout-grid',
@@ -213,7 +231,7 @@ class Sidebar
         // ],
         [
           'name' => 'Question',
-          'icon' => 'ti ti-menu',
+          'icon' => 'ti ti-question-mark',
           'key' => 'question',
           'base_key' => 'question',
           'visibility' => true,
@@ -222,13 +240,22 @@ class Sidebar
         ],
         [
           'name' => 'Answer',
-          'icon' => 'ti ti-menu',
+          'icon' => 'ti ti-pencil',
           'key' => 'answer',
           'base_key' => 'answer',
           'visibility' => true,
           'ajax_load' => false,
           'childrens' => []
         ],
+        [
+            'name' => 'Event Answer',
+            'icon' => 'ti ti-menu',
+            'key' => 'event-answer',
+            'base_key' => 'event-answer',
+            'visibility' => true,
+            'ajax_load' => false,
+            'childrens' => []
+          ],
         [
           'name' => 'Role',
           'icon' => 'ti ti-key',

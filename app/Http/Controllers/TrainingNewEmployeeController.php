@@ -366,6 +366,9 @@ class TrainingNewEmployeeController extends DefaultController
     public function testNewEmployee()
     {
         $token = request('token');
+        if(!$token){
+            abort(404);
+        }
         $data = TrainingNewEmployee::where('token', $token)
             ->first();
         return view('backend.idev.test_new_employee', compact('data'));

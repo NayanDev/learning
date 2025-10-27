@@ -22,12 +22,15 @@ use Illuminate\Support\Facades\Route;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeTestController;
+use App\Http\Controllers\EventAnswerController;
 use App\Http\Controllers\MateriController;
 use App\Http\Controllers\MateriLogController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TrainingNewEmployeeController;
 use App\Http\Controllers\TrainingNewParticipantController;
 use App\Http\Controllers\TrainingUnplanParticipantController;
+use App\Http\Controllers\UserAnswerController;
 
 Route::post('login', [AuthController::class, 'authenticate'])->middleware('web');
 Route::get('/', [AuthController::class, 'login'])->name('login')->middleware('web');
@@ -177,16 +180,16 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     // Route Barcode Generator
     Route::get('/set-event/{id}', function ($id) {
         session(['event_id' => $id]);
-        return redirect('/barcode');
+        return redirect('/barcode-event');
     })->name('set.event');
-    Route::get('/barcode', [BarcodeController::class, 'index']);
+    Route::get('/barcode-event', [BarcodeController::class, 'index']);
 
     // Route Barcode Generator
     Route::get('/set-test/{id}', function ($id) {
         session(['test_id' => $id]);
-        return redirect('/barcode');
+        return redirect('/barcode-test');
     })->name('set.test');
-    Route::get('/barcode', [BarcodeController::class, 'testEmployee']);
+    Route::get('/barcode-test', [BarcodeController::class, 'testEmployee']);
 
     // Route Materi
     Route::resource('materi', MateriController::class);
@@ -226,6 +229,13 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('training-new-participant-export-excel-default', [TrainingNewParticipantController::class, 'exportExcel'])->name('training-new-participant.export-excel-default');
     Route::post('training-new-participant-import-excel-default', [TrainingNewParticipantController::class, 'importExcel'])->name('training-new-participant.import-excel-default');
 
+    // Route Employee Test
+    Route::resource('employee-test', EmployeeTestController::class);
+    Route::get('employee-test-api', [EmployeeTestController::class, 'indexApi'])->name('employee-test.listapi');
+    Route::get('employee-test-export-pdf-default', [EmployeeTestController::class, 'exportPdf'])->name('employee-test.export-pdf-default');
+    Route::get('employee-test-export-excel-default', [EmployeeTestController::class, 'exportExcel'])->name('employee-test.export-excel-default');
+    Route::post('employee-test-import-excel-default', [EmployeeTestController::class, 'importExcel'])->name('employee-test.import-excel-default');
+
     // Route Question
     Route::resource('question', QuestionController::class);
     Route::get('question-api', [QuestionController::class, 'indexApi'])->name('question.listapi');
@@ -240,6 +250,19 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('answer-export-excel-default', [AnswerController::class, 'exportExcel'])->name('answer.export-excel-default');
     Route::post('answer-import-excel-default', [AnswerController::class, 'importExcel'])->name('answer.import-excel-default');
 
-    // API Routes for Test
+    // Route User Answer
+    Route::resource('user-answer', UserAnswerController::class);
+    Route::get('user-answer-api', [UserAnswerController::class, 'indexApi'])->name('user-answer.listapi');
+    Route::get('user-answer-export-pdf-default', [UserAnswerController::class, 'exportPdf'])->name('user-answer.export-pdf-default');
+    Route::get('user-answer-export-excel-default', [UserAnswerController::class, 'exportExcel'])->name('user-answer.export-excel-default');
+    Route::post('user-answer-import-excel-default', [UserAnswerController::class, 'importExcel'])->name('user-answer.import-excel-default');
+
+    // Route Event Answer
+    Route::resource('event-answer', EventAnswerController::class);
+    Route::get('event-answer-api', [EventAnswerController::class, 'indexApi'])->name('event-answer.listapi');
+    Route::get('event-answer-export-pdf-default', [EventAnswerController::class, 'exportPdf'])->name('event-answer.export-pdf-default');
+    Route::get('event-answer-export-excel-default', [EventAnswerController::class, 'exportExcel'])->name('event-answer.export-excel-default');
+    Route::post('event-answer-import-excel-default', [EventAnswerController::class, 'importExcel'])->name('event-answer.import-excel-default');
+
 
 });

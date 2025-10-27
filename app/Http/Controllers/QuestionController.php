@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Models\TrainingNewParticipant;
+use App\Models\UserAnswer;
 use Exception;
 use Idev\EasyAdmin\app\Helpers\Constant;
 use Idev\EasyAdmin\app\Helpers\Validation;
@@ -118,6 +119,48 @@ class QuestionController extends DefaultController
         return $rules;
     }
 
+    protected function defaultDataQuery()
+    {
+        $filters = [];
+        $orThose = null;
+        $orderBy = 'id';
+        $orderState = 'DESC';
+        if (request('search')) {
+            $orThose = request('search');
+        }
+        if (request('order')) {
+            $orderBy = request('order');
+            $orderState = request('order_state');
+        }
+        if (request('test_employee_id')) {
+            $filters[] = ['test_employee_id', '=', request('test_employee_id')];
+        }
+        if (request('event_id')) {
+            $filters[] = ['event_id', '=', request('event_id')];
+        }
+
+        $dataQueries = $this->modelClass::where($filters)
+            ->where(function ($query) use ($orThose) {
+                $efc = ['#', 'created_at', 'updated_at', 'id'];
+
+                foreach ($this->tableHeaders as $key => $th) {
+                    if (array_key_exists('search', $th) && $th['search'] == false) {
+                        $efc[] = $th['column'];
+                    }
+                    if (!in_array($th['column'], $efc)) {
+                        if ($key == 0) {
+                            $query->where($th['column'], 'LIKE', '%' . $orThose . '%');
+                        } else {
+                            $query->orWhere($th['column'], 'LIKE', '%' . $orThose . '%');
+                        }
+                    }
+                }
+            })
+            ->orderBy($orderBy, $orderState);
+
+        return $dataQueries;
+    }
+
     public function store(Request $request)
     {
         $rules = $this->rules();
@@ -192,13 +235,22 @@ class QuestionController extends DefaultController
             ],
         ];
 
+        $params = "";
+        if (request('test_employee_id')) {
+            $params = "?test_employee_id=" . request('test_employee_id');
+        }
+
+        if (request('event_id')) {
+            $params = "?event_id=" . request('event_id');
+        }
+
         $permissions = (new Constant())->permissionByMenu($this->generalUri);
         $data['permissions'] = $permissions;
         $data['more_actions'] = $moreActions;
         $data['table_headers'] = $this->tableHeaders;
         $data['title'] = $this->title;
         $data['uri_key'] = $this->generalUri;
-        $data['uri_list_api'] = route($this->generalUri . '.listapi') . "?event_id=" . request('event_id');
+        $data['uri_list_api'] = route($this->generalUri . '.listapi') . $params;
         $data['uri_create'] = route($this->generalUri . '.create');
         $data['url_store'] = route($this->generalUri . '.store') . "?event_id=" . request('event_id');
         $data['fields'] = $this->fields();
@@ -213,11 +265,11 @@ class QuestionController extends DefaultController
         $data['filters'] = request('event_id') ? [] : $this->filters();
         $data['drawerExtraClass'] = 'w-50';
 
-        $layout = 'easyadmin::backend.idev.list_drawer';
+        $layout = 'backend.idev.list_drawer_question';
 
-        if (!request('event_id')) {
-            $layout = 'easyadmin::backend.idev.list_drawer_with_checkbox';
-        }
+        // if (!request('event_id')) {
+        //     $layout = 'easyadmin::backend.idev.list_drawer_with_checkbox';
+        // }
 
 
         return view($layout, $data);
@@ -276,27 +328,42 @@ class QuestionController extends DefaultController
         DB::beginTransaction();
         
         try {
-            $userAnswers = $request->input('answers'); // array of answer_ids
+            $userAnswers = $request->input('answers'); // array of answer_ids indexed by question index
             $testEmployeeId = $request->input('test_employee_id');
             $eventId = $request->input('event_id');
+            $testType = $request->input('test_type'); // Ambil test_type dari request
             $namaLengkap = $request->input('nama_lengkap');
             $email = $request->input('email');
             $posisi = $request->input('posisi');
 
-            // Calculate total score
+            // Calculate total score and save detail answers
             $totalScore = 0;
             if ($userAnswers && is_array($userAnswers)) {
-                foreach ($userAnswers as $answerId) {
-                    $answer = Answer::find($answerId);
-                    if ($answer) {
-                        $totalScore += $answer->point;
+                foreach ($userAnswers as $questionIndex => $answerId) {
+                    if ($answerId) {
+                        $answer = Answer::find($answerId);
+                        if ($answer) {
+                            $totalScore += $answer->point;
+                            
+                            // Save detail answer to user_answers table
+                            UserAnswer::create([
+                                'name' => $namaLengkap,
+                                'email' => $email,
+                                'position' => $posisi,
+                                'test_employee_id' => $testEmployeeId,
+                                'question_id' => $answer->question_id,
+                                'answer_id' => $answer->id,
+                                'point' => $answer->point
+                            ]);
+                        }
                     }
                 }
             }
 
-            // Save to training_new_participants table
+            // Save to training_new_participants table (summary)
             $participant = new TrainingNewParticipant();
             $participant->test_employee_id = $testEmployeeId;
+            $participant->type = $testType; // Simpan test_type
             $participant->name = $namaLengkap;
             $participant->email = $email;
             $participant->position = $posisi;
@@ -309,7 +376,7 @@ class QuestionController extends DefaultController
                 'status' => true,
                 'message' => 'Test berhasil diselesaikan!',
                 'score' => $totalScore,
-                'total_answers' => count($userAnswers ?? []),
+                'total_answers' => count(array_filter($userAnswers ?? [])),
                 'participant_id' => $participant->id
             ], 200);
         } catch (Exception $e) {

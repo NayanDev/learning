@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TrainingNewParticipant extends Model
+class EmployeeTest extends Model
 {
     use HasFactory;
 
-    protected $table = 'training_new_participants';
+    protected $table = 'employee_tests';
     protected $primaryKey = 'id';
-    protected $fillable = ["test_employee_id","type","name","email","position","score"];
+    protected $fillable = [];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
 

@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('training_new_participants', function (Blueprint $table) {
+        Schema::create('user_answers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('test_employee_id')->nullable()->constrained('training_new_employees');
-            $table->enum('type', ['pre_test', 'post_test']);
             $table->string('name');
             $table->string('email');
             $table->string('position');
-            $table->decimal('score', 5, 2);
+            $table->foreignId('test_employee_id')->nullable()->constrained('training_new_employees'); 
+            $table->foreignId('question_id')->nullable()->constrained('questions'); 
+            $table->foreignId('answer_id')->nullable()->constrained('answers'); 
+            $table->integer('point');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('training_new_participants');
+        Schema::dropIfExists('user_answers');
     }
 };

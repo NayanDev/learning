@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Pre-Test Pelatihan</title>
+    <title>Test Karyawan Baru</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Tabler Icons CSS -->
@@ -61,10 +61,85 @@
         #question-navigator .btn {
             font-weight: 600;
         }
+        /* Style untuk Test Type Card */
+        .test-type-card {
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+            border: 2px solid #dee2e6;
+        }
+        .test-type-card:hover {
+            background-color: #f8f9fa;
+            border-color: #0891B2 !important;
+            box-shadow: 0 2px 8px rgba(8, 145, 178, 0.15);
+            transform: translateY(-2px);
+        }
+        .test-type-card input[type="radio"]:checked {
+            accent-color: #0891B2;
+        }
+        .test-type-card:has(input[type="radio"]:checked) {
+            background-color: #E6F4F1;
+            border-color: #0891B2 !important;
+            box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+        }
+        .test-type-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
 
+    @php
+        use Carbon\Carbon;
+        $now = Carbon::now();
+        $startDate = Carbon::parse($data->start_date);
+        $endDate = Carbon::parse($data->end_date);
+        $isAccessible = $now->between($startDate, $endDate);
+    @endphp
+
+    @if(!$isAccessible)
+        <!-- Halaman Tidak Dapat Diakses -->
+        <div class="test-container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-5 text-center">
+                            <div class="mb-4">
+                                <i class="ti ti-clock-exclamation" style="font-size: 5rem; color: #dc3545;"></i>
+                            </div>
+                            <h3 class="fw-bold text-dark mb-3">Test Tidak Dapat Diakses</h3>
+                            
+                            @if($now->lt($startDate))
+                                <p class="text-muted mb-4">
+                                    Test untuk <strong>{{ $data->workshop->name }}</strong> belum dimulai.
+                                </p>
+                                <div class="alert alert-info">
+                                    <p class="mb-2"><strong>Waktu Mulai:</strong></p>
+                                    <p class="mb-0">{{ $startDate->translatedFormat('l, d F Y - H:i') }} WIB</p>
+                                </div>
+                                <p class="text-muted small mt-3">
+                                    Silakan kembali saat test telah dimulai.
+                                </p>
+                            @else
+                                <p class="text-muted mb-4">
+                                    Test untuk <strong>{{ $data->workshop->name }}</strong> telah berakhir.
+                                </p>
+                                <div class="alert alert-warning">
+                                    <p class="mb-2"><strong>Waktu Berakhir:</strong></p>
+                                    <p class="mb-0">{{ $endDate->translatedFormat('l, d F Y - H:i') }} WIB</p>
+                                </div>
+                                <p class="text-muted small mt-3">
+                                    Maaf, Anda tidak dapat lagi mengakses test ini.
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @else
+    <!-- Test Dapat Diakses -->
     <div class="test-container">
 
         <!-- =================================== -->
@@ -79,7 +154,7 @@
                             
                             <div class="text-center mb-4">
                                 <h3 class="fw-bold text-dark mt-3">Formulir Data Peserta </h3>
-                                <p class="text-muted">Selamat datang di Pre-Test untuk <strong>{{ $data->workshop->name }}</strong>.</p>
+                                <p class="text-muted">Selamat datang di Test untuk <strong>{{ $data->workshop->name }}</strong>.</p>
                             </div>
                             
                             <form id="form-data-peserta">
@@ -87,8 +162,43 @@
                                     Harap isi semua kolom yang wajib diisi.
                                 </div>
 
+                                <!-- Pilihan Tipe Test -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-medium mb-3">
+                                        Pilih Tipe Test <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="test-type-card rounded p-4 d-block text-center h-100">
+                                                <input type="radio" name="test_type" value="pre_test" class="form-check-input" required>
+                                                <div>
+                                                    <div class="test-type-icon text-primary">
+                                                        <i class="ti ti-edit-circle"></i>
+                                                    </div>
+                                                    <h5 class="fw-bold mb-2">Pre-Test</h5>
+                                                    <p class="text-muted small mb-0">Test awal sebelum mengikuti pelatihan untuk mengukur pemahaman dasar</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="test-type-card rounded p-4 d-block text-center h-100">
+                                                <input type="radio" name="test_type" value="post_test" class="form-check-input" required>
+                                                <div>
+                                                    <div class="test-type-icon text-success">
+                                                        <i class="ti ti-certificate"></i>
+                                                    </div>
+                                                    <h5 class="fw-bold mb-2">Post-Test</h5>
+                                                    <p class="text-muted small mb-0">Test akhir setelah mengikuti pelatihan untuk evaluasi hasil pembelajaran</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
                                 <div class="mb-3">
-                                    <label for="nama_lengkap" class="form-label fw-medium">Nama Lengkap</label>
+                                    <label for="nama_lengkap" class="form-label fw-medium">Nama Lengkap <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="ti ti-user"></i></span>
                                         <input type="text" class="form-control" id="nama_lengkap" placeholder="Masukkan nama lengkap Anda" required>
@@ -96,7 +206,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="email" class="form-label fw-medium">Email</label>
+                                    <label for="email" class="form-label fw-medium">Email <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="ti ti-mail"></i></span>
                                         <input type="email" class="form-control" id="email" placeholder="contoh@email.com" required>
@@ -104,7 +214,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="posisi" class="form-label fw-medium">Posisi yang Dilamar</label>
+                                    <label for="posisi" class="form-label fw-medium">Posisi yang Dilamar <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="ti ti-briefcase"></i></span>
                                         <input type="text" class="form-control" id="posisi" placeholder="Masukkan posisi yang dilamar" required>
@@ -114,9 +224,25 @@
                                 <div class="alert alert-light border" role="alert">
                                     <h6 class="fw-bold"><i class="ti ti-info-circle me-2"></i>Petunjuk Pengerjaan</h6>
                                     <ul class="mb-0 small" style="padding-left: 1.2rem;">
-                                        <li>Tes terdiri dari <strong>10 soal</strong> pilihan ganda.</li>
-                                        <li>Waktu pengerjaan adalah <strong>15 menit</strong>.</li>
+                                        <li>Tes terdiri dari <strong>beberapa soal</strong> pilihan ganda.</li>
+                                        <li>Waktu pengerjaan adalah <strong>
+                                            @php
+                                                $start = \Carbon\Carbon::parse($data->start_date);
+                                                $end = \Carbon\Carbon::parse($data->end_date);
+                                                $diff = $start->diff($end);
+                                                
+                                                $hours = $diff->h + ($diff->days * 24);
+                                                $minutes = $diff->i;
+                                                
+                                                if ($hours > 0) {
+                                                    echo "{$hours} jam {$minutes} menit";
+                                                } else {
+                                                    echo "{$minutes} menit";
+                                                }
+                                            @endphp
+                                        </strong>.</li>
                                         <li>Pastikan koneksi internet Anda stabil.</li>
+                                        <li>Jawab semua soal dengan baik dan teliti.</li>
                                         <li>Klik tombol "Mulai Test" jika Anda sudah siap.</li>
                                     </ul>
                                 </div>
@@ -141,7 +267,7 @@
                 <div class="col-lg-8">
                     <div class="card shadow-sm h-100">
                         <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center">
-                            <h5 class="fw-bold mb-0">Pre-Test: {{ $data->workshop->name }}</h5>
+                            <img src="{{ asset('easyadmin/idev/img/favicon.png') }}" width="50"><h5 class="fw-bold mb-0"><span id="test-type-badge"></span>: {{ $data->workshop->name }}</h5>
                             <span class="badge bg-primary-subtle text-primary-emphasis rounded-pill px-3 py-2">Soal 1 dari 10</span>
                         </div>
                         <div class="card-body p-4 p-md-5">
@@ -283,7 +409,8 @@
         let userAnswers = {};
         let currentQuestionIndex = 0;
         let timerInterval = null;
-        let testStartTime = null; // Waktu mulai test
+        let testStartTime = null;
+        let testType = null; // Variable untuk menyimpan tipe test // Waktu mulai test
         
         // Hitung durasi test dari selisih start_date dan end_date
         const EVENT_START_DATE = new Date("{{ $data->start_date }}");
@@ -299,6 +426,7 @@
         // LocalStorage functions
         function saveProgress() {
             const progress = {
+                test_type: testType, // Simpan tipe test
                 nama_lengkap: document.getElementById('nama_lengkap')?.value || '',
                 email: document.getElementById('email')?.value || '',
                 posisi: document.getElementById('posisi')?.value || '',
@@ -341,6 +469,15 @@
                     document.getElementById('posisi').value = progress.posisi || '';
                 }
                 
+                // Restore test type
+                if (progress.test_type) {
+                    testType = progress.test_type;
+                    const radioButton = document.querySelector(`input[name="test_type"][value="${progress.test_type}"]`);
+                    if (radioButton) {
+                        radioButton.checked = true;
+                    }
+                }
+                
                 // DON'T restore answers here - will be done in initializeTest
                 // This function only restores form data
                 
@@ -359,6 +496,15 @@
             const namaInput = document.getElementById('nama_lengkap');
             const emailInput = document.getElementById('email');
             const posisiInput = document.getElementById('posisi');
+
+            // Auto-save test type selection
+            const testTypeRadios = document.querySelectorAll('input[name="test_type"]');
+            testTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    testType = this.value;
+                    saveProgress();
+                });
+            });
 
             // Auto-save form data on input
             [namaInput, emailInput, posisiInput].forEach(input => {
@@ -403,14 +549,19 @@
             formDataPeserta.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
+                const testTypeSelected = document.querySelector('input[name="test_type"]:checked');
                 const nama = document.getElementById('nama_lengkap').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const posisi = document.getElementById('posisi').value.trim();
 
-                if (nama === '' || email === '' || posisi === '') {
+                if (!testTypeSelected || nama === '' || email === '' || posisi === '') {
+                    errorMessage.textContent = 'Harap isi semua kolom yang wajib diisi termasuk tipe test.';
                     errorMessage.classList.remove('d-none');
                 } else {
                     errorMessage.classList.add('d-none');
+                    
+                    // Simpan tipe test
+                    testType = testTypeSelected.value;
                     
                     // Save form data to localStorage
                     saveProgress();
@@ -458,6 +609,12 @@
 
         // Initialize test after questions loaded
         function initializeTest() {
+            // Update test type badge
+            const testTypeBadge = document.getElementById('test-type-badge');
+            if (testTypeBadge) {
+                testTypeBadge.textContent = testType === 'pre_test' ? 'Pre-Test' : 'Post-Test';
+            }
+            
             // Check if there's saved progress
             const progress = loadProgress();
             
@@ -827,6 +984,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Konfirmasi kedua: konfirmasi final
+                        const testTypeLabel = testType === 'pre_test' ? 'Pre-Test' : 'Post-Test';
                         Swal.fire({
                             title: 'Konfirmasi Terakhir',
                             html: `
@@ -834,6 +992,7 @@
                                     <p class="text-danger fw-bold mb-3"><i class="ti ti-alert-circle me-1"></i> Ini adalah konfirmasi terakhir!</p>
                                     <p class="mb-2">Data yang akan dikirim:</p>
                                     <ul class="text-muted small">
+                                        <li>Tipe Test: <strong>${testTypeLabel}</strong></li>
                                         <li>Nama: <strong>${document.getElementById('nama_lengkap').value}</strong></li>
                                         <li>Email: <strong>${document.getElementById('email').value}</strong></li>
                                         <li>Total Jawaban: <strong>${answeredCount} soal</strong></li>
@@ -919,11 +1078,16 @@
             const payload = {
                 test_employee_id: TEST_EMPLOYEE_ID,
                 event_id: EVENT_ID,
+                test_type: testType, // Kirim tipe test
                 nama_lengkap: namaLengkap,
                 email: email,
                 posisi: posisi,
                 answers: userAnswers
             };
+            
+            console.log('=== PAYLOAD DEBUG ===');
+            console.log('Test Type:', testType);
+            console.log('Full Payload:', payload);
             
             fetch('/api/submit-test', {
                 method: 'POST',
@@ -941,12 +1105,15 @@
                     
                     // Hapus data dari localStorage setelah berhasil submit
                     clearProgress();
-                    
+
+                    const testTypeLabel = testType === 'pre_test' ? 'Pre-Test' : 'Post-Test';
+
                     // Tampilkan hasil test dengan SweetAlert2
                     Swal.fire({
                         title: 'Test Berhasil Diselesaikan!',
                         html: `
                             <div class="text-start">
+                                <p class="mb-2"><strong>Tipe Test:</strong> ${testTypeLabel}</p>
                                 <p class="mb-2"><strong>Nama:</strong> ${namaLengkap}</p>
                                 <p class="mb-2"><strong>Email:</strong> ${email}</p>
                                 <p class="mb-2"><strong>Posisi:</strong> ${posisi}</p>
@@ -991,6 +1158,8 @@
             });
         }
     </script>
+    
+    @endif
     
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
