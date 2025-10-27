@@ -77,6 +77,24 @@ class Sidebar
           'childrens' => []
         ],
         [
+          'name' => 'Training New Employee',
+          'icon' => 'ti ti-user-plus',
+          'key' => 'training-new-employee',
+          'base_key' => 'training-new-employee',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        // [
+        //   'name' => 'Training New Participant',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'training-new-participant',
+        //   'base_key' => 'training-new-participant',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        [
           'name' => 'Training',
           'icon' => 'ti ti-device-analytics',
           'key' => 'training',
@@ -193,6 +211,24 @@ class Sidebar
         //   'ajax_load' => false,
         //   'childrens' => []
         // ],
+        [
+          'name' => 'Question',
+          'icon' => 'ti ti-menu',
+          'key' => 'question',
+          'base_key' => 'question',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Answer',
+          'icon' => 'ti ti-menu',
+          'key' => 'answer',
+          'base_key' => 'answer',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
         [
           'name' => 'Role',
           'icon' => 'ti ti-key',

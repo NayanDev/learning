@@ -753,7 +753,7 @@ class UserController extends BaseUserController
     {
         $id = Auth::user()->id;
         $rules = $this->rules($id);
-        
+
         if ($request->hasFile('signature_file')) {
             $rules['signature_file'] = 'required|mimes:jpeg,png,jpg,gif,svg|max:2048';
         }
@@ -778,41 +778,41 @@ class UserController extends BaseUserController
             // Handle signature based on method
             if ($request->input('signature_method') === 'draw' && $request->input('signature_data')) {
                 $signatureData = $request->input('signature_data');
-                
+
                 if (strpos($signatureData, 'data:image/svg+xml') === 0) {
                     // Save SVG to storage folder
                     $svgData = str_replace('data:image/svg+xml;base64,', '', $signatureData);
                     $svgContent = base64_decode($svgData);
                     $signatureFileName = 'signature_' . time() . '_' . uniqid() . '.svg';
-                    
+
                     $storagePath = storage_path('app/public/signature');
                     if (!file_exists($storagePath)) {
                         mkdir($storagePath, 0755, true);
                     }
-                    
+
                     file_put_contents($storagePath . '/' . $signatureFileName, $svgContent);
                 } else {
                     // Handle PNG fallback
                     $pngData = str_replace('data:image/png;base64,', '', $signatureData);
                     $pngContent = base64_decode($pngData);
                     $signatureFileName = 'signature_' . time() . '_' . uniqid() . '.png';
-                    
+
                     $storagePath = storage_path('app/public/signature');
                     if (!file_exists($storagePath)) {
                         mkdir($storagePath, 0755, true);
                     }
-                    
+
                     file_put_contents($storagePath . '/' . $signatureFileName, $pngContent);
                 }
             } elseif ($request->hasFile('signature_file')) {
                 $file = $request->file('signature_file');
                 $signatureFileName = 'upload_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                
+
                 $storagePath = storage_path('app/public/signature');
                 if (!file_exists($storagePath)) {
                     mkdir($storagePath, 0755, true);
                 }
-                
+
                 $file->move($storagePath, $signatureFileName);
             }
 
@@ -846,7 +846,6 @@ class UserController extends BaseUserController
                 'alert' => 'success',
                 'message' => 'Profile updated successfully!',
             ], 200);
-            
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
