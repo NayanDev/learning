@@ -276,18 +276,7 @@ class TrainingScheduleController extends DefaultController
                 ->get();
 
             if ($workshopsData->isEmpty()) {
-                // If no data found, create empty structure for all divisions
-                // $allDivisions = ['Produksi', 'RND-REG', 'SDM & Umum', 'QC', 'QA', 'Engineering'];
                 $trainings = [];
-
-                // foreach ($allDivisions as $divisi) {
-                //     $trainings[] = [
-                //         'divisi' => $divisi,
-                //         'training' => [
-                //             'workshop' => []
-                //         ]
-                //     ];
-                // }
             } else {
                 // Group workshops by division
                 $trainingsByDivision = $workshopsData->groupBy('divisi');
@@ -300,7 +289,13 @@ class TrainingScheduleController extends DefaultController
                     foreach ($workshops as $workshop) {
                         // Count participants
                         $participantCount = $workshop->participants->count();
-                        $participantText = $participantCount > 0 ? $participantCount . ' Personil' : '';
+                        if ($participantCount > 1) {
+                            $participantText = $participantCount . ' Personil';
+                        } else if ($participantCount === 1) {
+                            $participantText = ucwords(strtolower($workshop->participants[0]->name));
+                        } else {
+                            $participantText = ucwords(strtolower($divisi)) . ' (TBC)';
+                        }
 
                         // Determine which weeks/months to highlight based on start_date
                         $schedule = $this->generateScheduleArray($workshop->start_date, $workshop->end_date);
@@ -318,21 +313,6 @@ class TrainingScheduleController extends DefaultController
                         ]
                     ];
                 }
-
-                // Add empty divisions if they don't exist
-                // $allDivisions = ['Produksi', 'RND-REG', 'SDM & Umum', 'QC', 'QA', 'Engineering'];
-                $existingDivisions = collect($trainings)->pluck('divisi')->toArray();
-
-                // foreach ($allDivisions as $divisi) {
-                //     if (!in_array($divisi, $existingDivisions)) {
-                //         $trainings[] = [
-                //             'divisi' => $divisi,
-                //             'training' => [
-                //                 'workshop' => []
-                //             ]
-                //         ];
-                //     }
-                // }
             }
 
             $data = [

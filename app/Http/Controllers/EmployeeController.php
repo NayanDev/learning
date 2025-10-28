@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
-use Illuminate\Support\Facades\Log;
-use Idev\EasyAdmin\app\Helpers\Constant;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
-use Illuminate\Support\Facades\Http;
 
 class EmployeeController extends DefaultController
 {
@@ -23,7 +20,7 @@ class EmployeeController extends DefaultController
         $this->title = 'Employee';
         $this->generalUri = 'employee';
         // $this->arrPermissions = [];
-        $this->actionButtons = ['btn_delete'];
+        $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
@@ -175,8 +172,6 @@ class EmployeeController extends DefaultController
             $edit = $this->modelClass::where('id', $id)->first();
         }
 
-        $employeeOptions = $this->getEmployeeOptions();
-
         $fields = [
             [
                 'type' => 'text',
@@ -204,6 +199,7 @@ class EmployeeController extends DefaultController
 
         return $fields;
     }
+
 
     protected function rules($id = null)
     {

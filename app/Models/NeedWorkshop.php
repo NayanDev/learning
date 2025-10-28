@@ -14,6 +14,11 @@ class NeedWorkshop extends Model
     protected $fillable = [];
     protected $appends = ['btn_delete', 'btn_edit', 'btn_show'];
 
+    public function trainingParticipants()
+    {
+        return $this->hasMany(TrainingNeedParticipant::class);
+    }
+
     public function trainingNeed()
     {
         return $this->belongsTo(TrainingNeed::class, 'training_need_id');

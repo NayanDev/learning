@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 use App\Models\Training;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -28,7 +30,7 @@ class TrainingController extends DefaultController
         $this->title = 'Training';
         $this->generalUri = 'training';
         // $this->arrPermissions = [];
-        $this->actionButtons = ['btn_edit', 'btn_multilink', 'btn_delete'];
+        $this->actionButtons = ['btn_edit', 'btn_multilink', 'btn_approval', 'btn_delete'];
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
@@ -51,6 +53,7 @@ class TrainingController extends DefaultController
     {
         $permission = (new Constant)->permissionByMenu($this->generalUri);
         $permission[] = 'multilink';
+        $permission[] = 'approval';
 
         $eb = [];
         $data_columns = [];
@@ -125,6 +128,7 @@ class TrainingController extends DefaultController
             'easyadmin::backend.idev.buttons.show',
             'easyadmin::backend.idev.buttons.import_default',
             'backend.idev.buttons.multilink',
+            'backend.idev.buttons.approval',
         ];
         $data['templateImportExcel'] = "#";
         $data['import_scripts'] = $this->importScripts;
@@ -273,19 +277,122 @@ class TrainingController extends DefaultController
         }
     }
 
-    protected function exporJadwalPdf()
+    public function approve(Request $request, $id)
     {
-        $dataQueries = $this->defaultDataQuery()->take(1000)->get();
+        try {
+            DB::beginTransaction();
 
-        $datas['title'] = $this->title;
-        $datas['enable_number'] = true;
-        $datas['data_headers'] = $this->tableHeaders;
-        $datas['data_queries'] = $dataQueries;
-        $datas['exclude_columns'] = ['id', '#'];
+            $training = Training::findOrFail($id);
 
-        $pdf = PDF::loadView('pdf.jadwal_training', $datas)
-            ->setPaper('A4', 'landscape');
+            if ($request->status === 'approve') {
+                $training->created_date = now();
+            }
+            if ($request->status === 'close') {
+                // Input Event / Copy data from training need workshop
+                $this->copyTrainingDataToEvents($id);
+            }
 
-        return $pdf->stream($this->title . '.pdf');
+            $training->status = $request->status;
+            $training->approve_by = $request->approve_by;
+            $training->notes = $request->notes ?: '-';
+            $training->updated_at = now();
+            $training->save();
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Status updated successfully'
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Copy data dari training need workshops ke events
+     * dan copy data dari need participants ke participants
+     */
+    private function copyTrainingDataToEvents($trainingId)
+    {
+        try {
+            // Ambil data training need workshops berdasarkan training_id
+            $trainingNeeds = DB::table('training_needs')
+                ->where('training_id', $trainingId)
+                ->get();
+            $training = Training::findOrFail($trainingId);
+
+            if ($trainingNeeds->isEmpty()) {
+                return; // Tidak ada data training needs, skip
+            }
+
+            foreach ($trainingNeeds as $trainingNeed) {
+                // Ambil workshop data dari training_need_workshops
+                $workshops = DB::table('training_need_workshops')
+                    ->where('training_need_id', $trainingNeed->id)
+                    ->get();
+
+                foreach ($workshops as $workshop) {
+                    // Cek apakah workshop_id valid
+                    $workshopExists = DB::table('workshops')
+                        ->where('id', $workshop->workshop_id)
+                        ->exists();
+
+                    if (!$workshopExists) {
+                        continue; // Skip jika workshop tidak ada
+                    }
+
+                    // Copy data ke tabel events
+                    $eventId = DB::table('events')->insertGetId([
+                        'workshop_id' => $workshop->workshop_id,
+                        'user_id' => $trainingNeed->user_id,
+                        'year' => $training->year,
+                        'letter_number' => null,
+                        'organizer' => null,
+                        'speaker' => null,
+                        'start_date' => $workshop->start_date,
+                        'end_date' => $workshop->end_date,
+                        'divisi' => $workshop->divisi ?? '',
+                        'instructor' => $workshop->instructor,
+                        'location' => null,
+                        'token' => Str::random(32),
+                        'token_expired' => Carbon::parse($workshop->start_date)->addHour(12),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    // Copy participants dari need_participants ke participants
+                    $needParticipants = DB::table('need_participants')
+                        ->where('need_head_id', $workshop->id)
+                        ->get();
+
+                    foreach ($needParticipants as $participant) {
+                        DB::table('participants')->insert([
+                            'name' => $participant->name ?? '',
+                            'divisi' => $participant->divisi ?? '',
+                            'company' => $participant->company ?? '',
+                            'nik' => $participant->nik ?? '',
+                            'unit_kerja' => $participant->unit_kerja ?? '',
+                            'status' => $participant->status ?? '',
+                            'jk' => $participant->jk ?? '',
+                            'email' => $participant->email ?? '',
+                            'telp' => $participant->telp ?? '',
+                            'sign_ready' => null,
+                            'sign_present' => null,
+                            'time_ready' => null,
+                            'time_present' => null,
+                            'event_id' => $eventId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            throw new Exception('Error copying training data: ' . $e->getMessage());
+        }
     }
 }

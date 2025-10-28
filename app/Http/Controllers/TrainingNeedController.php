@@ -29,7 +29,7 @@ class TrainingNeedController extends DefaultController
         $this->title = 'Training Need';
         $this->generalUri = 'training-need';
         // $this->arrPermissions = [];
-        $this->actionButtons = ['btn_edit', 'btn_show', 'btn_print', 'btn_delete'];
+        $this->actionButtons = ['btn_edit', 'btn_show', 'btn_approval', 'btn_delete'];
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
@@ -178,7 +178,7 @@ class TrainingNeedController extends DefaultController
     protected function indexApi()
     {
         $permission = (new Constant)->permissionByMenu($this->generalUri);
-        $permission[] = 'print';
+        $permission[] = 'approval';
 
         $eb = [];
         $dataColumns = [];
@@ -251,7 +251,7 @@ class TrainingNeedController extends DefaultController
             'easyadmin::backend.idev.buttons.delete',
             'easyadmin::backend.idev.buttons.edit',
             'easyadmin::backend.idev.buttons.show',
-            'backend.idev.buttons.print',
+            'backend.idev.buttons.approval',
         ];
         $data['templateImportExcel'] = "#";
         $data['import_scripts'] = $this->importScripts;
@@ -315,6 +315,22 @@ class TrainingNeedController extends DefaultController
             );
 
         return $dataQueries;
+    }
+
+    public function approve(Request $request, $id)
+    {
+        $training = TrainingNeed::findOrFail($id);
+
+        if ($request->status === 'submit') {
+            $training->created_date = now();
+        }
+        $training->status = $request->status;
+        $training->approve_by = $request->approve_by;
+        $training->notes = $request->notes ?: '-';
+        $training->updated_at = now();
+        $training->save();
+
+        return response()->json(['message' => 'Status updated']);
     }
 
     public function generatePDF(Request $request)

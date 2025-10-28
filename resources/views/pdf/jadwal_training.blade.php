@@ -16,13 +16,14 @@ if ($totalRows == 0) {
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Jadwal Training</title>
+    <title>Training Schedule</title>
+    <link rel="icon" href=" {{ config('idev.app_favicon', asset('easyadmin/idev/img/favicon.png')) }}">
     <style>
         body {
             font-size: 6px;
             margin: 0;
             padding: 0;
-            font-family: 'DejaVu Sans', sans-serif;
+            font-family: 'Tahoma', Geneva, sans-serif;
         }
 
         .text-start {
@@ -109,7 +110,8 @@ if ($totalRows == 0) {
 
     .highlight {
         background-color: gray; /* Warna kuning */
-        }
+    }
+
     </style>
 </head>
 <body>
@@ -198,40 +200,56 @@ if ($totalRows == 0) {
     <table class="no-border" style="width:100%;">
         <tr>
             <td class="no-border text-center"style="width:20%;">
-                Disiapkan Oleh,
+                Semarang, {{ $created->created_date ? \Carbon\Carbon::parse($created->created_date)->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}
+                <br>
+                Dibuat Oleh,
                 <br><br>
-                @if($created->status === 'approve')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                @if($created->status === 'close')
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->approver->name . "\n" . 'Manager ' . $created->approver->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
-                <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
+                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
                 @elseif($created->status === 'submit')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->approver->name . "\n" . 'Manager ' . $created->approver->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
-                <strong>{{ $created->user->name ?? '-' }}</strong>
+                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
+                <br>
+                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
                 @else
                 <div style="height: 50px"></div>
-                <strong>{{ $created->user->name ?? '-' }}</strong>
+                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
                 @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border text-center"style="width:20%;">
-                Disetujui Oleh,
+                Mengetahui,
                 <br><br>
-                @if($created->status === 'approve')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                @if($created->status === 'close')
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML("MAKMURI YUSIN\nDirektur Umum & SDM\n(ini adalah dokumen resmi dan sah)", 'QRCODE', 1, 1) !!}
+                    </div>
+                </div>
                 <br>
-                <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
+                <u><strong>MAKMURI YUSIN</strong></u>
                 <br>
-                <span>Manager {{ $created->approver->divisi ?? '-' }}</span>
+                <span>Direktur Umum & SDM</span>
                 @else
                 <div style="height: 50px"></div>
-                <em>Data belum disiapkan</em>
+                <em>Data belum tersedia</em>
                 @endif
             </td>
         </tr>

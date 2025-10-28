@@ -129,7 +129,7 @@
                                                         <center>
                                                             <button id="btnSaveData" class="btn btn-primary"><i class="ti ti-device-floppy f-20"></i> Save Data</button>
                                                             <button class="btn btn-danger" onclick="window.location.href='{{ route('training-analyst.pdf', ['header' => request()->input('header')]) }}'"><i class="ti ti-printer f-20"></i> Print Data</button>
-                                                            <button class="btn btn-success"><i class="ti ti-rocket f-20"></i> Submitted</button>
+                                                            {{-- <button class="btn btn-success"><i class="ti ti-rocket f-20"></i> Submitted</button> --}}
                                                         </center>
 
                                                         <div class="hanya-tampil-di-layar" style="margin-top:20px;">

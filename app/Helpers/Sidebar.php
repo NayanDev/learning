@@ -60,7 +60,7 @@ class Sidebar
         // ],
         // [
         //   'name' => 'Employee',
-        //   'icon' => 'ti ti-menu',
+        //   'icon' => 'ti ti-database',
         //   'key' => 'employee',
         //   'base_key' => 'employee',
         //   'visibility' => true,
@@ -69,7 +69,7 @@ class Sidebar
         // ],
         [
           'name' => 'Workshop',
-          'icon' => 'ti ti-menu',
+          'icon' => 'ti ti-tools',
           'key' => 'workshop',
           'base_key' => 'workshop',
           'visibility' => true,
@@ -77,8 +77,44 @@ class Sidebar
           'childrens' => []
         ],
         [
+          'name' => 'Training New Employee',
+          'icon' => 'ti ti-user-plus',
+          'key' => 'training-new-employee',
+          'base_key' => 'training-new-employee',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        // [
+        //     'name' => 'Employee Test',
+        //     'icon' => 'ti ti-menu',
+        //     'key' => 'employee-test',
+        //     'base_key' => 'employee-test',
+        //     'visibility' => true,
+        //     'ajax_load' => false,
+        //     'childrens' => []
+        //   ],
+        [
+          'name' => 'User Answer',
+          'icon' => 'ti ti-flask',
+          'key' => 'user-answer',
+          'base_key' => 'user-answer',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        // [
+        //   'name' => 'Training New Participant',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'training-new-participant',
+        //   'base_key' => 'training-new-participant',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        [
           'name' => 'Training',
-          'icon' => 'ti ti-menu',
+          'icon' => 'ti ti-device-analytics',
           'key' => 'training',
           'base_key' => 'training',
           'visibility' => true,
@@ -149,6 +185,96 @@ class Sidebar
           'childrens' => []
         ],
         [
+          'name' => 'Unplan Participant',
+          'icon' => 'ti ti-menu',
+          'key' => 'training-unplan-participant',
+          'base_key' => 'training-unplan-participant',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Event',
+          'icon' => 'ti ti-layout-grid',
+          'key' => 'event',
+          'base_key' => 'event',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Participant',
+          'icon' => 'ti ti-users',
+          'key' => 'participant',
+          'base_key' => 'participant',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Materi',
+          'icon' => 'ti ti-book',
+          'key' => 'materi',
+          'base_key' => 'materi',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        // [
+        //   'name' => 'Materi Log',
+        //   'icon' => 'ti ti-menu',
+        //   'key' => 'materi-log',
+        //   'base_key' => 'materi-log',
+        //   'visibility' => true,
+        //   'ajax_load' => false,
+        //   'childrens' => []
+        // ],
+        [
+          'name' => 'Question',
+          'icon' => 'ti ti-question-mark',
+          'key' => 'question',
+          'base_key' => 'question',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Result Question',
+          'icon' => 'ti ti-menu',
+          'key' => 'result-question',
+          'base_key' => 'result-question',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Answer',
+          'icon' => 'ti ti-pencil',
+          'key' => 'answer',
+          'base_key' => 'answer',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Event Answer',
+          'icon' => 'ti ti-menu',
+          'key' => 'event-answer',
+          'base_key' => 'event-answer',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Event Question',
+          'icon' => 'ti ti-menu',
+          'key' => 'event-question',
+          'base_key' => 'event-question',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
           'name' => 'Role',
           'icon' => 'ti ti-key',
           'key' => 'role',
@@ -166,6 +292,7 @@ class Sidebar
           'ajax_load' => false,
           'childrens' => []
         ],
+
       ];
   }
 

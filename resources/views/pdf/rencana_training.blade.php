@@ -2,35 +2,74 @@
 $transformedTrainings = [];
 
 foreach ($trainings as $training) {
-    // Hitung durasi dalam jam
     $start = \Carbon\Carbon::parse($training['header']['start_date']);
     $end = \Carbon\Carbon::parse($training['header']['end_date']);
-    $durasi = $start->diffInHours($end) . ' Jam';
 
-    // Tentukan minggu mana yang aktif berdasarkan start_date
-    $weekNumber = \Carbon\Carbon::parse($training['header']['start_date'])->weekOfMonth;
-    $month = strtolower(\Carbon\Carbon::parse($training['header']['start_date'])->format('M'));
+    $hours = $start->diffInHours($end);
+    $startDate = $start->format('Y-m-d');
+    $endDate = $end->format('Y-m-d');
+
+    if ($hours <= 8) {
+        // Durasi dalam jam
+        $durasi = $hours . ' Jam';
+    } else {
+        if ($startDate === $endDate) {
+            // Masih di hari yang sama, tapi > 8 jam → 1 hari
+            $durasi = '1 Hari';
+        } else {
+            // Lintas hari
+            // Hitung hari sebenarnya (integer)
+            $days = $start->diffInDays($end);
+
+            // Jika ada sisa jam lebih dari 0, berarti tambah 1 hari lagi
+            $remainingHours = $hours - ($days * 24);
+            if ($remainingHours > 0) {
+                $days += 1;
+            }
+
+            // Minimal 2 hari kalau lintas tanggal
+            if ($days < 2) {
+                $days = 2;
+            }
+
+            $durasi = $days . ' Hari';
+        }
+    }
     
+    // Tentukan minggu aktif (maksimum minggu ke-4)
+    $date = \Carbon\Carbon::parse($training['header']['start_date']);
+    $weekNumber = min(4, ceil($date->day / 7));
+    $month = strtolower($date->format('M'));
+
+    // Buat struktur bulan
     $schedule = [
         'jan' => [], 'feb' => [], 'mar' => [], 'apr' => [], 
         'may' => [], 'jun' => [], 'jul' => [], 'aug' => [], 
         'sep' => [], 'oct' => [], 'nov' => [], 'dec' => []
     ];
-    
-    // Set minggu yang aktif
+
     $schedule[$month] = [$weekNumber];
+
+    // Tentukan nama personil
+    if (count($training['participants']) > 1) {
+        $person = count($training['participants']) . ' Personil';
+    } elseif (count($training['participants']) === 1) {
+        $person = ucwords(strtolower($training['participants'][0]['name']));
+    } else {
+        $person = ucwords(strtolower($created->user->divisi ?? '')) . ' (TBC)';
+    }
 
     $transformedTrainings[] = [
         'nama' => $training['header']['workshop_name'],
         'durasi' => $durasi,
         'instruktur' => ucfirst($training['header']['instructor']),
-        'personil' => count($training['participants']) . ' Personil',
+        'personil' => $person,
         'jabatan' => $training['header']['position'],
         'schedule' => $schedule
     ];
 }
 
-// Tambahkan baris kosong jika jumlah data kurang dari 10
+// Tambahkan baris kosong hingga 10 item
 while (count($transformedTrainings) < 10) {
     $transformedTrainings[] = [
         'nama' => '',
@@ -38,7 +77,9 @@ while (count($transformedTrainings) < 10) {
         'instruktur' => '',
         'personil' => '',
         'jabatan' => '',
-        'schedule' => array_fill_keys(['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'], [])
+        'schedule' => array_fill_keys(
+            ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'], []
+        ),
     ];
 }
 
@@ -49,13 +90,14 @@ $trainings = $transformedTrainings;
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Rencana Usulan Pelatihan</title>
+    <title>Training Needs</title>
+    <link rel="icon" href=" {{ config('idev.app_favicon', asset('easyadmin/idev/img/favicon.png')) }}">
     <style>
         body {
             font-size: 7px;
             margin: 0;
             padding: 0;
-            font-family: 'DejaVu Sans', sans-serif;
+            font-family: 'Tahoma', Geneva, sans-serif;
         }
 
         .text-start {
@@ -66,15 +108,15 @@ $trainings = $transformedTrainings;
             position: relative;
             margin-bottom: 10px;
             overflow: visible;
-            padding-bottom: 40px;
-            border: 1px solid black;
+            padding-bottom: 10px;
+            /* border: 1px solid black; */
         }
 
         .letterhead img {
             position: absolute;
             width: 40px;
-            padding-top: 5px;
-            padding-bottom: 5px;
+            padding-top: 13px;
+            padding-left: 10px;
             /* border: 1px solid green; */
         }
 
@@ -146,7 +188,7 @@ $trainings = $transformedTrainings;
 <body>
     <div class="letterhead">
             <img src="{{ asset('easyadmin/idev/img/kop-dokumen.png') }}" alt="PT Sampharindo">
-            <h3>RENCANA USULAN PELATIHAN</h3>
+            <h3  style="border: 1px solid black;padding:25px 10px 25px 25px;">RENCANA USULAN PELATIHAN</h3>
     </div>
     <div class="info-section">
         <span style="float:left;font-size:7px;">Divisi / Bagian / Unit Kerja :  {{ $created->user->divisi }}</span>
@@ -210,42 +252,56 @@ $trainings = $transformedTrainings;
     <table class="no-border" style="width:100%;">
         <tr>
             <td class="no-border text-center"style="width:20%;">
-                Disiapkan Oleh,
+                Semarang, {{ $created->created_date ? \Carbon\Carbon::parse($created->created_date)->translatedFormat('d F Y') : now()->translatedFormat('d F Y') }}
+                <br>
+                Dibuat Oleh,
                 <br><br>
                 @if($created->status === 'approve')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->user->name . "\n" . 'Staff ' . $created->user->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
-                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                <span>Staff {{ ucwords(strtolower($created->user->divisi)) ?? '-' }}</span>
                 @elseif($created->status === 'submit')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->user->name . "\n" . 'Staff ' . $created->user->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
-                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                <span>Staff {{ ucwords(strtolower($created->user->divisi)) ?? '-' }}</span>
                 @else
                 <div style="height: 50px"></div>
                 <u><strong>{{ $created->user->name ?? '-' }}</strong></u>
                 <br>
-                <span>Staff {{ $created->user->divisi ?? '-' }}</span>
+                <span>Staff {{ ucwords(strtolower($created->user->divisi)) ?? '-' }}</span>
                 @endif
             </td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border" style="width:20%;"></td>
             <td class="no-border text-center"style="width:20%;">
-                Disetujui Oleh,
+                Mengetahui,
                 <br><br>
                 @if($created->status === 'approve')
-                <img src="{{ asset('easyadmin/idev/img/ttd.png') }}" alt="tanda tangan" width="100">
+                <div style="display: flex; justify-content: center;">
+                    <div style="display: inline-block;">
+                        {!! DNS2D::getBarcodeHTML( $created->approver->name . "\n" . 'Manager ' . $created->approver->divisi . "\n" . '(ini adalah dokumen resmi dan sah)', 'QRCODE', 1, 1 ) !!}
+                    </div>
+                </div>
                 <br>
                 <u><strong>{{ $created->approver->name ?? '-' }}</strong></u>
                 <br>
-                <span>Manager {{ $created->approver->divisi ?? '-' }}</span>
+                <span>Manager {{ ucwords(strtolower($created->approver->divisi)) ?? '-' }}</span>
                 @else
                 <div style="height: 50px"></div>
-                <em>Data belum disiapkan</em>
+                <em>Data belum tersedia</em>
                 @endif
             </td>
         </tr>

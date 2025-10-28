@@ -11,8 +11,8 @@ class Training extends Model
 
     protected $table = 'trainings';
     protected $primaryKey = 'id';
-    protected $fillable = [];
-    protected $appends = ['btn_delete', 'btn_edit', 'btn_multilink'];
+    protected $fillable = ['year', 'end_date', 'status', 'description', 'user_id', 'notes',];
+    protected $appends = ['btn_delete', 'btn_edit', 'btn_multilink', 'btn_approval'];
 
     public function user()
     {
@@ -24,10 +24,15 @@ class Training extends Model
         return $this->belongsTo(User::class, 'approve_by');
     }
 
+    public function trainingNeed()
+    {
+        return $this->belongsTo(TrainingNeed::class);
+    }
+
     public function getBtnMultilinkAttribute()
     {
         $arrLink = [
-            ['label' => 'Training Detail', 'url' => url('training-detail') . "?training_id=" . $this->id, 'icon' => 'ti ti-eye'],
+            // ['label' => 'Training Detail', 'url' => url('training-detail') . "?training_id=" . $this->id, 'icon' => 'ti ti-eye'],
             ['label' => 'Training Analyst', 'url' => url('training-analyst') . "?training_id=" . $this->id, 'icon' => 'ti ti-users'],
             ['label' => 'Training Needs', 'url' => url('training-need') . "?training_id=" . $this->id, 'icon' => 'ti ti-archive'],
             ['label' => 'Training Schedule', 'url' => url('training-schedule') . "?year=" . $this->year, 'icon' => 'ti ti-calendar'],
@@ -39,6 +44,57 @@ class Training extends Model
                 </button>";
 
         return $html;
+    }
+
+    public function getBtnApprovalAttribute()
+    {
+        $data = [
+            'id' => $this->id,
+            'status' => $this->status,
+            'year' => $this->year,
+            'notes' => $this->notes,
+        ];
+
+        $roleName = auth()->user()->role->name;
+        $divisiName = auth()->user()->divisi;
+
+        $btn = "<button type='button' class='btn btn-outline-primary btn-sm radius-6' style='margin:1px;' 
+                data-bs-toggle='modal'  
+                data-bs-target='#modalApproval' 
+                onclick='setApproval(" . json_encode($data) . ")'>
+                <i class='ti ti-check'></i>
+            </button>";
+        $btnOff = "<button type='button' class='btn btn-outline-success btn-sm radius-6' style='margin:1px;'>
+                <i class='ti ti-check'></i>
+            </button>";
+        $pdf = "<a id='export-pdf' class='btn btn-sm btn-outline-secondary radius-6' target='_blank' href='" . url('training-schedule-pdf') . "?year=" . $this->year . "' title='Export PDF'><i class='ti ti-file'></i></a>";
+
+        if (($this->status === "open" || $this->status === "reject") && $roleName === "admin") {
+            $html = $btn;
+            return $html;
+        } else if ($this->status === "submit") {
+            if ($roleName === "admin") {
+                $html = $btnOff;
+                return $html;
+            } else if ($roleName === "manager" && $divisiName === "UMUM & SDM") {
+                $html = $btn;
+                return $html;
+            }
+        } else if ($this->status === "approve") {
+            if ($roleName === "admin") {
+                $html = $btn;
+                return $html;
+            } else if ($roleName === "manager" && $divisiName === "UMUM & SDM") {
+                $html = $btnOff;
+                return $html;
+            } else if ($roleName === "direktur") {
+                $html = $btn;
+                return $html;
+            }
+        } else if (($this->status === "close" && $roleName === "admin") || ($this->status === "close" && $roleName === "manager" && $divisiName === "UMUM & SDM") || ($this->status === "close" && $roleName === "direktur")) {
+            $html = $pdf;
+            return $html;
+        }
     }
 
     public function getBtnDeleteAttribute()

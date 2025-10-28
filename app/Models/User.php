@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-    protected $appends = ['btn_destroy', 'btn_edit', 'btn_show'];
+    protected $appends = ['btn_destroy', 'btn_edit', 'btn_show', 'view_image'];
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +30,7 @@ class User extends Authenticatable
         'status',
         'jk',
         'telp',
+        'role_id'
     ];
 
     /**
@@ -50,6 +51,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     public function getBtnDestroyAttribute()
@@ -78,6 +81,23 @@ class User extends Authenticatable
                 <i class='ti ti-eye'></i>
                 </button>";
         return $html;
+    }
+
+    public function getViewImageAttribute()
+    {
+        if ($this->signature) {
+            return asset('storage/signature/' . $this->signature);
+        }
+        return null;
+    }
+
+    // Method khusus untuk mendapatkan HTML signature
+    public function getSignatureHtmlAttribute()
+    {
+        if ($this->signature) {
+            return "<img src='" . asset('storage/signature/' . $this->signature) . "' alt='Signature' style='max-width: 50px; max-height: 30px; object-fit: contain; border-radius: 4px;'>";
+        }
+        return '<span class="text-muted">No signature</span>';
     }
 
 

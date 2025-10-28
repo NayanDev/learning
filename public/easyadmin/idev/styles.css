@@ -121,3 +121,16 @@
     text-align: center;
     white-space: nowrap;
 }
+
+.icon-circle {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+}
+
+.bg-info-subtle {
+    background-color: #cff4fc;
+}

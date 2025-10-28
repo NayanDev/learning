@@ -11,8 +11,13 @@ class TrainingNeed extends Model
 
     protected $table = 'training_needs';
     protected $primaryKey = 'id';
-    protected $fillable = ['nik', 'training_id', 'workshop_id', 'user_id', 'status', 'approve_by', 'start_date', 'end_date', 'instructur', 'position'];
-    protected $appends = ['btn_delete', 'btn_edit', 'btn_show', 'btn_print'];
+    protected $fillable = ['training_id', 'workshop_id', 'user_id', 'status', 'approve_by', 'start_date', 'end_date', 'instructur', 'position'];
+    protected $appends = ['btn_delete', 'btn_edit', 'btn_show', 'btn_approval'];
+
+    public function trainingNeedWorkshop()
+    {
+        return $this->hasOne(NeedWorkshop::class);
+    }
 
     public function training()
     {
@@ -39,13 +44,42 @@ class TrainingNeed extends Model
         return $this->hasMany(NeedWorkshop::class, 'training_need_id');
     }
 
-
-    public function getBtnPrintAttribute()
+    public function getBtnApprovalAttribute()
     {
-        $html = "<a href='" . url('training-need-pdf') . "?training_id=" . $this->id . "' class='btn btn-outline-secondary btn-sm radius-6' style='margin:1px;'>
-                <i class='ti ti-file'></i>
-                </a>";
-        return $html;
+        $data = [
+            'id' => $this->id,
+            'status' => $this->status,
+            'notes' => $this->notes,
+        ];
+
+        $roleName = auth()->user()->role->name;
+
+        $btn = "<button type='button' class='btn btn-outline-primary btn-sm radius-6' style='margin:1px;' 
+                data-bs-toggle='modal'  
+                data-bs-target='#modalApproval' 
+                onclick='setApproval(" . json_encode($data) . ")'>
+                <i class='ti ti-check'></i>
+            </button>";
+        $btnOff = "<button type='button' class='btn btn-outline-success btn-sm radius-6' style='margin:1px;'>
+                <i class='ti ti-check'></i>
+            </button>";
+        $pdf = "<a id='export-pdf' class='btn btn-sm btn-outline-secondary radius-6' target='_blank' href='" . url('training-need-pdf') . "?training_id=" . $this->id . "' title='Export PDF'><i class='ti ti-file'></i></a>";
+
+        if ($this->status === "open" && ($roleName === "staff" || $roleName === "admin")) {
+            $html = $btn;
+            return $html;
+        } else if ($this->status === "submit") {
+            if ($roleName === "staff" || $roleName === "admin") {
+                $html = $btnOff;
+                return $html;
+            } else if ($roleName === "manager") {
+                $html = $btn;
+                return $html;
+            }
+        } else if ($this->status === "approve") {
+            $html = $pdf;
+            return $html;
+        }
     }
 
     public function getBtnDeleteAttribute()
