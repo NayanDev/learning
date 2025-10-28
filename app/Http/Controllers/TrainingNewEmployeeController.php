@@ -366,11 +366,18 @@ class TrainingNewEmployeeController extends DefaultController
     public function testNewEmployee()
     {
         $token = request('token');
-        if(!$token){
+        if (!$token) {
             abort(404);
         }
         $data = TrainingNewEmployee::where('token', $token)
             ->first();
-        return view('backend.idev.test_new_employee', compact('data'));
+
+        // Get authenticated user
+        $user = Auth::user();
+        if (!$user) {
+            abort(403, 'Unauthorized. Please login first.');
+        }
+
+        return view('backend.idev.test_new_employee', compact('data', 'user'));
     }
 }

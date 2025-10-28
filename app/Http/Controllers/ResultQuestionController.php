@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EventAnswer;
+use App\Models\ResultQuestion;
 use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
 
-class EventAnswerController extends DefaultController
+class ResultQuestionController extends DefaultController
 {
-    protected $modelClass = EventAnswer::class;
+    protected $modelClass = ResultQuestion::class;
     protected $title;
     protected $generalUri;
     protected $tableHeaders;
@@ -17,29 +17,29 @@ class EventAnswerController extends DefaultController
 
     public function __construct()
     {
-        $this->title = 'Event Answer';
-        $this->generalUri = 'event-answer';
+        $this->title = 'Result Question';
+        $this->generalUri = 'result-question';
         // $this->arrPermissions = [];
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],
+            ['name' => 'Event id', 'column' => 'event_id', 'order' => true],
             ['name' => 'User id', 'column' => 'user', 'order' => true],
-            ['name' => 'Question id', 'column' => 'question', 'order' => true],
-            ['name' => 'Answer id', 'column' => 'answer', 'order' => true],
-            ['name' => 'Point', 'column' => 'point', 'order' => true],
+            ['name' => 'Type', 'column' => 'type', 'order' => true],
+            ['name' => 'Score', 'column' => 'score', 'order' => true],
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
 
 
         $this->importExcelConfig = [
-            'primaryKeys' => ['user_id'],
+            'primaryKeys' => ['event_id'],
             'headers' => [
+                ['name' => 'Event id', 'column' => 'event_id'],
                 ['name' => 'User id', 'column' => 'user_id'],
-                ['name' => 'Question id', 'column' => 'question_id'],
-                ['name' => 'Answer id', 'column' => 'answer_id'],
-                ['name' => 'Point', 'column' => 'point'],
+                ['name' => 'Type', 'column' => 'type'],
+                ['name' => 'Score', 'column' => 'score'],
             ]
         ];
     }
@@ -55,6 +55,14 @@ class EventAnswerController extends DefaultController
         $fields = [
             [
                 'type' => 'text',
+                'label' => 'Event id',
+                'name' =>  'event_id',
+                'class' => 'col-md-12 my-2',
+                'required' => $this->flagRules('event_id', $id),
+                'value' => (isset($edit)) ? $edit->event_id : ''
+            ],
+            [
+                'type' => 'text',
                 'label' => 'User id',
                 'name' =>  'user_id',
                 'class' => 'col-md-12 my-2',
@@ -63,27 +71,19 @@ class EventAnswerController extends DefaultController
             ],
             [
                 'type' => 'text',
-                'label' => 'Question id',
-                'name' =>  'question_id',
+                'label' => 'Type',
+                'name' =>  'type',
                 'class' => 'col-md-12 my-2',
-                'required' => $this->flagRules('question_id', $id),
-                'value' => (isset($edit)) ? $edit->question_id : ''
+                'required' => $this->flagRules('type', $id),
+                'value' => (isset($edit)) ? $edit->type : ''
             ],
             [
                 'type' => 'text',
-                'label' => 'Answer id',
-                'name' =>  'answer_id',
+                'label' => 'Score',
+                'name' =>  'score',
                 'class' => 'col-md-12 my-2',
-                'required' => $this->flagRules('answer_id', $id),
-                'value' => (isset($edit)) ? $edit->answer_id : ''
-            ],
-            [
-                'type' => 'text',
-                'label' => 'Point',
-                'name' =>  'point',
-                'class' => 'col-md-12 my-2',
-                'required' => $this->flagRules('point', $id),
-                'value' => (isset($edit)) ? $edit->point : ''
+                'required' => $this->flagRules('score', $id),
+                'value' => (isset($edit)) ? $edit->score : ''
             ],
         ];
 
@@ -94,10 +94,10 @@ class EventAnswerController extends DefaultController
     protected function rules($id = null)
     {
         $rules = [
+            'event_id' => 'required|string',
             'user_id' => 'required|string',
-            'question_id' => 'required|string',
-            'answer_id' => 'required|string',
-            'point' => 'required|string',
+            'type' => 'required|string',
+            'score' => 'required|string',
         ];
 
         return $rules;
@@ -117,17 +117,13 @@ class EventAnswerController extends DefaultController
             $orderState = request('order_state');
         }
 
-        $dataQueries = EventAnswer::join('users', 'users.id', '=', 'event_answers.user_id')
-            ->join('questions', 'questions.id', '=', 'event_answers.question_id')
-            ->join('answers', 'answers.id', '=', 'event_answers.answer_id')
+        $dataQueries = ResultQuestion::join('users', 'users.id', '=', 'result_questions.user_id')
             ->where($filters)
             ->where(function ($query) use ($orThose) {
                 $query->where('users.name', 'LIKE', '%' . $orThose . '%');
-                $query->where('questions.question_text', 'LIKE', '%' . $orThose . '%');
-                $query->where('answers.content', 'LIKE', '%' . $orThose . '%');
             })
             ->orderBy($orderBy, $orderState)
-            ->select('event_answers.*', 'users.name as user', 'questions.question_text as question', 'answers.content as answer');
+            ->select('result_questions.*', 'users.name as user');
 
         return $dataQueries;
     }

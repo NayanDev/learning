@@ -24,9 +24,11 @@ use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeTestController;
 use App\Http\Controllers\EventAnswerController;
+use App\Http\Controllers\EventQuestionController;
 use App\Http\Controllers\MateriController;
 use App\Http\Controllers\MateriLogController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\ResultQuestionController;
 use App\Http\Controllers\TrainingNewEmployeeController;
 use App\Http\Controllers\TrainingNewParticipantController;
 use App\Http\Controllers\TrainingUnplanParticipantController;
@@ -264,5 +266,27 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('event-answer-export-excel-default', [EventAnswerController::class, 'exportExcel'])->name('event-answer.export-excel-default');
     Route::post('event-answer-import-excel-default', [EventAnswerController::class, 'importExcel'])->name('event-answer.import-excel-default');
 
+    // Route Result Questions
+    Route::resource('result-question', ResultQuestionController::class);
+    Route::get('result-question-api', [ResultQuestionController::class, 'indexApi'])->name('result-question.listapi');
+    Route::get('result-question-export-pdf-default', [ResultQuestionController::class, 'exportPdf'])->name('result-question.export-pdf-default');
+    Route::get('result-question-export-excel-default', [ResultQuestionController::class, 'exportExcel'])->name('result-question.export-excel-default');
+    Route::post('result-question-import-excel-default', [ResultQuestionController::class, 'importExcel'])->name('result-question.import-excel-default');
 
+    // Route Event Question
+    Route::resource('event-question', EventQuestionController::class);
+    Route::get('event-question-api', [EventQuestionController::class, 'indexApi'])->name('event-question.listapi');
+    Route::get('event-question-export-pdf-default', [EventQuestionController::class, 'exportPdf'])->name('event-question.export-pdf-default');
+    Route::get('event-question-export-excel-default', [EventQuestionController::class, 'exportExcel'])->name('event-question.export-excel-default');
+    Route::post('event-question-import-excel-default', [EventQuestionController::class, 'importExcel'])->name('event-question.import-excel-default');
+    Route::get('/barcode-event-question', [BarcodeController::class, 'testEventQuestion']);
+
+    // Route Barcode Generator
+    Route::get('/set-question/{id}', function ($id) {
+        session(['event_id' => $id]);
+        return redirect('/barcode-event-question');
+    })->name('set.question');
+    Route::get('/barcode-event-question', [BarcodeController::class, 'testEventQuestion']);
+
+    Route::get('/test-event-question', [EventQuestionController::class, 'testNewEmployee'])->name('test.event.question');
 });

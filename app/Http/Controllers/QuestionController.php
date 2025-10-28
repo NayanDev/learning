@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Answer;
+use App\Models\EventAnswer;
 use App\Models\Question;
+use App\Models\ResultQuestion;
 use App\Models\TrainingNewParticipant;
 use App\Models\UserAnswer;
 use Exception;
@@ -287,7 +289,7 @@ class QuestionController extends DefaultController
             }]);
 
             if ($testEmployeeId) {
-                $query->where('test_employee_id', $testEmployeeId);
+                $query->where('event_id', $testEmployeeId);
             }
 
             // if ($eventId) {
@@ -325,32 +327,55 @@ class QuestionController extends DefaultController
 
     public function submitTest(Request $request)
     {
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'test_employee_id' => 'required|integer',
+            'event_id' => 'nullable|integer',
+            'test_type' => 'required|in:pre_test,post_test',
+            'user_id' => 'required|integer|exists:users,id',
+            'nama_lengkap' => 'required|string',
+            'email' => 'required|email',
+            'posisi' => 'nullable|string',
+            'nik' => 'nullable|string',
+            'answers' => 'required|array'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         DB::beginTransaction();
-        
+
         try {
             $userAnswers = $request->input('answers'); // array of answer_ids indexed by question index
             $testEmployeeId = $request->input('test_employee_id');
             $eventId = $request->input('event_id');
-            $testType = $request->input('test_type'); // Ambil test_type dari request
+            $testType = $request->input('test_type'); // pre_test atau post_test
+            $userId = $request->input('user_id'); // ID user yang login
             $namaLengkap = $request->input('nama_lengkap');
             $email = $request->input('email');
             $posisi = $request->input('posisi');
+            $nik = $request->input('nik');
 
-            // Calculate total score and save detail answers
+            // Calculate total score and save detail answers to event_answers table
             $totalScore = 0;
+            $answeredCount = 0;
+            
             if ($userAnswers && is_array($userAnswers)) {
                 foreach ($userAnswers as $questionIndex => $answerId) {
                     if ($answerId) {
                         $answer = Answer::find($answerId);
                         if ($answer) {
                             $totalScore += $answer->point;
-                            
-                            // Save detail answer to user_answers table
-                            UserAnswer::create([
-                                'name' => $namaLengkap,
-                                'email' => $email,
-                                'position' => $posisi,
-                                'test_employee_id' => $testEmployeeId,
+                            $answeredCount++;
+
+                            // Save detail answer to event_answers table
+                            EventAnswer::create([
+                                'user_id' => $userId,
                                 'question_id' => $answer->question_id,
                                 'answer_id' => $answer->id,
                                 'point' => $answer->point
@@ -360,10 +385,19 @@ class QuestionController extends DefaultController
                 }
             }
 
-            // Save to training_new_participants table (summary)
+            // Save result to result_questions table (summary)
+            // Simpan meskipun event_id null karena field nullable
+            ResultQuestion::create([
+                'event_id' => $eventId, // Bisa null sesuai migration
+                'user_id' => $userId,
+                'type' => $testType, // pre_test atau post_test
+                'score' => $totalScore
+            ]);
+
+            // Save to training_new_participants table (untuk backward compatibility)
             $participant = new TrainingNewParticipant();
             $participant->test_employee_id = $testEmployeeId;
-            $participant->type = $testType; // Simpan test_type
+            $participant->type = $testType;
             $participant->name = $namaLengkap;
             $participant->email = $email;
             $participant->position = $posisi;
@@ -375,16 +409,21 @@ class QuestionController extends DefaultController
             return response()->json([
                 'status' => true,
                 'message' => 'Test berhasil diselesaikan!',
-                'score' => $totalScore,
-                'total_answers' => count(array_filter($userAnswers ?? [])),
-                'participant_id' => $participant->id
+                'data' => [
+                    'score' => $totalScore,
+                    'total_answers' => $answeredCount,
+                    'participant_id' => $participant->id,
+                    'test_type' => $testType,
+                    'user_id' => $userId
+                ]
             ], 200);
         } catch (Exception $e) {
             DB::rollBack();
-            
+
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage()
+                'message' => 'Gagal menyimpan data: ' . $e->getMessage(),
+                'error_detail' => $e->getTrace()
             ], 500);
         }
     }

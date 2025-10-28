@@ -143,7 +143,7 @@
     <div class="test-container">
 
         <!-- =================================== -->
-        <!-- HALAMAN 1: KONFIRMASI DATA PESERTA -->
+        <!-- HALAMAN 1: FORM DATA DIRI (LOBI) -->
         <!-- =================================== -->
         <div id="data-collection-page">
             <!-- Menambahkan row dan offset agar form tetap di tengah & tidak terlalu lebar -->
@@ -153,84 +153,104 @@
                         <div class="card-body p-4 p-md-5">
                             
                             <div class="text-center mb-4">
+                                <h3 class="fw-bold text-dark mt-3">Formulir Data Peserta </h3>
                                 <p class="text-muted">Selamat datang di Test untuk <strong>{{ $data->workshop->name }}</strong>.</p>
                             </div>
                             
-                            <!-- Hidden inputs untuk data user yang login -->
-                            <input type="hidden" id="user_id" value="{{ $user->id }}">
-                            <input type="hidden" id="nama_lengkap" value="{{ $user->name }}">
-                            <input type="hidden" id="email" value="{{ $user->email }}">
-                            <input type="hidden" id="posisi" value="{{ $user->divisi ?? '' }}">
-                            <input type="hidden" id="nik" value="{{ $user->nik ?? '' }}">
-
-                            <!-- Pilihan Tipe Test -->
-                            <hr class="my-4">
-                            
-                            <label class="form-label fw-medium mb-3">
-                                <i class="ti ti-clipboard-list me-2"></i>Pilih Tipe Test <span class="text-danger">*</span>
-                            </label>
-                            
-                            <div id="error-message" class="alert alert-danger d-none" role="alert">
-                                Harap pilih tipe test terlebih dahulu.
-                            </div>
-
-                            <!-- Pilihan Tipe Test -->
-                            <div class="row g-3 mb-4">
-                                <div class="col-md-6">
-                                    <label class="test-type-card rounded p-4 d-block text-center h-100">
-                                        <input type="radio" name="test_type" value="pre_test" class="form-check-input" required>
-                                        <div>
-                                            <div class="test-type-icon text-primary">
-                                                <i class="ti ti-edit-circle"></i>
-                                            </div>
-                                            <h5 class="fw-bold mb-2">Pre-Test</h5>
-                                            <p class="text-muted small mb-0">Test awal sebelum mengikuti pelatihan untuk mengukur pemahaman dasar</p>
-                                        </div>
-                                    </label>
+                            <form id="form-data-peserta">
+                                <div id="error-message" class="alert alert-danger d-none" role="alert">
+                                    Harap isi semua kolom yang wajib diisi.
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="test-type-card rounded p-4 d-block text-center h-100">
-                                        <input type="radio" name="test_type" value="post_test" class="form-check-input" required>
-                                        <div>
-                                            <div class="test-type-icon text-success">
-                                                <i class="ti ti-certificate"></i>
-                                            </div>
-                                            <h5 class="fw-bold mb-2">Post-Test</h5>
-                                            <p class="text-muted small mb-0">Test akhir setelah mengikuti pelatihan untuk evaluasi hasil pembelajaran</p>
-                                        </div>
+
+                                <!-- Pilihan Tipe Test -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-medium mb-3">
+                                        Pilih Tipe Test <span class="text-danger">*</span>
                                     </label>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="test-type-card rounded p-4 d-block text-center h-100">
+                                                <input type="radio" name="test_type" value="pre_test" class="form-check-input" required>
+                                                <div>
+                                                    <div class="test-type-icon text-primary">
+                                                        <i class="ti ti-edit-circle"></i>
+                                                    </div>
+                                                    <h5 class="fw-bold mb-2">Pre-Test</h5>
+                                                    <p class="text-muted small mb-0">Test awal sebelum mengikuti pelatihan untuk mengukur pemahaman dasar</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="test-type-card rounded p-4 d-block text-center h-100">
+                                                <input type="radio" name="test_type" value="post_test" class="form-check-input" required>
+                                                <div>
+                                                    <div class="test-type-icon text-success">
+                                                        <i class="ti ti-certificate"></i>
+                                                    </div>
+                                                    <h5 class="fw-bold mb-2">Post-Test</h5>
+                                                    <p class="text-muted small mb-0">Test akhir setelah mengikuti pelatihan untuk evaluasi hasil pembelajaran</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="alert alert-light border" role="alert">
-                                <h6 class="fw-bold"><i class="ti ti-info-circle me-2"></i>Petunjuk Pengerjaan</h6>
-                                <ul class="mb-0 small" style="padding-left: 1.2rem;">
-                                    <li>Tes terdiri dari <strong>beberapa soal</strong> pilihan ganda.</li>
-                                    <li>Waktu pengerjaan adalah <strong>
-                                        @php
-                                            $start = \Carbon\Carbon::parse($data->start_date);
-                                            $end = \Carbon\Carbon::parse($data->end_date);
-                                            $diff = $start->diff($end);
-                                            
-                                            $hours = $diff->h + ($diff->days * 24);
-                                            $minutes = $diff->i;
-                                            
-                                            if ($hours > 0) {
-                                                echo "{$hours} jam {$minutes} menit";
-                                            } else {
-                                                echo "{$minutes} menit";
-                                            }
-                                        @endphp
-                                    </strong>.</li>
-                                    <li>Pastikan koneksi internet Anda stabil.</li>
-                                    <li>Jawab semua soal dengan baik dan teliti.</li>
-                                    <li>Klik tombol "Mulai Test" jika Anda sudah siap.</li>
-                                </ul>
-                            </div>
+                                <hr class="my-4">
 
-                            <button type="button" id="btn-start-test" class="btn btn-primary w-100 btn-lg mt-4 fw-bold">
-                                Mulai Test <i class="ti ti-arrow-right ms-1"></i>
-                            </button>
+                                <div class="mb-3">
+                                    <label for="nama_lengkap" class="form-label fw-medium">Nama Lengkap <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="ti ti-user"></i></span>
+                                        <input type="text" class="form-control" id="nama_lengkap" placeholder="Masukkan nama lengkap Anda" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-medium">Email <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="ti ti-mail"></i></span>
+                                        <input type="email" class="form-control" id="email" placeholder="contoh@email.com" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="posisi" class="form-label fw-medium">Posisi yang Dilamar <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="ti ti-briefcase"></i></span>
+                                        <input type="text" class="form-control" id="posisi" placeholder="Masukkan posisi yang dilamar" required>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-light border" role="alert">
+                                    <h6 class="fw-bold"><i class="ti ti-info-circle me-2"></i>Petunjuk Pengerjaan</h6>
+                                    <ul class="mb-0 small" style="padding-left: 1.2rem;">
+                                        <li>Tes terdiri dari <strong>beberapa soal</strong> pilihan ganda.</li>
+                                        <li>Waktu pengerjaan adalah <strong>
+                                            @php
+                                                $start = \Carbon\Carbon::parse($data->start_date);
+                                                $end = \Carbon\Carbon::parse($data->end_date);
+                                                $diff = $start->diff($end);
+                                                
+                                                $hours = $diff->h + ($diff->days * 24);
+                                                $minutes = $diff->i;
+                                                
+                                                if ($hours > 0) {
+                                                    echo "{$hours} jam {$minutes} menit";
+                                                } else {
+                                                    echo "{$minutes} menit";
+                                                }
+                                            @endphp
+                                        </strong>.</li>
+                                        <li>Pastikan koneksi internet Anda stabil.</li>
+                                        <li>Jawab semua soal dengan baik dan teliti.</li>
+                                        <li>Klik tombol "Mulai Test" jika Anda sudah siap.</li>
+                                    </ul>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 btn-lg mt-4 fw-bold">
+                                    Mulai Test <i class="ti ti-arrow-right ms-1"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -400,13 +420,16 @@
         let isSubmitting = false; // Flag untuk prevent double submit
         let isSubmitted = false; // Flag untuk track apakah sudah submit
         const TEST_EMPLOYEE_ID = {{ $data->id }};
-        const EVENT_ID = {{ $data->id }}; // Gunakan test_employee_id sebagai event_id
+        const EVENT_ID = {{ $data->event_id ?? 'null' }};
         const STORAGE_KEY = `test_progress_${TEST_EMPLOYEE_ID}_${EVENT_ID}`;
 
         // LocalStorage functions
         function saveProgress() {
             const progress = {
                 test_type: testType, // Simpan tipe test
+                nama_lengkap: document.getElementById('nama_lengkap')?.value || '',
+                email: document.getElementById('email')?.value || '',
+                posisi: document.getElementById('posisi')?.value || '',
                 userAnswers: Object.assign({}, userAnswers), // Create clean copy
                 currentQuestionIndex: currentQuestionIndex,
                 testStartTime: testStartTime, // Simpan waktu mulai test
@@ -435,6 +458,17 @@
         function restoreProgress() {
             const progress = loadProgress();
             if (progress) {
+                // Restore form data
+                if (document.getElementById('nama_lengkap')) {
+                    document.getElementById('nama_lengkap').value = progress.nama_lengkap || '';
+                }
+                if (document.getElementById('email')) {
+                    document.getElementById('email').value = progress.email || '';
+                }
+                if (document.getElementById('posisi')) {
+                    document.getElementById('posisi').value = progress.posisi || '';
+                }
+                
                 // Restore test type
                 if (progress.test_type) {
                     testType = progress.test_type;
@@ -444,16 +478,24 @@
                     }
                 }
                 
+                // DON'T restore answers here - will be done in initializeTest
+                // This function only restores form data
+                
                 return true;
             }
             return false;
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            const btnStartTest = document.getElementById('btn-start-test');
+            const formDataPeserta = document.getElementById('form-data-peserta');
             const dataCollectionPage = document.getElementById('data-collection-page');
             const testPage = document.getElementById('test-page');
             const errorMessage = document.getElementById('error-message');
+
+            // --- START: Auto-save form data ---
+            const namaInput = document.getElementById('nama_lengkap');
+            const emailInput = document.getElementById('email');
+            const posisiInput = document.getElementById('posisi');
 
             // Auto-save test type selection
             const testTypeRadios = document.querySelectorAll('input[name="test_type"]');
@@ -461,10 +503,14 @@
                 radio.addEventListener('change', function() {
                     testType = this.value;
                     saveProgress();
-                    // Hide error message when test type selected
-                    errorMessage.classList.add('d-none');
                 });
             });
+
+            // Auto-save form data on input
+            [namaInput, emailInput, posisiInput].forEach(input => {
+                input.addEventListener('input', saveProgress);
+            });
+            // --- END: Auto-save form data ---
 
             // Restore progress from localStorage
             const hasProgress = restoreProgress();
@@ -489,7 +535,7 @@
                             testPage.classList.remove('d-none');
                             loadQuestions();
                         } else {
-                            // Mulai dari awal - hapus progress jawaban saja
+                            // Mulai dari awal - hapus progress jawaban saja, form data tetap ada
                             const currentProgress = loadProgress();
                             currentProgress.userAnswers = {};
                             currentProgress.currentQuestionIndex = 0;
@@ -499,14 +545,17 @@
                 }
             }
 
-            // Event listener untuk tombol Mulai Test
-            btnStartTest.addEventListener('click', function(e) {
+            // Logika perpindahan halaman
+            formDataPeserta.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 const testTypeSelected = document.querySelector('input[name="test_type"]:checked');
+                const nama = document.getElementById('nama_lengkap').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const posisi = document.getElementById('posisi').value.trim();
 
-                if (!testTypeSelected) {
-                    errorMessage.textContent = 'Harap pilih tipe test terlebih dahulu.';
+                if (!testTypeSelected || nama === '' || email === '' || posisi === '') {
+                    errorMessage.textContent = 'Harap isi semua kolom yang wajib diisi termasuk tipe test.';
                     errorMessage.classList.remove('d-none');
                 } else {
                     errorMessage.classList.add('d-none');
@@ -514,7 +563,7 @@
                     // Simpan tipe test
                     testType = testTypeSelected.value;
                     
-                    // Save to localStorage
+                    // Save form data to localStorage
                     saveProgress();
                     
                     dataCollectionPage.classList.add('d-none');
@@ -1011,11 +1060,9 @@
             
             isSubmitting = true; // Set flag sedang submit
             
-            const userId = document.getElementById('user_id').value;
             const namaLengkap = document.getElementById('nama_lengkap').value;
             const email = document.getElementById('email').value;
             const posisi = document.getElementById('posisi').value;
-            const nik = document.getElementById('nik').value;
             
             // Tampilkan loading
             Swal.fire({
@@ -1032,21 +1079,15 @@
                 test_employee_id: TEST_EMPLOYEE_ID,
                 event_id: EVENT_ID,
                 test_type: testType, // Kirim tipe test
-                user_id: userId,
                 nama_lengkap: namaLengkap,
                 email: email,
                 posisi: posisi,
-                nik: nik,
                 answers: userAnswers
             };
             
-            console.log('=== SUBMIT TEST DEBUG ===');
+            console.log('=== PAYLOAD DEBUG ===');
             console.log('Test Type:', testType);
-            console.log('User ID:', userId);
-            console.log('Event ID:', EVENT_ID);
-            console.log('Test Employee ID:', TEST_EMPLOYEE_ID);
-            console.log('Total Answers:', Object.keys(userAnswers).length);
-            console.log('Full Payload:', JSON.stringify(payload, null, 2));
+            console.log('Full Payload:', payload);
             
             fetch('/api/submit-test', {
                 method: 'POST',
@@ -1056,13 +1097,8 @@
                 },
                 body: JSON.stringify(payload)
             })
-            .then(response => {
-                console.log('=== RESPONSE STATUS ===', response.status);
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log('=== RESPONSE DATA ===', data);
-                
                 if (data.status) {
                     // Set flag sudah submit
                     isSubmitted = true;
@@ -1071,7 +1107,6 @@
                     clearProgress();
 
                     const testTypeLabel = testType === 'pre_test' ? 'Pre-Test' : 'Post-Test';
-                    const responseData = data.data || data; // Support both old and new structure
 
                     // Tampilkan hasil test dengan SweetAlert2
                     Swal.fire({
@@ -1083,8 +1118,8 @@
                                 <p class="mb-2"><strong>Email:</strong> ${email}</p>
                                 <p class="mb-2"><strong>Posisi:</strong> ${posisi}</p>
                                 <hr>
-                                <p class="mb-2"><strong>Soal Dijawab:</strong> ${responseData.total_answers} dari ${questionsData.length}</p>
-                                <p class="mb-0"><strong>Total Nilai:</strong> <span class="text-success fs-4">${responseData.score}</span></p>
+                                <p class="mb-2"><strong>Soal Dijawab:</strong> ${data.total_answers} dari ${questionsData.length}</p>
+                                <p class="mb-0"><strong>Total Nilai:</strong> <span class="text-success fs-4">${data.score}</span></p>
                             </div>
                         `,
                         icon: 'success',
@@ -1101,13 +1136,7 @@
                     
                     Swal.fire({
                         title: 'Gagal!',
-                        html: `
-                            <div class="text-start">
-                                <p><strong>Pesan Error:</strong></p>
-                                <p class="text-danger">${data.message}</p>
-                                ${data.errors ? '<hr><p><strong>Detail Error:</strong></p><pre class="small">' + JSON.stringify(data.errors, null, 2) + '</pre>' : ''}
-                            </div>
-                        `,
+                        text: 'Gagal menyimpan jawaban: ' + data.message,
                         icon: 'error',
                         confirmButtonColor: '#dc3545',
                         confirmButtonText: 'OK'
@@ -1121,7 +1150,7 @@
                 console.error('Error submitting test:', error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Terjadi kesalahan saat mengirim jawaban. Silakan coba lagi.',
+                    text: 'Terjadi kesalahan saat mengirim jawaban.',
                     icon: 'error',
                     confirmButtonColor: '#dc3545',
                     confirmButtonText: 'OK'

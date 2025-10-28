@@ -94,15 +94,15 @@ class Sidebar
         //     'ajax_load' => false,
         //     'childrens' => []
         //   ],
-          [
-            'name' => 'User Answer',
-            'icon' => 'ti ti-flask',
-            'key' => 'user-answer',
-            'base_key' => 'user-answer',
-            'visibility' => true,
-            'ajax_load' => false,
-            'childrens' => []
-          ],
+        [
+          'name' => 'User Answer',
+          'icon' => 'ti ti-flask',
+          'key' => 'user-answer',
+          'base_key' => 'user-answer',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
         // [
         //   'name' => 'Training New Participant',
         //   'icon' => 'ti ti-menu',
@@ -239,6 +239,15 @@ class Sidebar
           'childrens' => []
         ],
         [
+          'name' => 'Result Question',
+          'icon' => 'ti ti-menu',
+          'key' => 'result-question',
+          'base_key' => 'result-question',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
           'name' => 'Answer',
           'icon' => 'ti ti-pencil',
           'key' => 'answer',
@@ -248,14 +257,23 @@ class Sidebar
           'childrens' => []
         ],
         [
-            'name' => 'Event Answer',
-            'icon' => 'ti ti-menu',
-            'key' => 'event-answer',
-            'base_key' => 'event-answer',
-            'visibility' => true,
-            'ajax_load' => false,
-            'childrens' => []
-          ],
+          'name' => 'Event Answer',
+          'icon' => 'ti ti-menu',
+          'key' => 'event-answer',
+          'base_key' => 'event-answer',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
+        [
+          'name' => 'Event Question',
+          'icon' => 'ti ti-menu',
+          'key' => 'event-question',
+          'base_key' => 'event-question',
+          'visibility' => true,
+          'ajax_load' => false,
+          'childrens' => []
+        ],
         [
           'name' => 'Role',
           'icon' => 'ti ti-key',
@@ -274,6 +292,7 @@ class Sidebar
           'ajax_load' => false,
           'childrens' => []
         ],
+
       ];
   }
 

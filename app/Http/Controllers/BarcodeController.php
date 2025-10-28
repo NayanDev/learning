@@ -35,4 +35,18 @@ class BarcodeController extends Controller
         $data = 'http://lms.test/test-new-employee?token=' . $newEmployee->token; // Data yang ingin dibuat barcode
         return view('backend.idev.test_barcode', compact('data'));
     }
+
+    public function testEventQuestion()
+    {
+        $eventId = session('event_id');
+
+        if (!$eventId) {
+            return redirect('/')->with('error', 'Event ID tidak ditemukan.');
+        }
+
+        $event = Event::findOrFail($eventId);
+
+        $data = 'http://lms.test/test-event-question?token=' . $event->token; // Data yang ingin dibuat barcode
+        return view('backend.idev.event_question_barcode', compact('data'));
+    }
 }
