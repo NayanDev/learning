@@ -14,16 +14,24 @@ class NeedWorkshopController extends DefaultController
     protected $title;
     protected $generalUri;
     protected $tableHeaders;
-    // protected $actionButtons;
-    // protected $arrPermissions;
     protected $importExcelConfig;
+    protected $importScripts;
+    protected $importStyles;
 
     public function __construct()
     {
         $this->title = 'Need Workshop';
         $this->generalUri = 'need-workshop';
-        // $this->arrPermissions = [];
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
+
+        $this->importScripts = [
+            ['source' => asset('vendor/select2/select2.min.js')],
+            ['source' => asset('vendor/select2/select2-initialize.js')]
+        ];
+        $this->importStyles = [
+            ['source' => asset('vendor/select2/select2.min.css')],
+            ['source' => asset('vendor/select2/select2-style.css')]
+        ];
 
         $this->tableHeaders = [
             ['name' => 'No', 'column' => '#', 'order' => true],

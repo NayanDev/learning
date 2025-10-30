@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\User;
 use Idev\EasyAdmin\app\Helpers\Constant;
-use Idev\EasyAdmin\app\Http\Controllers\UserController as BaseUserController;
 use Idev\EasyAdmin\app\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -14,9 +13,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Idev\EasyAdmin\app\Helpers\Validation;
+use Idev\EasyAdmin\app\Http\Controllers\DefaultController;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends BaseUserController
+class UserController extends DefaultController
 {
     protected $modelClass = User::class;
     protected $title;
@@ -29,14 +29,15 @@ class UserController extends BaseUserController
 
     public function __construct()
     {
-        parent::__construct();
 
         $this->title = 'User';
         $this->generalUri = 'user';
         $this->arrPermission = [];
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_destroy'];
+
         $this->importScripts = [
             ['source' => asset('vendor/select2/select2.min.js')],
+            ['source' => asset('vendor/select2/select2-initialize.js')],
             ['source' => asset('vendor/select2/select2-initialize.js')]
         ];
         $this->importStyles = [
@@ -60,53 +61,6 @@ class UserController extends BaseUserController
             ['name' => 'Created at', 'column' => 'created_at', 'order' => true],
             ['name' => 'Updated at', 'column' => 'updated_at', 'order' => true],
         ];
-    }
-
-    public function index()
-    {
-        $moreActions = [
-            [
-                'key' => 'import-excel-default',
-                'name' => 'Import Excel',
-                'html_button' => "<button id='import-excel' type='button' class='btn btn-sm btn-info radius-6' href='#' data-bs-toggle='modal' data-bs-target='#modalImportDefault' title='Import Excel' ><i class='ti ti-upload'></i></button>"
-            ],
-            [
-                'key' => 'export-excel-default',
-                'name' => 'Export Excel',
-                'html_button' => "<a id='export-excel' class='btn btn-sm btn-success radius-6' target='_blank' href='" . url($this->generalUri . '-export-excel-default') . "'  title='Export Excel'><i class='ti ti-cloud-download'></i></a>"
-            ],
-            [
-                'key' => 'export-pdf-default',
-                'name' => 'Export Pdf',
-                'html_button' => "<a id='export-pdf' class='btn btn-sm btn-danger radius-6' target='_blank' href='" . url($this->generalUri . '-export-pdf-default') . "' title='Export PDF'><i class='ti ti-file'></i></a>"
-            ],
-        ];
-
-        $permissions = (new Constant())->permissionByMenu($this->generalUri);
-        $data['permissions'] = $permissions;
-        $data['importScripts'] = $this->importScripts;
-        $data['importStyles'] = $this->importStyles;
-        $data['more_actions'] = $moreActions;
-        $data['table_headers'] = $this->tableHeaders;
-        $data['title'] = $this->title;
-        $data['uri_key'] = $this->generalUri;
-        $data['uri_list_api'] = route($this->generalUri . '.listapi');
-        $data['uri_create'] = route($this->generalUri . '.create');
-        $data['url_store'] = route($this->generalUri . '.store');
-        $data['fields'] = $this->fields();
-        $data['edit_fields'] = $this->fields();
-        $data['actionButtonViews'] = [
-            'easyadmin::backend.idev.buttons.delete',
-            'easyadmin::backend.idev.buttons.edit',
-            'easyadmin::backend.idev.buttons.show',
-            'easyadmin::backend.idev.buttons.import_default',
-        ];
-        $data['templateImportExcel'] = "#";
-        $data['filters'] = $this->filters();
-
-        $layout = (request('from_ajax') && request('from_ajax') == true) ? 'easyadmin::backend.idev.list_drawer_ajax' : 'easyadmin::backend.idev.list_drawer';
-
-        return view($layout, $data);
     }
 
     protected function getFilteredApiData()
@@ -390,17 +344,17 @@ class UserController extends BaseUserController
                 'class' => 'col-md-12 my-2',
                 'value' => (isset($edit)) ? $edit->telp : ''
             ],
+            // [
+            //     'type' => 'image',
+            //     'label' => 'Signature',
+            //     'name' => 'signature',
+            //     'class' => 'col-md-12 my-2',
+            //     'value' => (isset($edit) && !empty($edit->signature)) ? asset('storage/signature/' . $edit->signature) : null,
+            //     'required' => false,
+            //     'accept' => 'image/png,image/jpeg,image/jpg,image/gif,image/svg+xml',
+            // ],
             [
-                'type' => 'image',
-                'label' => 'Signature',
-                'name' => 'signature',
-                'class' => 'col-md-12 my-2',
-                'value' => (isset($edit) && !empty($edit->signature)) ? asset('storage/signature/' . $edit->signature) : null,
-                'required' => false,
-                'accept' => 'image/png,image/jpeg,image/jpg,image/gif,image/svg+xml',
-            ],
-            [
-                'type' => 'select',
+                'type' => 'select2',
                 'label' => 'Role',
                 'name' => 'role_id',
                 'class' => 'col-md-12 my-2',
@@ -530,20 +484,20 @@ class UserController extends BaseUserController
         }
     }
 
-    private function rules($id = null)
-    {
-        $rules = [
-            'name' => 'required|string',
-            'email' => 'required|string|unique:users,email,' . $id . ',id',
-            'password' => 'required|string',
-        ];
+    // private function rules($id = null)
+    // {
+    //     $rules = [
+    //         'name' => 'required|string',
+    //         'email' => 'required|string|unique:users,email,' . $id . ',id',
+    //         'password' => 'required|string',
+    //     ];
 
-        if ($id != null) {
-            unset($rules['password']);
-        }
+    //     if ($id != null) {
+    //         unset($rules['password']);
+    //     }
 
-        return $rules;
-    }
+    //     return $rules;
+    // }
 
     public function store(Request $request)
     {
