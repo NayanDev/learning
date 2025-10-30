@@ -18,7 +18,7 @@ class BarcodeController extends Controller
 
         $event = Event::findOrFail($eventId);
 
-        $data = 'http://lms.test/participant-attendance?token=' . $event->token; // Data yang ingin dibuat barcode
+        $data = url('participant-attendance') . '?token=' . $event->token; // Data yang ingin dibuat barcode
         return view('backend.idev.barcode', compact('data'));
     }
 
@@ -32,7 +32,7 @@ class BarcodeController extends Controller
 
         $newEmployee = TrainingNewEmployee::findOrFail($testId);
 
-        $data = 'http://lms.test/test-new-employee?token=' . $newEmployee->token; // Data yang ingin dibuat barcode
+        $data = url('test-new-employee') . '?token=' . $newEmployee->token; // Data yang ingin dibuat barcode
         return view('backend.idev.test_barcode', compact('data'));
     }
 
@@ -46,7 +46,7 @@ class BarcodeController extends Controller
 
         $event = Event::findOrFail($eventId);
 
-        $data = 'http://lms.test/test-event-question?token=' . $event->token; // Data yang ingin dibuat barcode
+        $data = url('test-event-question') . '?token=' . $event->token; // Data yang ingin dibuat barcode
         return view('backend.idev.event_question_barcode', compact('data'));
     }
 }

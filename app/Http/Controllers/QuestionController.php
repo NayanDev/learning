@@ -364,7 +364,7 @@ class QuestionController extends DefaultController
             // Calculate total score and save detail answers to event_answers table
             $totalScore = 0;
             $answeredCount = 0;
-            
+
             if ($userAnswers && is_array($userAnswers)) {
                 foreach ($userAnswers as $questionIndex => $answerId) {
                     if ($answerId) {
@@ -395,14 +395,14 @@ class QuestionController extends DefaultController
             ]);
 
             // Save to training_new_participants table (untuk backward compatibility)
-            $participant = new TrainingNewParticipant();
-            $participant->test_employee_id = $testEmployeeId;
-            $participant->type = $testType;
-            $participant->name = $namaLengkap;
-            $participant->email = $email;
-            $participant->position = $posisi;
-            $participant->score = $totalScore;
-            $participant->save();
+            // $participant = new TrainingNewParticipant();
+            // $participant->test_employee_id = $testEmployeeId;
+            // $participant->type = $testType;
+            // $participant->name = $namaLengkap;
+            // $participant->email = $email;
+            // $participant->position = $posisi;
+            // $participant->score = $totalScore;
+            // $participant->save();
 
             DB::commit();
 
@@ -412,7 +412,7 @@ class QuestionController extends DefaultController
                 'data' => [
                     'score' => $totalScore,
                     'total_answers' => $answeredCount,
-                    'participant_id' => $participant->id,
+                    'participant_id' => $userId,
                     'test_type' => $testType,
                     'user_id' => $userId
                 ]

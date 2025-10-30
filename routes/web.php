@@ -61,6 +61,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::get('my-account', [UserController::class, 'profile']);
     Route::post('update-profile', [UserController::class, 'updateProfile']);
 
+    Route::get('/nayantaka', [DashboardController::class, 'nayantaka']);
     // Route Dashboard
     Route::resource('dashboard', DashboardController::class);
     Route::get('dashboard-api', [DashboardController::class, 'indexApi'])->name('dashboard.listapi');
@@ -216,13 +217,6 @@ Route::group(['middleware' => ['web', 'auth']], function () {
     Route::post('/materi/download/count', [MateriLogController::class, 'countDownload'])
         ->name('materi.download.count');
     Route::post('/api/materi-log', [MateriLogController::class, 'countLog']);
-
-    // Route Training New Employee
-    Route::resource('training-new-employee', TrainingNewEmployeeController::class);
-    Route::get('training-new-employee-api', [TrainingNewEmployeeController::class, 'indexApi'])->name('training-new-employee.listapi');
-    Route::get('training-new-employee-export-pdf-default', [TrainingNewEmployeeController::class, 'exportPdf'])->name('training-new-employee.export-pdf-default');
-    Route::get('training-new-employee-export-excel-default', [TrainingNewEmployeeController::class, 'exportExcel'])->name('training-new-employee.export-excel-default');
-    Route::post('training-new-employee-import-excel-default', [TrainingNewEmployeeController::class, 'importExcel'])->name('training-new-employee.import-excel-default');
 
     // Route Training New Participant
     Route::resource('training-new-participant', TrainingNewParticipantController::class);
