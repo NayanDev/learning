@@ -54,7 +54,7 @@ Route::get('/test-new-employee', [TrainingNewEmployeeController::class, 'testNew
 Route::get('/api/questions', [QuestionController::class, 'getQuestionsForTest'])->name('api.questions');
 Route::post('/api/submit-test', [QuestionController::class, 'submitTest'])->name('api.submit-test');
 
-Route::group(['middleware' => ['web', 'auth']], function () {
+Route::group(['middleware' => ['web', 'auth', 'middlewareByAccess']], function () {
     // Route Users
     Route::resource('user', UserController::class);
     Route::get('user-api', [UserController::class, 'indexApi'])->name('user.listapi');

@@ -13,14 +13,15 @@ class WorkshopController extends DefaultController
     protected $generalUri;
     protected $tableHeaders;
     // protected $actionButtons;
-    // protected $arrPermissions;
+    protected $arrPermissions = ['list', 'show', 'create', 'edit', 'delete', 'export-excel-default', 'export-pdf-default', 'import-excel-default'];
     protected $importExcelConfig;
+    protected $dynamicPermission = true;
 
     public function __construct()
     {
         $this->title = 'Workshop';
         $this->generalUri = 'workshop';
-        // $this->arrPermissions = [];
+        $this->arrPermissions = [''];
         $this->actionButtons = ['btn_edit', 'btn_show', 'btn_delete'];
 
         $this->tableHeaders = [
